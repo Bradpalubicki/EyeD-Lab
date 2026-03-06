@@ -1,0 +1,23 @@
+{
+  "name": "eyed",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Patient-owned medical records platform",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@eyed/tsconfig": "workspace:*",
+    "turbo": "^2.3.0",
+    "prettier": "^3.4.0"
+  },
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@eyed/zk-circuits",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "echo 'ZK circuits — Phase 3'",
+    "test": "echo 'ZK circuits — Phase 3'",
+    "typecheck": "echo 'ZK circuits — Phase 3'"
+  }
+}

@@ -1,0 +1,15 @@
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY packages/tsconfig/ ./packages/tsconfig/
+COPY services/api-gateway/ ./services/api-gateway/
+RUN corepack enable && pnpm install --frozen-lockfile
+RUN pnpm turbo run build --filter=@eyed/api-gateway
+
+FROM node:22-alpine
+WORKDIR /app
+COPY --from=builder /app/services/api-gateway/dist ./dist
+COPY --from=builder /app/services/api-gateway/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+EXPOSE 3001
+CMD ["node", "dist/server.js"]

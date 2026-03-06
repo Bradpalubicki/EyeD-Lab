@@ -1,0 +1,17 @@
+{
+  "name": "@eyed/sdk",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo 'No tests yet'",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@eyed/tsconfig": "workspace:*",
+    "typescript": "^5.6.0"
+  }
+}
