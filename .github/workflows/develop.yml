@@ -1,0 +1,69 @@
+name: Develop
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  lint-typecheck-test:
+    name: Lint, Typecheck & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: lint-typecheck-test
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Deploy API Gateway
+        run: echo "TODO — deploy api-gateway to staging (AWS ECS / Docker)"
+
+      - name: Deploy Provider Portal
+        run: echo "TODO — deploy provider-portal to staging (Vercel / Cloudflare Pages)"
+
+      - name: Deploy Decryption Gateway
+        run: echo "TODO — deploy decryption-gateway to staging (Cloudflare Workers)"
+
+      - name: Staging smoke test
+        run: echo "TODO — run smoke tests against staging endpoints"
