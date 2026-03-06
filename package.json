@@ -22,12 +22,12 @@
   },
   "pnpm": {
     "overrides": {
-      "serialize-javascript": ">=7.0.3",
-      "bn.js": ">=4.12.3",
-      "lodash": ">=4.17.23",
-      "undici": ">=6.23.0",
-      "tmp": ">=0.2.4",
-      "cookie": ">=0.7.0"
+      "serialize-javascript": "^7.0.3",
+      "bn.js": "^4.12.3",
+      "lodash": "^4.17.23",
+      "undici": "^6.23.0",
+      "tmp": "^0.2.4",
+      "cookie": "^0.7.0"
     }
   }
 }
