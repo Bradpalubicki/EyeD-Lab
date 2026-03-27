@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 export default function AddRecordScreen() {
   return (

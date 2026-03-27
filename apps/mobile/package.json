@@ -11,7 +11,7 @@
     "dev": "expo start",
     "test": "echo 'No tests yet'",
     "typecheck": "tsc --noEmit",
-    "lint": "echo 'lint'"
+    "lint": "eslint . --ignore-pattern node_modules/"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.15.5",

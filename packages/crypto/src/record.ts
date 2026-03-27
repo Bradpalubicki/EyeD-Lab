@@ -1,4 +1,4 @@
-import { encrypt, decrypt, type EncryptResult } from "./aes.js";
+import { encrypt, decrypt } from "./aes.js";
 import { generateDEK, wrapDEK, unwrapDEK, type WrappedDEK } from "./keys.js";
 
 export interface EncryptedRecord {

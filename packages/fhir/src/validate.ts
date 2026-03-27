@@ -43,7 +43,7 @@ function requireCodeableConcept(resource: Record<string, unknown>, field: string
   }
 }
 
-function requireStringField(resource: Record<string, unknown>, field: string, errors: string[]): void {
+function _requireStringField(resource: Record<string, unknown>, field: string, errors: string[]): void {
   if (!hasString(resource, field)) {
     errors.push(`${field} is required`);
   }

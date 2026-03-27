@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "wrangler dev",
+    "lint": "eslint src/",
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit",
     "deploy": "wrangler deploy"
@@ -13,7 +14,6 @@
     "@eyed/tsconfig": "workspace:*",
     "@cloudflare/workers-types": "^4.0.0",
     "typescript": "^5.6.0",
-    "vitest": "^2.0.0",
     "wrangler": "^3.0.0"
   }
 }
