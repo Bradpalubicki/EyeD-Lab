@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getMockPatient } from "@/lib/mock-fhir";
+import { getPatientByPin } from "@/lib/get-patient";
 import { claudeSummarize } from "@/lib/claude";
 
 export const runtime = "nodejs";
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { patient } = getMockPatient(sessionId);
+    const { patient } = await getPatientByPin(sessionId);
     const result = await claudeSummarize(patient);
     return NextResponse.json(result, { status: 200 });
   } catch (err) {

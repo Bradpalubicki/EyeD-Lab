@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import AiBriefCard from "@/components/AiBriefCard";
 import AiBriefSkeleton from "@/components/AiBriefSkeleton";
-import { getMockPatient } from "@/lib/mock-fhir";
+import { getPatientByPin } from "@/lib/get-patient";
 
 export default async function RecordsPage({
   params,
@@ -9,7 +9,7 @@ export default async function RecordsPage({
   params: Promise<{ sessionId: string }>;
 }) {
   const { sessionId } = await params;
-  const { patient } = getMockPatient(sessionId);
+  const { patient } = await getPatientByPin(sessionId);
 
   return (
     <div className="relative">
