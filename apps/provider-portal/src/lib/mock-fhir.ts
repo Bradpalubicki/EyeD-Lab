@@ -133,6 +133,124 @@ const PATIENT_CHEN: MockPatient = {
   lastVisit: "2025-10-05",
 };
 
+// Patient 3: PIN 111111 — Robert Mitchell (chart 90001) — TRT injection patient
+const PATIENT_MITCHELL: MockPatient = {
+  mrn: "MRN-TRAIN-001",
+  name: "Robert Mitchell",
+  dob: "1978-03-12",
+  age: 47,
+  gender: "male",
+  bloodType: "O+",
+  primaryProvider: "Don Foncree, MD",
+  medications: [
+    { name: "Testosterone Cypionate 200mg/mL", dosage: "1mL (200mg) every 10 days", indication: "Male Hypogonadism (E29.1)" },
+    { name: "Anastrozole", dosage: "0.5mg twice weekly", indication: "Estrogen control during TRT" },
+    { name: "Lisinopril", dosage: "10mg once daily", indication: "Hypertension" },
+  ],
+  allergies: [
+    { substance: "Penicillin", reaction: "Hives, urticaria", severity: "moderate" },
+  ],
+  conditions: [
+    { name: "Male Hypogonadism", status: "active", onsetYear: 2020, icdCode: "E29.1" },
+    { name: "Hypertension", status: "active", onsetYear: 2018, icdCode: "I10" },
+    { name: "Erectile Dysfunction", status: "active", onsetYear: 2019, icdCode: "N52.9" },
+  ],
+  labs: [
+    { name: "Total Testosterone", value: "842 ng/dL", date: "2025-10-14", status: "normal", referenceRange: "300–1000 ng/dL" },
+    { name: "Free Testosterone", value: "18.4 pg/mL", date: "2025-10-14", status: "normal", referenceRange: "9.0–30.0 pg/mL" },
+    { name: "Estradiol (E2)", value: "28 pg/mL", date: "2025-10-14", status: "normal", referenceRange: "10–40 pg/mL" },
+    { name: "PSA", value: "1.2 ng/mL", date: "2025-10-14", status: "normal", referenceRange: "< 4.0 ng/mL" },
+    { name: "Hematocrit", value: "46%", date: "2025-10-14", status: "normal", referenceRange: "38.3–48.6%" },
+    { name: "SHBG", value: "24 nmol/L", date: "2025-10-14", status: "normal", referenceRange: "10–57 nmol/L" },
+  ],
+  vitals: [
+    { name: "Weight", value: "214 lbs", date: "2025-10-15" },
+    { name: "BMI", value: "30.7", date: "2025-10-15" },
+    { name: "Blood Pressure", value: "132/84 mmHg", date: "2025-10-15" },
+    { name: "Heart Rate", value: "72 bpm", date: "2025-10-15" },
+  ],
+  lastVisit: "2025-10-15",
+};
+
+// Patient 4: PIN 222222 — James Crawford (chart 90002) — TRT + T2DM
+const PATIENT_CRAWFORD: MockPatient = {
+  mrn: "MRN-TRAIN-002",
+  name: "James Crawford",
+  dob: "1971-07-28",
+  age: 53,
+  gender: "male",
+  bloodType: "A+",
+  primaryProvider: "Don Foncree, MD",
+  medications: [
+    { name: "Testosterone Cypionate 200mg/mL", dosage: "0.8mL (160mg) every 7 days", indication: "Male Hypogonadism (E29.1)" },
+    { name: "Anastrozole", dosage: "0.5mg twice weekly", indication: "Estrogen control during TRT" },
+    { name: "Metformin", dosage: "1000mg twice daily", indication: "Type 2 Diabetes" },
+    { name: "Atorvastatin", dosage: "40mg once daily at bedtime", indication: "Hyperlipidemia" },
+  ],
+  allergies: [
+    { substance: "Sulfonamides", reaction: "Rash, fever", severity: "moderate" },
+    { substance: "NSAIDs", reaction: "GI bleeding history", severity: "severe" },
+  ],
+  conditions: [
+    { name: "Male Hypogonadism", status: "active", onsetYear: 2019, icdCode: "E29.1" },
+    { name: "Type 2 Diabetes Mellitus", status: "active", onsetYear: 2016, icdCode: "E11.9" },
+    { name: "Hyperlipidemia", status: "active", onsetYear: 2017, icdCode: "E78.5" },
+    { name: "Obesity", status: "active", onsetYear: 2016, icdCode: "E66.9" },
+  ],
+  labs: [
+    { name: "Total Testosterone", value: "764 ng/dL", date: "2025-10-30", status: "normal", referenceRange: "300–1000 ng/dL" },
+    { name: "Estradiol (E2)", value: "38 pg/mL", date: "2025-10-30", status: "normal", referenceRange: "10–40 pg/mL" },
+    { name: "PSA", value: "1.8 ng/mL", date: "2025-10-30", status: "normal", referenceRange: "< 4.0 ng/mL" },
+    { name: "HbA1c", value: "7.4%", date: "2025-10-30", status: "abnormal", referenceRange: "< 5.7% normal; < 7.0% target for diabetics" },
+    { name: "Hematocrit", value: "48%", date: "2025-10-30", status: "normal", referenceRange: "38.3–48.6%" },
+    { name: "LDL Cholesterol", value: "112 mg/dL", date: "2025-10-30", status: "abnormal", referenceRange: "< 100 mg/dL target" },
+  ],
+  vitals: [
+    { name: "Weight", value: "248 lbs", date: "2025-11-02" },
+    { name: "BMI", value: "37.7", date: "2025-11-02" },
+    { name: "Blood Pressure", value: "144/90 mmHg", date: "2025-11-02" },
+    { name: "Heart Rate", value: "78 bpm", date: "2025-11-02" },
+  ],
+  lastVisit: "2025-11-02",
+};
+
+// Patient 5: PIN 333333 — David Holbrook (chart 90003) — TRT + shockwave therapy
+const PATIENT_HOLBROOK: MockPatient = {
+  mrn: "MRN-TRAIN-003",
+  name: "David Holbrook",
+  dob: "1984-11-05",
+  age: 40,
+  gender: "male",
+  bloodType: "B+",
+  primaryProvider: "Melissa Weets, NP",
+  medications: [
+    { name: "Testosterone Cypionate 200mg/mL", dosage: "1mL (200mg) every 14 days", indication: "Male Hypogonadism (E29.1)" },
+    { name: "HCG", dosage: "500 IU three times weekly", indication: "Testicular function preservation" },
+  ],
+  allergies: [
+    { substance: "Latex", reaction: "Contact dermatitis", severity: "mild" },
+  ],
+  conditions: [
+    { name: "Male Hypogonadism", status: "active", onsetYear: 2022, icdCode: "E29.1" },
+    { name: "Erectile Dysfunction", status: "active", onsetYear: 2021, icdCode: "N52.9" },
+  ],
+  labs: [
+    { name: "Total Testosterone", value: "918 ng/dL", date: "2025-09-16", status: "normal", referenceRange: "300–1000 ng/dL" },
+    { name: "Free Testosterone", value: "22.1 pg/mL", date: "2025-09-16", status: "normal", referenceRange: "9.0–30.0 pg/mL" },
+    { name: "Estradiol (E2)", value: "34 pg/mL", date: "2025-09-16", status: "normal", referenceRange: "10–40 pg/mL" },
+    { name: "PSA", value: "0.7 ng/mL", date: "2025-09-16", status: "normal", referenceRange: "< 4.0 ng/mL" },
+    { name: "LH", value: "1.2 mIU/mL", date: "2025-09-16", status: "abnormal", referenceRange: "1.7–8.6 mIU/mL (suppressed on TRT expected)" },
+    { name: "FSH", value: "0.8 mIU/mL", date: "2025-09-16", status: "abnormal", referenceRange: "1.5–12.4 mIU/mL (suppressed on TRT expected)" },
+  ],
+  vitals: [
+    { name: "Weight", value: "186 lbs", date: "2025-09-18" },
+    { name: "BMI", value: "25.2", date: "2025-09-18" },
+    { name: "Blood Pressure", value: "124/80 mmHg", date: "2025-09-18" },
+    { name: "Heart Rate", value: "68 bpm", date: "2025-09-18" },
+  ],
+  lastVisit: "2025-10-01",
+};
+
 const PATIENT_DEFAULT: MockPatient = {
   mrn: "MRN-DEMO-000",
   name: "Demo Patient",
@@ -152,6 +270,9 @@ const PATIENT_DEFAULT: MockPatient = {
 const PATIENT_MAP: Record<string, MockPatient> = {
   "123456": PATIENT_THORNTON,
   "654321": PATIENT_CHEN,
+  "111111": PATIENT_MITCHELL,
+  "222222": PATIENT_CRAWFORD,
+  "333333": PATIENT_HOLBROOK,
 };
 
 export function getMockPatient(sessionId: string): MockFhirBundle {
