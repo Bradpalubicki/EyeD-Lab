@@ -1,53 +1,60 @@
+"use client"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+
 export default function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const router = useRouter()
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    router.push("/dashboard")
+  }
+
   return (
-    <div className="flex min-h-[70vh] items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <h1 className="mb-2 text-center text-2xl font-bold text-teal-700">
-          EyeD Provider Portal
-        </h1>
-        <p className="mb-8 text-center text-sm text-gray-500">
-          Secure access to patient medical records
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", background: "var(--bg-base)" }}>
+      <div style={{ width: "100%", maxWidth: "400px" }}>
+        {/* Logo */}
+        <div style={{ textAlign: "center", marginBottom: "40px" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+            <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "var(--teal)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ fontSize: "18px" }}>👁</span>
+            </div>
+            <span style={{ fontSize: "24px", fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>EyeD</span>
+          </div>
+          <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0 }}>Provider Portal — Secure Clinical Access</p>
+        </div>
+
+        {/* Card */}
+        <div className="glass-card" style={{ padding: "32px" }}>
+          <div className="gradient-bar" />
+          <h2 style={{ fontSize: "18px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "6px" }}>Sign in</h2>
+          <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginBottom: "24px" }}>Enter your provider credentials to continue</p>
+
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: "16px" }}>
+              <label className="field-label">Email address</label>
+              <input className="field-input" type="email" placeholder="provider@hospital.org" value={email} onChange={e => setEmail(e.target.value)} />
+            </div>
+            <div style={{ marginBottom: "24px" }}>
+              <label className="field-label">Password</label>
+              <input className="field-input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+            </div>
+            <button className="btn-primary" type="submit" style={{ width: "100%" }}>Access Portal</button>
+          </form>
+
+          <p style={{ fontSize: "12px", color: "var(--text-muted)", textAlign: "center", marginTop: "20px" }}>
+            For demo access, proceed directly to{" "}
+            <Link href="/dashboard" style={{ color: "var(--teal)", textDecoration: "none" }}>Dashboard →</Link>
+          </p>
+        </div>
+
+        <p style={{ fontSize: "11px", color: "var(--text-muted)", textAlign: "center", marginTop: "24px" }}>
+          Demo system — synthetic patient data only · HIPAA compliant infrastructure
         </p>
-
-        <form className="space-y-5">
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="provider@hospital.org"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-          >
-            Sign In
-          </button>
-        </form>
       </div>
     </div>
-  );
+  )
 }

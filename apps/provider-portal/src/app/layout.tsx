@@ -26,10 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-gray-50 font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ paddingTop: "56px" }}
       >
         <Nav />
-        <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
+        <main>{children}</main>
       </body>
     </html>
   );

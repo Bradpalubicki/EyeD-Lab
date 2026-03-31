@@ -4,16 +4,16 @@ interface AiBriefCardProps {
   sessionId: string;
 }
 
-const severityColors: Record<DrugInteractionFlag["severity"], string> = {
-  moderate: "bg-yellow-50 border-yellow-200 text-yellow-800",
-  major: "bg-orange-50 border-orange-200 text-orange-800",
-  contraindicated: "bg-red-50 border-red-200 text-red-800",
+const severityPill: Record<DrugInteractionFlag["severity"], string> = {
+  moderate: "pill-moderate",
+  major: "pill-abnormal",
+  contraindicated: "pill-critical",
 };
 
-const severityBadge: Record<DrugInteractionFlag["severity"], string> = {
-  moderate: "bg-yellow-100 text-yellow-700",
-  major: "bg-orange-100 text-orange-700",
-  contraindicated: "bg-red-100 text-red-700",
+const severityBorder: Record<DrugInteractionFlag["severity"], string> = {
+  moderate: "var(--amber)",
+  major: "var(--amber)",
+  contraindicated: "var(--red)",
 };
 
 export default async function AiBriefCard({ sessionId }: AiBriefCardProps) {
@@ -46,8 +46,11 @@ export default async function AiBriefCard({ sessionId }: AiBriefCardProps) {
 
   if (errorMessage) {
     return (
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-        <p className="text-sm text-amber-800">⚠ AI summary unavailable — {errorMessage}</p>
+      <div className="glass-card" style={{ padding: "20px 24px", borderColor: "var(--red-dim)", background: "var(--red-dim)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--red)", flexShrink: 0 }} />
+          <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>AI summary unavailable — {errorMessage}</p>
+        </div>
       </div>
     );
   }
@@ -57,53 +60,51 @@ export default async function AiBriefCard({ sessionId }: AiBriefCardProps) {
     : "";
 
   return (
-    <div className="rounded-xl border-2 border-teal-200 bg-teal-50 p-6 shadow-sm">
+    <div className="glass-card" style={{ padding: "24px", borderColor: "var(--teal)", boxShadow: "0 0 24px var(--teal-glow)" }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-teal-800 flex items-center gap-2">
-          <span>✦</span> AI Patient Brief
-        </h2>
-        <span className="text-xs font-medium bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
-          DEMO
-        </span>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--teal)" }} />
+          <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.01em" }}>AI Clinical Brief</span>
+        </div>
+        <span className="pill pill-abnormal">SYNTHETIC DATA</span>
       </div>
 
       {/* Summary */}
-      <p className="text-sm text-gray-700 leading-relaxed mb-4">{result.summary}</p>
+      <p style={{ fontSize: "14px", lineHeight: 1.7, color: "var(--text-secondary)", marginBottom: "20px" }}>{result.summary}</p>
 
       {/* Drug Interactions */}
       <div>
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
-          Drug Interactions
-        </h3>
+        <div className="section-label">Drug Interactions</div>
         {result.drugInteractions.length === 0 ? (
-          <p className="text-sm text-green-700 flex items-center gap-1">
-            <span>✓</span> No drug interactions identified in provided data
-          </p>
+          <span className="pill pill-normal">No interactions identified</span>
         ) : (
-          <ul className="space-y-2">
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {result.drugInteractions.map((flag, i) => (
-              <li
+              <div
                 key={i}
-                className={`rounded-lg border p-3 ${severityColors[flag.severity]}`}
+                style={{
+                  background: "var(--bg-elevated)",
+                  border: `1px solid ${severityBorder[flag.severity]}`,
+                  borderRadius: "var(--radius-sm)",
+                  padding: "12px 16px",
+                }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-sm">
-                    {flag.drug1} ↔ {flag.drug2}
-                  </span>
-                  <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${severityBadge[flag.severity]}`}>
-                    {flag.severity}
-                  </span>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                  <code style={{ fontSize: "13px", color: "var(--teal)", fontFamily: "monospace", background: "var(--teal-dim)", padding: "2px 6px", borderRadius: "4px" }}>{flag.drug1}</code>
+                  <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>↔</span>
+                  <code style={{ fontSize: "13px", color: "var(--teal)", fontFamily: "monospace", background: "var(--teal-dim)", padding: "2px 6px", borderRadius: "4px" }}>{flag.drug2}</code>
+                  <span className={`pill ${severityPill[flag.severity]}`}>{flag.severity}</span>
                 </div>
-                <p className="text-xs">{flag.description}</p>
-              </li>
+                <p style={{ fontSize: "12px", color: "var(--text-secondary)", margin: 0, lineHeight: 1.5 }}>{flag.description}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
 
       {/* Footer */}
-      <p className="text-xs text-gray-400 mt-4">
+      <p style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border)" }}>
         Generated {generatedTime} · Synthetic demo data only · Not for clinical use
       </p>
     </div>

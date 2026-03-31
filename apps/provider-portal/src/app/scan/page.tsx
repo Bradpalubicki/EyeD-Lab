@@ -1,64 +1,84 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+"use client"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function ScanPage() {
-  const router = useRouter();
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState("");
+  const [pin, setPin] = useState("")
+  const [error, setError] = useState("")
+  const router = useRouter()
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+    e.preventDefault()
     if (pin.length !== 6 || !/^\d{6}$/.test(pin)) {
-      setError("Please enter a valid 6-digit PIN");
-      return;
+      setError("Enter a valid 6-digit PIN")
+      return
     }
-    setError("");
-    router.push(`/records/${pin}`);
+    setError("")
+    router.push(`/records/${pin}`)
   }
 
   return (
-    <div className="mx-auto max-w-lg">
-      <h1 className="mb-2 text-3xl font-bold text-gray-900">
-        Scan Patient QR Code
-      </h1>
-      <p className="mb-8 text-gray-500">
-        Point your camera at the patient&apos;s QR code to begin a secure session.
-      </p>
-
-      {/* Camera preview placeholder */}
-      <div className="mb-8 flex h-72 items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-100">
-        <span className="text-lg font-medium text-gray-400">
-          Camera preview
-        </span>
+    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "40px 24px" }}>
+      <div style={{ marginBottom: "32px" }}>
+        <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--teal)", marginBottom: "8px" }}>Patient Access</div>
+        <h1 style={{ fontSize: "28px", fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.02em", margin: "0 0 8px" }}>Scan or Enter PIN</h1>
+        <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0 }}>Point camera at patient QR code, or enter their 6-digit PIN manually.</p>
       </div>
 
-      {/* PIN verification */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">
-          Verify Patient PIN
-        </h2>
-        <form onSubmit={handleSubmit} className="flex gap-3">
-          <input
-            type="text"
-            inputMode="numeric"
-            maxLength={6}
-            placeholder="Enter PIN"
-            value={pin}
-            onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-center text-lg tracking-widest focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
-          />
-          <button
-            type="submit"
-            className="rounded-lg bg-teal-600 px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-          >
-            Verify
+      {/* QR Camera Placeholder */}
+      <div className="glass-card" style={{ padding: 0, overflow: "hidden", marginBottom: "24px" }}>
+        <div style={{
+          height: "240px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          background: "repeating-linear-gradient(45deg, var(--bg-elevated) 0px, var(--bg-elevated) 10px, var(--bg-surface) 10px, var(--bg-surface) 20px)",
+          gap: "12px"
+        }}>
+          <div style={{ fontSize: "40px", opacity: 0.3 }}>▣</div>
+          <div style={{ fontSize: "13px", color: "var(--text-muted)", textAlign: "center" }}>Camera scanner<br />coming in v2</div>
+        </div>
+        <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--text-muted)" }} />
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Camera inactive — use PIN entry below</span>
+        </div>
+      </div>
+
+      {/* PIN Form */}
+      <div className="glass-card" style={{ padding: "28px" }}>
+        <div className="gradient-bar" />
+        <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "16px" }}>Manual PIN Entry</div>
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: "16px" }}>
+            <label className="field-label">6-Digit Patient PIN</label>
+            <input
+              className="field-input"
+              type="text"
+              inputMode="numeric"
+              placeholder="000000"
+              value={pin}
+              onChange={e => setPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              style={{ fontSize: "24px", letterSpacing: "0.3em", textAlign: "center", fontFamily: "monospace" }}
+              maxLength={6}
+              autoFocus
+            />
+            {error && <p style={{ fontSize: "12px", color: "var(--red)", marginTop: "8px" }}>{error}</p>}
+          </div>
+          <button className="btn-primary" type="submit" style={{ width: "100%" }} disabled={pin.length !== 6}>
+            Pull Patient Record →
           </button>
         </form>
-        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-        <p className="mt-3 text-xs text-gray-400">Demo PINs: 123456 (James Thornton) · 654321 (Sarah Chen)</p>
+
+        <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border)" }}>
+          <div style={{ fontSize: "11px", color: "var(--text-muted)", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>Quick Access — Training Patients</div>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            {[["111111","Mitchell"],["222222","Crawford"],["333333","Holbrook"],["123456","Thornton"],["654321","Chen"]].map(([p, name]) => (
+              <button key={p} onClick={() => router.push(`/records/${p}`)} style={{
+                fontSize: "11px", padding: "5px 10px", borderRadius: "6px", border: "1px solid var(--border)",
+                background: "transparent", color: "var(--text-secondary)", cursor: "pointer", fontFamily: "monospace",
+                transition: "all 0.15s"
+              }}>{p} <span style={{ color: "var(--text-muted)" }}>{name}</span></button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
-  );
+  )
 }
