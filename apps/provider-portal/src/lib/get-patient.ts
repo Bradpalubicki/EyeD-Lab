@@ -1,8 +1,8 @@
 // src/lib/get-patient.ts
 // Resolves a PIN to a patient record — Supabase for real PINs, mock fallback for demo/unknown PINs
-import { getMockPatient, MockFhirBundle, MockMedication, MockAllergy, MockCondition, MockLabResult, MockVital } from '@/lib/mock-fhir'
+import { getMockPatient, MockFhirBundle, MockMedication, MockAllergy, MockCondition, MockLabResult, MockVital, MockTreatmentSession } from '@/lib/mock-fhir'
 import { getSupabaseAdmin } from '@/lib/supabase'
-import type { Patient, Provider, Medication, Allergy, Condition, LabResult, Vital } from '@/lib/db-types'
+import type { Patient, Provider, Medication, Allergy, Condition, LabResult, Vital, TreatmentSession } from '@/lib/db-types'
 
 const PIN_TO_CHART: Record<string, string> = {
   '111111': '90001',
@@ -15,6 +15,19 @@ interface PatientRow extends Patient {
 }
 
 type VitalRow = Vital;
+
+interface TreatmentSessionRow extends TreatmentSession {
+  providers: Pick<Provider, 'first_name' | 'last_name' | 'title'> | null
+}
+
+const SESSION_TYPE_LABELS: Record<string, string> = {
+  tcyp_injection: 'T-Cyp Injection',
+  pellet_insertion: 'Pellet Insertion',
+  shockwave: 'Shockwave Therapy',
+  eros: 'Eros Therapy',
+  follow_up: 'Follow-Up',
+  initial_visit: 'Initial Visit',
+}
 
 export async function getPatientByPin(pin: string): Promise<MockFhirBundle> {
   const chartNumber = PIN_TO_CHART[pin]
@@ -55,7 +68,7 @@ export async function getPatientByPin(pin: string): Promise<MockFhirBundle> {
       supabase.from('conditions').select('*').eq('patient_id', row.id),
       supabase.from('lab_results').select('*').eq('patient_id', row.id).order('collected_date', { ascending: false }),
       supabase.from('vitals').select('*').eq('patient_id', row.id).order('recorded_date', { ascending: false }).limit(1),
-      supabase.from('treatment_sessions').select('session_date').eq('patient_id', row.id).order('session_date', { ascending: false }).limit(1),
+      supabase.from('treatment_sessions').select('*, providers(first_name, last_name, title)').eq('patient_id', row.id).order('session_date', { ascending: false }),
     ])
 
     // Build primaryProvider string
@@ -115,6 +128,19 @@ export async function getPatientByPin(pin: string): Promise<MockFhirBundle> {
       }
     }
 
+    // Map treatment sessions
+    const mappedSessions: MockTreatmentSession[] = (sessions ?? []).map((s) => {
+      const sr = s as TreatmentSessionRow
+      const prov = sr.providers
+      return {
+        sessionDate: sr.session_date,
+        sessionType: SESSION_TYPE_LABELS[sr.session_type] ?? sr.session_type,
+        dosageMg: sr.dosage_mg,
+        providerName: prov ? `${prov.first_name} ${prov.last_name}, ${prov.title}` : undefined,
+        notes: sr.notes,
+      }
+    })
+
     // Last visit from most recent treatment session
     const lastVisit = sessions && sessions.length > 0
       ? (sessions[0] as { session_date: string }).session_date
@@ -140,6 +166,7 @@ export async function getPatientByPin(pin: string): Promise<MockFhirBundle> {
         labs: mappedLabs,
         vitals: mappedVitals,
         lastVisit,
+        treatmentSessions: mappedSessions,
       },
     }
   } catch (err) {

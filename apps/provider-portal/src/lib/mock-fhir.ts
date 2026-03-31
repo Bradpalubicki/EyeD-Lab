@@ -35,6 +35,15 @@ export interface MockVital {
   date: string;
 }
 
+export interface MockTreatmentSession {
+  sessionDate: string;
+  sessionType: string;
+  productName?: string;
+  dosageMg?: number | null;
+  providerName?: string;
+  notes?: string | null;
+}
+
 export interface MockPatient {
   mrn: string;
   name: string;
@@ -49,6 +58,7 @@ export interface MockPatient {
   labs: MockLabResult[];
   vitals: MockVital[];
   lastVisit: string;
+  treatmentSessions?: MockTreatmentSession[];
 }
 
 export interface MockFhirBundle {

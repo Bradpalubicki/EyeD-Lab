@@ -125,6 +125,55 @@ export default async function RecordsPage({
           </ul>
         </div>
       </div>
+
+      {/* Treatment Sessions — TRT patients only */}
+      {patient.treatmentSessions && patient.treatmentSessions.length > 0 && (
+        <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+            <span>💉</span> Treatment Sessions
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <th className="pb-2 pr-4">Date</th>
+                  <th className="pb-2 pr-4">Type</th>
+                  <th className="pb-2 pr-4">Dose</th>
+                  <th className="pb-2 pr-4">Provider</th>
+                  <th className="pb-2">Notes</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {patient.treatmentSessions.map((s, i) => (
+                  <tr key={i} className="py-2">
+                    <td className="py-2 pr-4 text-gray-700 whitespace-nowrap">
+                      {new Date(s.sessionDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </td>
+                    <td className="py-2 pr-4">
+                      <span className="inline-block rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700">
+                        {s.sessionType}
+                      </span>
+                    </td>
+                    <td className="py-2 pr-4 text-gray-700">
+                      {s.dosageMg != null ? `${s.dosageMg} mg` : "—"}
+                    </td>
+                    <td className="py-2 pr-4 text-gray-700 whitespace-nowrap">
+                      {s.providerName ?? "—"}
+                    </td>
+                    <td className="py-2 text-gray-500 max-w-xs">
+                      {s.notes ?? "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
