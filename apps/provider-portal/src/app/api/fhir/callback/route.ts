@@ -34,10 +34,9 @@ export async function GET(req: NextRequest): Promise<Response> {
   let tokenData
   try {
     tokenData = await exchangeCodeForToken(code, codeVerifier)
-    console.log('[fhir/callback] token ok — patient:', tokenData.patient, 'fields:', Object.keys(tokenData).join(','))
   } catch (err) {
-    console.error('[fhir/callback] Token exchange failed:', err)
-    return NextResponse.redirect(new URL('/dashboard?error=token_exchange_failed', req.url))
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.redirect(new URL(`/dashboard?error=${encodeURIComponent(msg)}`, req.url))
   }
 
   const patientId = tokenData.patient || 'DEFAULT'
