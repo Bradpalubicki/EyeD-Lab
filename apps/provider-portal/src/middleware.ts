@@ -6,6 +6,7 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/api/fhir/authorize(.*)',
   '/api/fhir/callback(.*)',
+  '/api/fhir/debug(.*)',
 ])
 
 export default clerkMiddleware(async (auth, req) => {

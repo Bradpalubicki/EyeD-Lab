@@ -41,11 +41,18 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   const patientId = tokenData.patient || 'DEFAULT'
 
-  // Redirect to dashboard with epic_patient param — dashboard will show the records link
-  // Using dashboard (not /records directly) so Clerk session is confirmed before accessing protected data
-  const response = NextResponse.redirect(
-    new URL(`/dashboard?epic_patient=${patientId}`, req.url)
-  )
+  // Return HTML that stores the session and redirects client-side
+  // This avoids Clerk middleware intercepting a server-side redirect
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<script>
+  document.cookie = 'epic_patient_pending=${patientId}; path=/; max-age=300';
+  window.location.href = '/dashboard';
+</script>
+</head><body>Connecting to EyeD...</body></html>`
+
+  const response = new Response(html, {
+    headers: { 'Content-Type': 'text/html' },
+  })
 
   response.cookies.set(
     'epic_session',

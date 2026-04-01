@@ -9,7 +9,6 @@ export async function GET(): Promise<Response> {
   const codeVerifier = generateCodeVerifier()
   const codeChallenge = await generateCodeChallenge(codeVerifier)
   const nonce = crypto.randomUUID()
-  // Embed verifier in state: "<nonce>.<verifier>" — callback splits on first '.'
   const state = `${nonce}.${codeVerifier}`
   const authorizeUrl = buildAuthorizeUrl(state, codeChallenge)
 
