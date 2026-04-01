@@ -3,6 +3,8 @@
 // Verifier is extracted from state param ("<nonce>.<verifier>") — no cookies needed for PKCE
 import { NextRequest } from 'next/server'
 import { exchangeCodeForToken } from '@/lib/epic-fhir'
+import { getPatientByEpicId } from '@/lib/get-patient'
+import { getSupabaseAdmin } from '@/lib/supabase'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -50,6 +52,27 @@ export async function GET(req: NextRequest): Promise<Response> {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     return errorPage('Epic token exchange failed', msg)
+  }
+
+  // Persist patient data to Supabase (fire-and-forget — don't block redirect)
+  if (tokenData.patient && tokenData.access_token) {
+    getPatientByEpicId(tokenData.patient, tokenData.access_token)
+      .then(async (bundle) => {
+        const p = bundle.patient
+        const supabase = getSupabaseAdmin()
+        await supabase.from('epic_patients').upsert({
+          epic_patient_id: tokenData.patient,
+          name: p.name,
+          dob: p.dob,
+          gender: p.gender,
+          age: p.age,
+          fhir_data: p as unknown as Record<string, unknown>,
+          last_synced_at: new Date().toISOString(),
+        }, { onConflict: 'epic_patient_id' })
+      })
+      .catch((err) => {
+        console.error('[fhir/callback] Supabase persist failed:', err instanceof Error ? err.message : String(err))
+      })
   }
 
   const sessionValue = JSON.stringify({

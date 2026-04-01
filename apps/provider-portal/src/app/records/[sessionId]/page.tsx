@@ -1,7 +1,5 @@
-import { Suspense } from "react";
 import { cookies } from "next/headers";
 import AiBriefCard from "@/components/AiBriefCard";
-import AiBriefSkeleton from "@/components/AiBriefSkeleton";
 import { getPatientByPin, getPatientByEpicId } from "@/lib/get-patient";
 
 export default async function RecordsPage({
@@ -84,11 +82,9 @@ export default async function RecordsPage({
         </div>
       </div>
 
-      {/* AI Brief — Suspense boundary */}
+      {/* AI Brief — client component, no Suspense needed */}
       <div style={{ marginBottom: "28px" }}>
-        <Suspense fallback={<AiBriefSkeleton />}>
-          <AiBriefCard sessionId={sessionId} />
-        </Suspense>
+        <AiBriefCard sessionId={sessionId} isEpicPatient={!!epicCookie} />
       </div>
 
       {/* Medical Data Grid */}

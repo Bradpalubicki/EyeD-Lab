@@ -86,7 +86,7 @@ export async function claudeSummarize(patient: MockPatient): Promise<AiSummaryRe
   const client = getClient();
 
   const message = await client.messages.create({
-    model: "claude-haiku-4-5",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 1024,
     system:
       "You are a clinical decision support assistant for a DEMO healthcare application. " +

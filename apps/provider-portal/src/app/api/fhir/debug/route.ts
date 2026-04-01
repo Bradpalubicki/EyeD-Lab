@@ -3,6 +3,10 @@ import { exchangeCodeForToken, generateCodeVerifier, generateCodeChallenge, buil
 import { cookies } from 'next/headers'
 
 export async function GET(req: NextRequest): Promise<Response> {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'disabled' }, { status: 404 })
+  }
+
   const { searchParams } = new URL(req.url)
   const code = searchParams.get('code')
   const state = searchParams.get('state')

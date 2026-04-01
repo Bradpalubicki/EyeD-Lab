@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { cookies } from "next/headers"
+import { disconnectEpic } from "@/app/actions/epic"
 
 interface EpicSession {
   access_token: string
@@ -60,6 +61,11 @@ export default async function DashboardPage() {
             <a href="/api/fhir/authorize" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 18px", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)", borderRadius: "8px", color: "var(--text-secondary)", fontSize: "13px", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
               Switch Patient
             </a>
+            <form action={disconnectEpic}>
+              <button type="submit" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 18px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: "8px", color: "rgb(239,68,68)", fontSize: "13px", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>
+                Disconnect
+              </button>
+            </form>
           </div>
         </div>
       ) : (
