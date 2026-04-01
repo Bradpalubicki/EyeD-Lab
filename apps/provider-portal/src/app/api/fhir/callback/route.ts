@@ -38,14 +38,18 @@ export async function GET(req: NextRequest): Promise<Response> {
   let tokenData
   try {
     tokenData = await exchangeCodeForToken(code, codeVerifier)
+    console.log('[fhir/callback] token fields:', Object.keys(tokenData).join(','), 'patient:', tokenData.patient)
   } catch (err) {
     console.error('[fhir/callback] Token exchange failed:', err)
     return NextResponse.redirect(new URL('/dashboard?error=token_exchange_failed', req.url))
   }
 
+  // Epic sandbox may not return patient field — fall back to dashboard
+  const patientId = tokenData.patient || 'DEFAULT'
+
   // Build redirect to records page
   const response = NextResponse.redirect(
-    new URL(`/records/${tokenData.patient}`, req.url)
+    new URL(`/records/${patientId}`, req.url)
   )
 
   // Store Epic session in HttpOnly cookie
