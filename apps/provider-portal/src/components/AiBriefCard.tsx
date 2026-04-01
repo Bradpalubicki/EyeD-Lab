@@ -1,4 +1,7 @@
 import type { AiSummaryResult, DrugInteractionFlag } from "@/lib/claude";
+import { claudeSummarize } from "@/lib/claude";
+import { cookies } from "next/headers";
+import { getPatientByPin, getPatientByEpicId } from "@/lib/get-patient";
 
 interface AiBriefCardProps {
   sessionId: string;
@@ -17,30 +20,31 @@ const severityBorder: Record<DrugInteractionFlag["severity"], string> = {
 };
 
 export default async function AiBriefCard({ sessionId }: AiBriefCardProps) {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-
   let result: AiSummaryResult;
   let errorMessage: string | null = null;
 
   try {
-    const res = await fetch(`${baseUrl}/api/ai/summarize`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId }),
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      const json = await res.json().catch(() => ({ error: "Unknown error" }));
-      errorMessage = (json as { error?: string }).error ?? "AI service error";
-      result = { summary: "", drugInteractions: [], generatedAt: "" };
-    } else {
-      result = (await res.json()) as AiSummaryResult;
+    // Resolve patient — Epic session takes priority for non-PIN IDs
+    let patient
+    const cookieStore = await cookies()
+    const raw = cookieStore.get('epic_session')
+    if (raw && !/^\d+$/.test(sessionId)) {
+      try {
+        const session = JSON.parse(decodeURIComponent(raw.value)) as { access_token: string; patient_id: string; expires_at: number }
+        if (session.expires_at > Date.now() && session.patient_id === sessionId) {
+          const bundle = await getPatientByEpicId(session.patient_id, session.access_token)
+          patient = bundle.patient
+        }
+      } catch { /* fall through */ }
     }
-  } catch {
-    errorMessage = "AI summary temporarily unavailable";
+    if (!patient) {
+      const bundle = await getPatientByPin(sessionId)
+      patient = bundle.patient
+    }
+
+    result = await claudeSummarize(patient);
+  } catch (err) {
+    errorMessage = err instanceof Error ? err.message : "Unknown error";
     result = { summary: "", drugInteractions: [], generatedAt: "" };
   }
 
