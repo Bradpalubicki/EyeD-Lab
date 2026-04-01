@@ -11,16 +11,10 @@ export async function getPatientByEpicId(
   epicPatientId: string,
   accessToken: string
 ): Promise<MockFhirBundle> {
+  const emptyBundle = { resourceType: 'Bundle' as const, entry: [] }
+
   try {
-    const [
-      patientResource,
-      allergies,
-      conditions,
-      medications,
-      labsObs,
-      vitalsObs,
-      immunizations,
-    ] = await Promise.all([
+    const results = await Promise.allSettled([
       fetchFhirResource(accessToken, epicPatientId, 'Patient'),
       fetchFhirResource(accessToken, epicPatientId, 'AllergyIntolerance'),
       fetchFhirResource(accessToken, epicPatientId, 'Condition'),
@@ -29,6 +23,15 @@ export async function getPatientByEpicId(
       fetchFhirResource(accessToken, epicPatientId, 'Observation', 'vital-signs'),
       fetchFhirResource(accessToken, epicPatientId, 'Immunization'),
     ])
+
+    results.forEach((r, i) => {
+      if (r.status === 'rejected') {
+        console.error(`[get-patient] FHIR resource ${i} failed:`, r.reason instanceof Error ? r.reason.message : String(r.reason))
+      }
+    })
+
+    const [patientResource, allergies, conditions, medications, labsObs, vitalsObs, immunizations] =
+      results.map(r => r.status === 'fulfilled' ? r.value : emptyBundle)
 
     const mappedPatient = mapFhirBundleToPatient(
       patientResource,
@@ -43,7 +46,7 @@ export async function getPatientByEpicId(
     return { patient: mappedPatient }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    console.error('[get-patient] Epic FHIR fetch failed, falling back to mock:', message)
+    console.error('[get-patient] Epic FHIR mapping failed:', message)
     return getMockPatient('DEFAULT')
   }
 }
