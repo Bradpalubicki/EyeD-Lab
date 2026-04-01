@@ -1,10 +1,22 @@
 // src/app/api/fhir/callback/route.ts
 // Handles Epic OAuth2 callback — exchanges code for token, sets HttpOnly session cookie
 // Verifier is extracted from state param ("<nonce>.<verifier>") — no cookies needed for PKCE
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { exchangeCodeForToken } from '@/lib/epic-fhir'
 
 const isProduction = process.env.NODE_ENV === 'production'
+
+function errorPage(title: string, detail: string): Response {
+  return new Response(
+    `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>
+    <h2>EyeD Lab — Epic Auth Error</h2>
+    <h3>${title}</h3>
+    <pre>${detail}</pre>
+    <p><a href="/dashboard">Back to dashboard</a></p>
+    </body></html>`,
+    { headers: { 'Content-Type': 'text/html' }, status: 200 }
+  )
+}
 
 export async function GET(req: NextRequest): Promise<Response> {
   const { searchParams } = new URL(req.url)
@@ -13,20 +25,21 @@ export async function GET(req: NextRequest): Promise<Response> {
   const error = searchParams.get('error')
 
   if (error) {
-    console.error('[fhir/callback] Epic error:', error)
-    return NextResponse.redirect(new URL('/dashboard?error=epic_auth_failed', req.url))
+    const errorDesc = searchParams.get('error_description') ?? ''
+    console.error('[fhir/callback] Epic error:', error, errorDesc)
+    return errorPage('Epic returned an error', `${error}: ${errorDesc}`)
   }
 
   if (!code || !state) {
-    console.error('[fhir/callback] Missing code or state')
-    return NextResponse.redirect(new URL('/dashboard?error=missing_code', req.url))
+    console.error('[fhir/callback] Missing code or state. code=', !!code, 'state=', !!state)
+    return errorPage('Missing OAuth params', `code present: ${!!code} | state present: ${!!state}\n\nFull URL: ${req.url}`)
   }
 
   // Extract verifier from state: "<nonce>.<verifier>"
   const dotIndex = state.indexOf('.')
   if (dotIndex === -1) {
-    console.error('[fhir/callback] Invalid state format:', state.slice(0, 20))
-    return NextResponse.redirect(new URL('/dashboard?error=invalid_state', req.url))
+    console.error('[fhir/callback] Invalid state format:', state.slice(0, 40))
+    return errorPage('Invalid state format', `State received: ${state.slice(0, 60)}`)
   }
   const codeVerifier = state.slice(dotIndex + 1)
 
@@ -36,7 +49,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     tokenData = await exchangeCodeForToken(code, codeVerifier)
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-    return NextResponse.redirect(new URL(`/dashboard?error=${encodeURIComponent(msg)}`, req.url))
+    return errorPage('Epic token exchange failed', msg)
   }
 
   const sessionValue = JSON.stringify({
