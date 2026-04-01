@@ -35,6 +35,30 @@ export interface MockVital {
   date: string;
 }
 
+export interface MockSurgicalHistory {
+  procedure: string;
+  year: number;
+  outcome?: string;
+}
+
+export interface MockImmunization {
+  vaccine: string;
+  date: string;
+  provider?: string;
+}
+
+export interface MockSocialHistory {
+  smokingStatus: "never" | "current" | "former";
+  alcoholDrinksPerWeek?: number;
+  occupation?: string;
+}
+
+export interface MockEmergencyContact {
+  name: string;
+  relationship: string;
+  phone: string;
+}
+
 export interface MockTreatmentSession {
   sessionDate: string;
   sessionType: string;
@@ -59,6 +83,14 @@ export interface MockPatient {
   vitals: MockVital[];
   lastVisit: string;
   treatmentSessions?: MockTreatmentSession[];
+  height?: string;
+  temperature?: string;
+  oxygenSaturation?: string;
+  respiratoryRate?: string;
+  surgicalHistory?: MockSurgicalHistory[];
+  immunizations?: MockImmunization[];
+  socialHistory?: MockSocialHistory;
+  emergencyContact?: MockEmergencyContact;
 }
 
 export interface MockFhirBundle {
@@ -105,6 +137,21 @@ const PATIENT_THORNTON: MockPatient = {
     { name: "Heart Rate", value: "78 bpm (irregular)", date: "2025-12-01" },
   ],
   lastVisit: "2025-12-01",
+  height: "5'10\"",
+  temperature: "98.7°F",
+  oxygenSaturation: "97%",
+  respiratoryRate: "16 breaths/min",
+  surgicalHistory: [
+    { procedure: "Appendectomy", year: 1995, outcome: "Uncomplicated" },
+    { procedure: "Cardiac Ablation (AF)", year: 2022, outcome: "Full recovery" },
+  ],
+  immunizations: [
+    { vaccine: "COVID-19 (Pfizer)", date: "2021-04-05" },
+    { vaccine: "Influenza", date: "2024-10-08" },
+    { vaccine: "Tdap", date: "2018-03-14" },
+  ],
+  socialHistory: { smokingStatus: "former", alcoholDrinksPerWeek: 5, occupation: "Civil Engineer" },
+  emergencyContact: { name: "Margaret Thornton", relationship: "Spouse", phone: "(555) 214-8830" },
 };
 
 // Patient 2: PIN 654321 — mental health profile with sulfa allergy
@@ -141,6 +188,18 @@ const PATIENT_CHEN: MockPatient = {
     { name: "Blood Pressure", value: "112/72 mmHg", date: "2025-10-05" },
   ],
   lastVisit: "2025-10-05",
+  height: "5'5\"",
+  temperature: "98.5°F",
+  oxygenSaturation: "99%",
+  respiratoryRate: "14 breaths/min",
+  surgicalHistory: [],
+  immunizations: [
+    { vaccine: "COVID-19 (Moderna)", date: "2021-04-20" },
+    { vaccine: "Influenza", date: "2024-10-01" },
+    { vaccine: "HPV series", date: "2017-09-15" },
+  ],
+  socialHistory: { smokingStatus: "never", alcoholDrinksPerWeek: 2, occupation: "UX Designer" },
+  emergencyContact: { name: "David Chen", relationship: "Parent", phone: "(555) 938-4410" },
 };
 
 // Patient 3: PIN 111111 — Robert Mitchell (chart 90001) — TRT injection patient
@@ -180,6 +239,20 @@ const PATIENT_MITCHELL: MockPatient = {
     { name: "Heart Rate", value: "72 bpm", date: "2025-10-15" },
   ],
   lastVisit: "2025-10-15",
+  height: "5'11\"",
+  temperature: "98.4°F",
+  oxygenSaturation: "99%",
+  respiratoryRate: "14 breaths/min",
+  surgicalHistory: [
+    { procedure: "Varicocelectomy", year: 2019, outcome: "Uncomplicated" },
+  ],
+  immunizations: [
+    { vaccine: "COVID-19 (Moderna)", date: "2021-04-15" },
+    { vaccine: "Influenza", date: "2024-10-01" },
+    { vaccine: "Tdap", date: "2019-06-10" },
+  ],
+  socialHistory: { smokingStatus: "never", alcoholDrinksPerWeek: 3, occupation: "Software Engineer" },
+  emergencyContact: { name: "Lisa Mitchell", relationship: "Spouse", phone: "(555) 847-2291" },
 };
 
 // Patient 4: PIN 222222 — James Crawford (chart 90002) — TRT + T2DM
@@ -222,6 +295,20 @@ const PATIENT_CRAWFORD: MockPatient = {
     { name: "Heart Rate", value: "78 bpm", date: "2025-11-02" },
   ],
   lastVisit: "2025-11-02",
+  height: "5'9\"",
+  temperature: "98.8°F",
+  oxygenSaturation: "97%",
+  respiratoryRate: "16 breaths/min",
+  surgicalHistory: [
+    { procedure: "Appendectomy", year: 1998, outcome: "Uncomplicated" },
+    { procedure: "Knee Arthroscopy (right)", year: 2015, outcome: "Full recovery" },
+  ],
+  immunizations: [
+    { vaccine: "COVID-19 (Pfizer)", date: "2021-03-22" },
+    { vaccine: "Influenza", date: "2024-09-15" },
+  ],
+  socialHistory: { smokingStatus: "former", alcoholDrinksPerWeek: 7, occupation: "Regional Sales Manager" },
+  emergencyContact: { name: "Patricia Crawford", relationship: "Spouse", phone: "(555) 302-7741" },
 };
 
 // Patient 5: PIN 333333 — David Holbrook (chart 90003) — TRT + shockwave therapy
@@ -259,6 +346,18 @@ const PATIENT_HOLBROOK: MockPatient = {
     { name: "Heart Rate", value: "68 bpm", date: "2025-09-18" },
   ],
   lastVisit: "2025-10-01",
+  height: "6'0\"",
+  temperature: "98.6°F",
+  oxygenSaturation: "99%",
+  respiratoryRate: "14 breaths/min",
+  surgicalHistory: [],
+  immunizations: [
+    { vaccine: "COVID-19 (Moderna)", date: "2021-05-10" },
+    { vaccine: "Influenza", date: "2024-10-12" },
+    { vaccine: "Hepatitis B series", date: "2020-01-15" },
+  ],
+  socialHistory: { smokingStatus: "never", alcoholDrinksPerWeek: 2, occupation: "Physical Therapist" },
+  emergencyContact: { name: "Amanda Holbrook", relationship: "Spouse", phone: "(555) 619-4482" },
 };
 
 const PATIENT_DEFAULT: MockPatient = {

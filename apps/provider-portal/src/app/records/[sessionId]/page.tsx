@@ -159,6 +159,120 @@ export default async function RecordsPage({
                 {v.date && <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>{new Date(v.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>}
               </div>
             ))}
+            {patient.height && (
+              <div style={{ background: "var(--bg-elevated)", borderRadius: "var(--radius-sm)", padding: "12px 16px" }}>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: "6px" }}>Height</div>
+                <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "monospace" }}>{patient.height}</div>
+              </div>
+            )}
+            {patient.temperature && (
+              <div style={{ background: "var(--bg-elevated)", borderRadius: "var(--radius-sm)", padding: "12px 16px" }}>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: "6px" }}>Temperature</div>
+                <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "monospace" }}>{patient.temperature}</div>
+              </div>
+            )}
+            {patient.oxygenSaturation && (
+              <div style={{ background: "var(--bg-elevated)", borderRadius: "var(--radius-sm)", padding: "12px 16px" }}>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: "6px" }}>O₂ Saturation</div>
+                <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "monospace" }}>{patient.oxygenSaturation}</div>
+              </div>
+            )}
+            {patient.respiratoryRate && (
+              <div style={{ background: "var(--bg-elevated)", borderRadius: "var(--radius-sm)", padding: "12px 16px" }}>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: "6px" }}>Respiratory Rate</div>
+                <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "monospace" }}>{patient.respiratoryRate}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Surgical History */}
+      {patient.surgicalHistory && patient.surgicalHistory.length > 0 && (
+        <div className="glass-card" style={{ padding: "24px", marginBottom: "16px" }}>
+          <div className="section-label">Surgical History</div>
+          {patient.surgicalHistory.map((s: { procedure: string; year: number; outcome?: string }, i: number) => (
+            <div key={i} className="data-row">
+              <div>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-primary)" }}>{s.procedure}</div>
+                <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>{s.year}</div>
+              </div>
+              {s.outcome && (
+                <span style={{
+                  fontSize: "11px", fontWeight: 600, padding: "2px 10px", borderRadius: "999px",
+                  background: s.outcome.toLowerCase().includes("uncomplicated") || s.outcome.toLowerCase().includes("full") ? "rgba(16,185,129,0.12)" : "var(--bg-elevated)",
+                  color: s.outcome.toLowerCase().includes("uncomplicated") || s.outcome.toLowerCase().includes("full") ? "rgb(16,185,129)" : "var(--text-secondary)",
+                  border: `1px solid ${s.outcome.toLowerCase().includes("uncomplicated") || s.outcome.toLowerCase().includes("full") ? "rgba(16,185,129,0.3)" : "var(--border)"}`,
+                }}>
+                  {s.outcome}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Immunizations */}
+      {patient.immunizations && patient.immunizations.length > 0 && (
+        <div className="glass-card" style={{ padding: "24px", marginBottom: "16px" }}>
+          <div className="section-label">Immunizations</div>
+          {patient.immunizations.map((im: { vaccine: string; date: string; provider?: string }, i: number) => (
+            <div key={i} className="data-row">
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "13px", color: "rgb(16,185,129)", fontWeight: 700 }}>✓</span>
+                <div>
+                  <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-primary)" }}>{im.vaccine}</div>
+                  {im.provider && <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>{im.provider}</div>}
+                </div>
+              </div>
+              <div style={{ fontSize: "12px", color: "var(--text-secondary)", fontFamily: "monospace", flexShrink: 0 }}>
+                {new Date(im.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Social History */}
+      {patient.socialHistory && (
+        <div className="glass-card" style={{ padding: "24px", marginBottom: "16px" }}>
+          <div className="section-label">Social History</div>
+          <div className="data-row">
+            <span className="data-row-label">Smoking Status</span>
+            <span style={{
+              fontSize: "11px", fontWeight: 600, padding: "2px 10px", borderRadius: "999px",
+              background: patient.socialHistory.smokingStatus === "never" ? "rgba(16,185,129,0.12)" : patient.socialHistory.smokingStatus === "current" ? "rgba(239,68,68,0.12)" : "rgba(245,158,11,0.12)",
+              color: patient.socialHistory.smokingStatus === "never" ? "rgb(16,185,129)" : patient.socialHistory.smokingStatus === "current" ? "rgb(239,68,68)" : "rgb(245,158,11)",
+              border: `1px solid ${patient.socialHistory.smokingStatus === "never" ? "rgba(16,185,129,0.3)" : patient.socialHistory.smokingStatus === "current" ? "rgba(239,68,68,0.3)" : "rgba(245,158,11,0.3)"}`,
+            }}>
+              {patient.socialHistory.smokingStatus === "never" ? "Never" : patient.socialHistory.smokingStatus === "current" ? "Current" : "Former"}
+            </span>
+          </div>
+          <div className="data-row">
+            <span className="data-row-label">Alcohol Use</span>
+            <span style={{ fontSize: "13px", color: "var(--text-primary)" }}>
+              {patient.socialHistory.alcoholDrinksPerWeek != null ? `${patient.socialHistory.alcoholDrinksPerWeek} drinks/week` : "Not reported"}
+            </span>
+          </div>
+          <div className="data-row">
+            <span className="data-row-label">Occupation</span>
+            <span style={{ fontSize: "13px", color: "var(--text-primary)" }}>{patient.socialHistory.occupation ?? "Not reported"}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Emergency Contact */}
+      {patient.emergencyContact && (
+        <div className="glass-card" style={{ padding: "24px", marginBottom: "16px" }}>
+          <div className="section-label">Emergency Contact</div>
+          <div className="data-row">
+            <div>
+              <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary)" }}>
+                {patient.emergencyContact.name}
+                <span style={{ fontSize: "12px", fontWeight: 400, color: "var(--text-secondary)", marginLeft: "8px" }}>{patient.emergencyContact.relationship}</span>
+              </div>
+              <div style={{ fontSize: "13px", color: "var(--teal)", marginTop: "4px", fontFamily: "monospace" }}>{patient.emergencyContact.phone}</div>
+            </div>
           </div>
         </div>
       )}
