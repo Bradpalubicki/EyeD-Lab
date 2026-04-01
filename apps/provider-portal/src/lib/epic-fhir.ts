@@ -66,8 +66,8 @@ export async function generateCodeChallenge(verifier: string): Promise<string> {
 export function buildAuthorizeUrl(state: string, codeChallenge: string): string {
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id: process.env.EPIC_CLIENT_ID ?? '',
-    redirect_uri: process.env.EPIC_REDIRECT_URI ?? '',
+    client_id: (process.env.EPIC_CLIENT_ID ?? '').trim(),
+    redirect_uri: (process.env.EPIC_REDIRECT_URI ?? '').trim(),
     scope: EPIC_SCOPES,
     state,
     aud: EPIC_FHIR_R4,
@@ -85,8 +85,8 @@ export async function exchangeCodeForToken(
   const body = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
-    redirect_uri: process.env.EPIC_REDIRECT_URI ?? '',
-    client_id: process.env.EPIC_CLIENT_ID ?? '',
+    redirect_uri: (process.env.EPIC_REDIRECT_URI ?? '').trim(),
+    client_id: (process.env.EPIC_CLIENT_ID ?? '').trim(),
     code_verifier: codeVerifier,
   })
 
