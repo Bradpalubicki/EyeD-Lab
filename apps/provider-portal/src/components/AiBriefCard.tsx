@@ -44,7 +44,9 @@ export default async function AiBriefCard({ sessionId }: AiBriefCardProps) {
 
     result = await claudeSummarize(patient);
   } catch (err) {
-    errorMessage = err instanceof Error ? err.message : "Unknown error";
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[AiBriefCard] claudeSummarize failed:', msg, err instanceof Error ? err.stack?.slice(0, 300) : '')
+    errorMessage = msg;
     result = { summary: "", drugInteractions: [], generatedAt: "" };
   }
 
