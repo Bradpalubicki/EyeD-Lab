@@ -22,11 +22,12 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   // Validate state
   if (!storedState || state !== storedState) {
-    console.error('[fhir/callback] State mismatch', { state, storedState })
+    console.error('[fhir/callback] State mismatch — storedState:', storedState, 'received:', state, 'cookies:', JSON.stringify([...req.cookies.getAll().map(c=>c.name)]))
     return NextResponse.redirect(new URL('/dashboard?error=state_mismatch', req.url))
   }
 
   if (!codeVerifier) {
+    console.error('[fhir/callback] Missing verifier — cookies:', JSON.stringify([...req.cookies.getAll().map(c=>c.name)]))
     return NextResponse.redirect(new URL('/dashboard?error=missing_verifier', req.url))
   }
 

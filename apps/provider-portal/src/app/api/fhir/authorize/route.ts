@@ -3,8 +3,6 @@
 import { NextResponse } from 'next/server'
 import { generateCodeVerifier, generateCodeChallenge, buildAuthorizeUrl } from '@/lib/epic-fhir'
 
-const isProduction = process.env.NODE_ENV === 'production'
-
 export async function GET(): Promise<Response> {
   const codeVerifier = generateCodeVerifier()
   const codeChallenge = await generateCodeChallenge(codeVerifier)
@@ -15,18 +13,18 @@ export async function GET(): Promise<Response> {
 
   response.cookies.set('pkce_verifier', codeVerifier, {
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: 'none',
     path: '/',
     maxAge: 300,
-    secure: isProduction,
+    secure: true,
   })
 
   response.cookies.set('oauth_state', state, {
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: 'none',
     path: '/',
     maxAge: 300,
-    secure: isProduction,
+    secure: true,
   })
 
   return response
