@@ -18,17 +18,17 @@ export default async function RecordsPage({
   let patient;
   if (epicCookie) {
     try {
-      const session = JSON.parse(epicCookie.value) as {
+      const session = JSON.parse(decodeURIComponent(epicCookie.value)) as {
         access_token: string;
         patient_id: string;
         expires_at: number;
       };
-      if (session.expires_at > Date.now() && session.patient_id === sessionId) {
+      if (session.expires_at > Date.now()) {
         const bundle = await getPatientByEpicId(session.patient_id, session.access_token);
         patient = bundle.patient;
       }
-    } catch {
-      // Malformed cookie — fall through to mock/Supabase
+    } catch (err) {
+      console.error('[records] Epic session parse/fetch failed:', err instanceof Error ? err.message : String(err))
     }
   }
 
