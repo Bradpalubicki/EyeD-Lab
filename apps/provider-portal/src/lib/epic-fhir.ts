@@ -9,8 +9,8 @@ const EPIC_AUTHORIZE_URL = `${EPIC_BASE}/oauth2/authorize`
 const EPIC_TOKEN_URL = `${EPIC_BASE}/oauth2/token`
 const EPIC_FHIR_R4 = `${EPIC_BASE}/api/FHIR/R4`
 
+// Standalone patient-facing scopes — do NOT include launch/patient (that's EHR-launch only)
 const EPIC_SCOPES = [
-  'launch/patient',
   'openid',
   'fhirUser',
   'patient/Patient.read',
