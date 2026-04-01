@@ -24,7 +24,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result, { status: 200 });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[/api/ai/summarize]", message);
 
     if (message.includes("ANTHROPIC_API_KEY is not configured")) {
       return NextResponse.json({ error: "AI service not configured" }, { status: 500 });
