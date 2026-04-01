@@ -39,36 +39,25 @@ export async function GET(req: NextRequest): Promise<Response> {
     return NextResponse.redirect(new URL(`/dashboard?error=${encodeURIComponent(msg)}`, req.url))
   }
 
-  const patientId = tokenData.patient || 'DEFAULT'
-
-  // Return HTML that stores the session and redirects client-side
-  // This avoids Clerk middleware intercepting a server-side redirect
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
-<script>
-  document.cookie = 'epic_patient_pending=${patientId}; path=/; max-age=300';
-  window.location.href = '/dashboard';
-</script>
-</head><body>Connecting to EyeD...</body></html>`
-
-  const response = new Response(html, {
-    headers: { 'Content-Type': 'text/html' },
+  const sessionValue = JSON.stringify({
+    access_token: tokenData.access_token,
+    patient_id: tokenData.patient,
+    expires_at: Date.now() + tokenData.expires_in * 1000,
   })
 
-  response.cookies.set(
-    'epic_session',
-    JSON.stringify({
-      access_token: tokenData.access_token,
-      patient_id: tokenData.patient,
-      expires_at: Date.now() + tokenData.expires_in * 1000,
-    }),
-    {
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: tokenData.expires_in,
-      secure: isProduction,
-    }
-  )
+  const cookieFlags = isProduction
+    ? `Path=/; Max-Age=${tokenData.expires_in}; HttpOnly; Secure; SameSite=Lax`
+    : `Path=/; Max-Age=${tokenData.expires_in}; HttpOnly; SameSite=Lax`
 
-  return response
+  // Return HTML that redirects client-side — avoids server-side redirect being intercepted by Clerk
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<script>window.location.href = '/dashboard';</script>
+</head><body>Connecting to EyeD...</body></html>`
+
+  return new Response(html, {
+    headers: {
+      'Content-Type': 'text/html',
+      'Set-Cookie': `epic_session=${encodeURIComponent(sessionValue)}; ${cookieFlags}`,
+    },
+  })
 }
