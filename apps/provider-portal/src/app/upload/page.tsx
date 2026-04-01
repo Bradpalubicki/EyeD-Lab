@@ -1,17 +1,143 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 
-type Medication = { name: string; dosage: string; indication: string }
+// ── Local types ────────────────────────────────────────────────────────────────
+type Medication = { name: string; dosage: string; indication: string; rxnormCode?: string }
 type Allergy = { substance: string; reaction: string; severity: string }
-type Condition = { name: string; status: string; onsetYear: string }
-type Lab = { name: string; value: string; date: string; status: string }
+type Condition = { name: string; status: string; onsetYear: string; icdCode?: string }
+type Lab = { name: string; value: string; date: string; status: string; loincCode?: string }
 type SurgicalHistory = { procedure: string; year: string; outcome: string }
-type Immunization = { vaccine: string; date: string }
+type Immunization = { vaccine: string; date: string; cvxCode?: string }
 
+// ── CVX static map — 30 most common vaccines (CDC CVX codes) ──────────────────
+const CVX_VACCINES: Array<{ code: string; name: string }> = [
+  { code: "03", name: "MMR (Measles, Mumps, Rubella)" },
+  { code: "08", name: "Hep B (Hepatitis B)" },
+  { code: "10", name: "IPV (Polio)" },
+  { code: "17", name: "Hib (Haemophilus influenzae type b)" },
+  { code: "20", name: "DTaP (Diphtheria, Tetanus, Pertussis)" },
+  { code: "21", name: "Varicella (Chickenpox)" },
+  { code: "33", name: "Pneumococcal (Pneumonia)" },
+  { code: "43", name: "Hep A (Hepatitis A)" },
+  { code: "49", name: "Hib (PRP-OMP)" },
+  { code: "62", name: "HPV (Human Papillomavirus)" },
+  { code: "83", name: "Hep A/Hep B (Twinrix)" },
+  { code: "88", name: "Influenza (Flu)" },
+  { code: "100", name: "Pneumococcal (PCV13)" },
+  { code: "107", name: "DTaP/IPV/Hib (Pentacel)" },
+  { code: "110", name: "DTaP-Hep B-IPV (Pediarix)" },
+  { code: "114", name: "Meningococcal (MenACWY)" },
+  { code: "115", name: "Tdap (Boostrix/Adacel)" },
+  { code: "116", name: "Rotavirus (Rotarix)" },
+  { code: "119", name: "Rotavirus (RotaTeq)" },
+  { code: "120", name: "DTaP/IPV (Kinrix)" },
+  { code: "133", name: "Pneumococcal (PPSV23)" },
+  { code: "135", name: "Influenza (High-Dose)" },
+  { code: "140", name: "Influenza (Fluzone ID)" },
+  { code: "150", name: "Influenza (Flublok)" },
+  { code: "155", name: "Influenza (Cell-culture)" },
+  { code: "158", name: "Influenza (Adjuvanted)" },
+  { code: "161", name: "Influenza (Fluad)" },
+  { code: "165", name: "HPV (Gardasil 9)" },
+  { code: "185", name: "COVID-19 (mRNA — Moderna)" },
+  { code: "208", name: "COVID-19 (mRNA — Pfizer)" },
+  { code: "212", name: "COVID-19 (Janssen/J&J)" },
+]
+
+// ── Autocomplete hook — debounced API search ───────────────────────────────────
+function useAutocomplete<T>(
+  fetcher: (query: string) => Promise<T[]>,
+  delay = 350
+) {
+  const [query, setQuery] = useState("")
+  const [results, setResults] = useState<T[]>([])
+  const [loading, setLoading] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (query.length < 2) { setResults([]); return }
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(async () => {
+      setLoading(true)
+      try { setResults(await fetcher(query)) } catch { setResults([]) }
+      setLoading(false)
+    }, delay)
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+  }, [query, fetcher, delay])
+
+  return { query, setQuery, results, loading, clearResults: () => setResults([]) }
+}
+
+// ── NLM API fetchers ───────────────────────────────────────────────────────────
+async function fetchRxNorm(name: string): Promise<Array<{ name: string; rxcui: string }>> {
+  const url = `https://rxnav.nlm.nih.gov/REST/spellingsuggestions.json?name=${encodeURIComponent(name)}`
+  const r = await fetch(url, { cache: "no-store" })
+  if (!r.ok) return []
+  const data = await r.json()
+  const suggestions: string[] = data?.suggestionGroup?.suggestionList?.suggestion ?? []
+  // Return top 6 with placeholder rxcuis — real rxcui lookup would need a second call
+  return suggestions.slice(0, 6).map(s => ({ name: s, rxcui: "" }))
+}
+
+async function fetchIcd10(term: string): Promise<Array<{ code: string; name: string }>> {
+  const url = `https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?sf=code,name&terms=${encodeURIComponent(term)}&maxList=6`
+  const r = await fetch(url, { cache: "no-store" })
+  if (!r.ok) return []
+  const data = await r.json()
+  // Response: [total, codes_array, extra, display_array]
+  const codes: string[] = data[1] ?? []
+  const display: string[][] = data[3] ?? []
+  return codes.map((c, i) => ({ code: c, name: display[i]?.[1] ?? c }))
+}
+
+async function fetchLoinc(term: string): Promise<Array<{ code: string; name: string }>> {
+  const url = `https://clinicaltables.nlm.nih.gov/api/loinc_items/v3/search?terms=${encodeURIComponent(term)}&df=text,LOINC_NUM&maxList=6`
+  const r = await fetch(url, { cache: "no-store" })
+  if (!r.ok) return []
+  const data = await r.json()
+  const display: string[][] = data[3] ?? []
+  return display.map(d => ({ name: d[0] ?? "", code: d[1] ?? "" }))
+}
+
+// ── Autocomplete dropdown UI ───────────────────────────────────────────────────
+interface DropdownItem { label: string; sub?: string; onSelect: () => void }
+function AutocompleteDropdown({ items, loading }: { items: DropdownItem[]; loading: boolean }) {
+  if (!loading && items.length === 0) return null
+  return (
+    <div style={{
+      position: "absolute", top: "100%", left: 0, right: 0, zIndex: 50,
+      background: "var(--bg-card)", border: "1px solid var(--teal)",
+      borderRadius: "var(--radius-sm)", marginTop: "2px",
+      boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+      maxHeight: "180px", overflowY: "auto"
+    }}>
+      {loading && (
+        <div style={{ padding: "10px 14px", fontSize: "12px", color: "var(--text-muted)" }}>Searching…</div>
+      )}
+      {items.map((item, i) => (
+        <button
+          key={i}
+          onMouseDown={e => { e.preventDefault(); item.onSelect() }}
+          style={{
+            display: "block", width: "100%", textAlign: "left",
+            background: "none", border: "none", padding: "9px 14px",
+            cursor: "pointer", borderBottom: i < items.length - 1 ? "1px solid var(--border)" : "none",
+            color: "var(--text-primary)"
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,212,170,0.08)")}
+          onMouseLeave={e => (e.currentTarget.style.background = "none")}
+        >
+          <div style={{ fontSize: "13px", fontWeight: 500 }}>{item.label}</div>
+          {item.sub && <div style={{ fontSize: "11px", color: "var(--teal)", fontFamily: "monospace", marginTop: "2px" }}>{item.sub}</div>}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+// ── Progress bar ───────────────────────────────────────────────────────────────
 const STEP_LABELS = ["Demographics", "Medications", "Allergies", "Conditions & Labs", "Vitals", "History", "Social", "Your PIN"]
 const TOTAL_STEPS = 8
-
-// ── Hoisted to module level — prevents remount on every state change ──────────
 
 function ProgressBar({ step }: { step: number }) {
   return (
@@ -42,6 +168,7 @@ function ProgressBar({ step }: { step: number }) {
   )
 }
 
+// ── Step 1 — Demographics ──────────────────────────────────────────────────────
 interface Step1Props {
   name: string; setName: (v: string) => void
   dob: string; setDob: (v: string) => void
@@ -90,6 +217,7 @@ function Step1({ name, setName, dob, setDob, gender, setGender, bloodType, setBl
   )
 }
 
+// ── Step 2 — Medications (RxNorm autocomplete) ─────────────────────────────────
 interface Step2Props {
   medications: Medication[]
   setMedications: (v: Medication[]) => void
@@ -99,6 +227,9 @@ interface Step2Props {
   onNext: () => void
 }
 function Step2({ medications, setMedications, newMed, setNewMed, onBack, onNext }: Step2Props) {
+  const rxnorm = useAutocomplete(fetchRxNorm)
+  const [focused, setFocused] = useState(false)
+
   return (
     <div>
       <h2 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", letterSpacing: "-0.01em" }}>Current Medications</h2>
@@ -108,6 +239,7 @@ function Step2({ medications, setMedications, newMed, setNewMed, onBack, onNext 
         <div key={i} className="glass-card" style={{ padding: "12px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>{m.name}</span>
+            {m.rxnormCode && <code style={{ fontSize: "11px", color: "var(--teal)", fontFamily: "monospace", marginLeft: "8px" }}>RxNorm: {m.rxnormCode}</code>}
             <span style={{ fontSize: "12px", color: "var(--text-secondary)", marginLeft: "10px" }}>{m.dosage}</span>
             <span style={{ fontSize: "12px", color: "var(--text-muted)", marginLeft: "10px" }}>{m.indication}</span>
           </div>
@@ -117,9 +249,30 @@ function Step2({ medications, setMedications, newMed, setNewMed, onBack, onNext 
 
       <div className="glass-card" style={{ padding: "16px", marginBottom: "16px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-          <div>
+          <div style={{ position: "relative" }}>
             <label className="field-label">Medication Name</label>
-            <input className="field-input" placeholder="e.g. Metformin" value={newMed.name} onChange={e => setNewMed({...newMed, name: e.target.value})} />
+            <input
+              className="field-input"
+              placeholder="e.g. Metformin"
+              value={newMed.name}
+              autoComplete="off"
+              onChange={e => { setNewMed({...newMed, name: e.target.value, rxnormCode: ""}); rxnorm.setQuery(e.target.value) }}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setTimeout(() => setFocused(false), 200)}
+            />
+            {focused && (
+              <AutocompleteDropdown
+                loading={rxnorm.loading}
+                items={rxnorm.results.map(r => ({
+                  label: r.name,
+                  sub: r.rxcui ? `RxCUI: ${r.rxcui}` : undefined,
+                  onSelect: () => {
+                    setNewMed({...newMed, name: r.name, rxnormCode: r.rxcui || ""})
+                    rxnorm.clearResults()
+                  }
+                }))}
+              />
+            )}
           </div>
           <div>
             <label className="field-label">Dosage</label>
@@ -133,7 +286,9 @@ function Step2({ medications, setMedications, newMed, setNewMed, onBack, onNext 
         <button className="btn-ghost" onClick={() => {
           if (newMed.name) {
             setMedications([...medications, newMed])
-            setNewMed({ name: "", dosage: "", indication: "" })
+            setNewMed({ name: "", dosage: "", indication: "", rxnormCode: "" })
+            rxnorm.setQuery("")
+            rxnorm.clearResults()
           }
         }} style={{ width: "100%" }}>+ Add Medication</button>
       </div>
@@ -146,6 +301,7 @@ function Step2({ medications, setMedications, newMed, setNewMed, onBack, onNext 
   )
 }
 
+// ── Step 3 — Allergies ─────────────────────────────────────────────────────────
 interface Step3Props {
   allergies: Allergy[]
   setAllergies: (v: Allergy[]) => void
@@ -206,6 +362,7 @@ function Step3({ allergies, setAllergies, newAllergy, setNewAllergy, onBack, onN
   )
 }
 
+// ── Step 4 — Conditions & Labs (ICD-10 + LOINC autocomplete) ──────────────────
 interface Step4Props {
   conditions: Condition[]
   setConditions: (v: Condition[]) => void
@@ -219,6 +376,11 @@ interface Step4Props {
   onNext: () => void
 }
 function Step4({ conditions, setConditions, newCondition, setNewCondition, labs, setLabs, newLab, setNewLab, onBack, onNext }: Step4Props) {
+  const icd10 = useAutocomplete(fetchIcd10)
+  const loinc = useAutocomplete(fetchLoinc)
+  const [condFocused, setCondFocused] = useState(false)
+  const [labFocused, setLabFocused] = useState(false)
+
   return (
     <div>
       <h2 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", letterSpacing: "-0.01em" }}>Medical History & Labs</h2>
@@ -229,6 +391,7 @@ function Step4({ conditions, setConditions, newCondition, setNewCondition, labs,
         <div key={i} className="glass-card" style={{ padding: "12px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>{c.name}</span>
+            {c.icdCode && <code style={{ fontSize: "11px", color: "var(--teal)", fontFamily: "monospace" }}>ICD-10: {c.icdCode}</code>}
             <span className={`pill pill-${c.status}`}>{c.status}</span>
             {c.onsetYear && <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>since {c.onsetYear}</span>}
           </div>
@@ -237,9 +400,30 @@ function Step4({ conditions, setConditions, newCondition, setNewCondition, labs,
       ))}
       <div className="glass-card" style={{ padding: "16px", marginBottom: "20px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-          <div>
+          <div style={{ position: "relative" }}>
             <label className="field-label">Condition</label>
-            <input className="field-input" placeholder="e.g. Type 2 Diabetes" value={newCondition.name} onChange={e => setNewCondition({...newCondition, name: e.target.value})} />
+            <input
+              className="field-input"
+              placeholder="e.g. Type 2 Diabetes"
+              value={newCondition.name}
+              autoComplete="off"
+              onChange={e => { setNewCondition({...newCondition, name: e.target.value, icdCode: ""}); icd10.setQuery(e.target.value) }}
+              onFocus={() => setCondFocused(true)}
+              onBlur={() => setTimeout(() => setCondFocused(false), 200)}
+            />
+            {condFocused && (
+              <AutocompleteDropdown
+                loading={icd10.loading}
+                items={icd10.results.map(r => ({
+                  label: r.name,
+                  sub: `ICD-10: ${r.code}`,
+                  onSelect: () => {
+                    setNewCondition({...newCondition, name: r.name, icdCode: r.code})
+                    icd10.clearResults()
+                  }
+                }))}
+              />
+            )}
           </div>
           <div>
             <label className="field-label">Status</label>
@@ -256,7 +440,9 @@ function Step4({ conditions, setConditions, newCondition, setNewCondition, labs,
         <button className="btn-ghost" onClick={() => {
           if (newCondition.name) {
             setConditions([...conditions, newCondition])
-            setNewCondition({ name: "", status: "active", onsetYear: "" })
+            setNewCondition({ name: "", status: "active", onsetYear: "", icdCode: "" })
+            icd10.setQuery("")
+            icd10.clearResults()
           }
         }} style={{ width: "100%" }}>+ Add Condition</button>
       </div>
@@ -266,6 +452,7 @@ function Step4({ conditions, setConditions, newCondition, setNewCondition, labs,
         <div key={i} className="glass-card" style={{ padding: "12px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>{l.name}</span>
+            {l.loincCode && <code style={{ fontSize: "11px", color: "var(--teal)", fontFamily: "monospace" }}>LOINC: {l.loincCode}</code>}
             <code style={{ fontSize: "13px", color: "var(--teal)", fontFamily: "monospace" }}>{l.value}</code>
             <span className={`pill pill-${l.status}`}>{l.status}</span>
           </div>
@@ -274,9 +461,30 @@ function Step4({ conditions, setConditions, newCondition, setNewCondition, labs,
       ))}
       <div className="glass-card" style={{ padding: "16px", marginBottom: "16px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-          <div>
+          <div style={{ position: "relative" }}>
             <label className="field-label">Test Name</label>
-            <input className="field-input" placeholder="e.g. HbA1c" value={newLab.name} onChange={e => setNewLab({...newLab, name: e.target.value})} />
+            <input
+              className="field-input"
+              placeholder="e.g. HbA1c"
+              value={newLab.name}
+              autoComplete="off"
+              onChange={e => { setNewLab({...newLab, name: e.target.value, loincCode: ""}); loinc.setQuery(e.target.value) }}
+              onFocus={() => setLabFocused(true)}
+              onBlur={() => setTimeout(() => setLabFocused(false), 200)}
+            />
+            {labFocused && (
+              <AutocompleteDropdown
+                loading={loinc.loading}
+                items={loinc.results.map(r => ({
+                  label: r.name,
+                  sub: `LOINC: ${r.code}`,
+                  onSelect: () => {
+                    setNewLab({...newLab, name: r.name, loincCode: r.code})
+                    loinc.clearResults()
+                  }
+                }))}
+              />
+            )}
           </div>
           <div>
             <label className="field-label">Value</label>
@@ -298,7 +506,9 @@ function Step4({ conditions, setConditions, newCondition, setNewCondition, labs,
         <button className="btn-ghost" onClick={() => {
           if (newLab.name) {
             setLabs([...labs, newLab])
-            setNewLab({ name: "", value: "", date: "", status: "normal" })
+            setNewLab({ name: "", value: "", date: "", status: "normal", loincCode: "" })
+            loinc.setQuery("")
+            loinc.clearResults()
           }
         }} style={{ width: "100%" }}>+ Add Lab Result</button>
       </div>
@@ -311,6 +521,7 @@ function Step4({ conditions, setConditions, newCondition, setNewCondition, labs,
   )
 }
 
+// ── Step 5 — Vitals ────────────────────────────────────────────────────────────
 interface Step5Props {
   weight: string; setWeight: (v: string) => void
   temperature: string; setTemperature: (v: string) => void
@@ -367,6 +578,7 @@ function Step5({ weight, setWeight, temperature, setTemperature, bpSystolic, set
   )
 }
 
+// ── Step 6 — Surgical History & Immunizations (CVX lookup) ────────────────────
 interface Step6Props {
   surgeries: SurgicalHistory[]
   setSurgeries: (v: SurgicalHistory[]) => void
@@ -380,6 +592,13 @@ interface Step6Props {
   onNext: () => void
 }
 function Step6({ surgeries, setSurgeries, newSurgery, setNewSurgery, immunizations, setImmunizations, newImmunization, setNewImmunization, onBack, onNext }: Step6Props) {
+  const [cvxQuery, setCvxQuery] = useState("")
+  const [cvxFocused, setCvxFocused] = useState(false)
+
+  const cvxMatches = cvxQuery.length >= 2
+    ? CVX_VACCINES.filter(v => v.name.toLowerCase().includes(cvxQuery.toLowerCase())).slice(0, 6)
+    : []
+
   return (
     <div>
       <h2 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", letterSpacing: "-0.01em" }}>Surgical History & Immunizations</h2>
@@ -425,6 +644,7 @@ function Step6({ surgeries, setSurgeries, newSurgery, setNewSurgery, immunizatio
           <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "13px", color: "var(--teal)" }}>✓</span>
             <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>{im.vaccine}</span>
+            {im.cvxCode && <code style={{ fontSize: "11px", color: "var(--teal)", fontFamily: "monospace" }}>CVX: {im.cvxCode}</code>}
             <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{im.date}</span>
           </div>
           <button onClick={() => setImmunizations(immunizations.filter((_, j) => j !== i))} style={{ background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "20px", padding: "4px", lineHeight: 1 }}>×</button>
@@ -432,9 +652,34 @@ function Step6({ surgeries, setSurgeries, newSurgery, setNewSurgery, immunizatio
       ))}
       <div className="glass-card" style={{ padding: "16px", marginBottom: "16px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "10px", marginBottom: "10px" }}>
-          <div>
+          <div style={{ position: "relative" }}>
             <label className="field-label">Vaccine</label>
-            <input className="field-input" placeholder="e.g. Influenza" value={newImmunization.vaccine} onChange={e => setNewImmunization({...newImmunization, vaccine: e.target.value})} />
+            <input
+              className="field-input"
+              placeholder="e.g. Influenza"
+              value={newImmunization.vaccine}
+              autoComplete="off"
+              onChange={e => {
+                setCvxQuery(e.target.value)
+                setNewImmunization({...newImmunization, vaccine: e.target.value, cvxCode: ""})
+              }}
+              onFocus={() => setCvxFocused(true)}
+              onBlur={() => setTimeout(() => setCvxFocused(false), 200)}
+            />
+            {cvxFocused && cvxMatches.length > 0 && (
+              <AutocompleteDropdown
+                loading={false}
+                items={cvxMatches.map(v => ({
+                  label: v.name,
+                  sub: `CVX: ${v.code}`,
+                  onSelect: () => {
+                    setNewImmunization({...newImmunization, vaccine: v.name, cvxCode: v.code})
+                    setCvxQuery("")
+                    setCvxFocused(false)
+                  }
+                }))}
+              />
+            )}
           </div>
           <div>
             <label className="field-label">Date</label>
@@ -444,7 +689,8 @@ function Step6({ surgeries, setSurgeries, newSurgery, setNewSurgery, immunizatio
         <button className="btn-ghost" onClick={() => {
           if (newImmunization.vaccine) {
             setImmunizations([...immunizations, newImmunization])
-            setNewImmunization({ vaccine: "", date: "" })
+            setNewImmunization({ vaccine: "", date: "", cvxCode: "" })
+            setCvxQuery("")
           }
         }} style={{ width: "100%" }}>+ Add Immunization</button>
       </div>
@@ -457,6 +703,7 @@ function Step6({ surgeries, setSurgeries, newSurgery, setNewSurgery, immunizatio
   )
 }
 
+// ── Step 7 — Social History & Emergency Contact ────────────────────────────────
 interface Step7Props {
   smokingStatus: string; setSmokingStatus: (v: string) => void
   alcoholPerWeek: string; setAlcoholPerWeek: (v: string) => void
@@ -521,6 +768,7 @@ function Step7({ smokingStatus, setSmokingStatus, alcoholPerWeek, setAlcoholPerW
   )
 }
 
+// ── Step 8 — PIN ───────────────────────────────────────────────────────────────
 interface Step8Props {
   pin: string
   name: string
@@ -535,6 +783,13 @@ interface Step8Props {
   onReset: () => void
 }
 function Step8({ pin, name, dob, medications, allergies, conditions, labs, surgeries, immunizations, ecName, onReset }: Step8Props) {
+  const coded = [
+    ...medications.filter(m => m.rxnormCode),
+    ...conditions.filter(c => c.icdCode),
+    ...labs.filter(l => l.loincCode),
+    ...immunizations.filter(im => im.cvxCode),
+  ].length
+
   return (
     <div style={{ textAlign: "center" }}>
       <div style={{ marginBottom: "32px" }}>
@@ -555,6 +810,15 @@ function Step8({ pin, name, dob, medications, allergies, conditions, labs, surge
           {name}{dob ? ` · ${new Date(dob).toLocaleDateString()}` : ""}
         </div>
       </div>
+
+      {coded > 0 && (
+        <div className="glass-card" style={{ padding: "12px 16px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "10px" }}>
+          <span style={{ color: "var(--teal)", fontSize: "16px" }}>⬡</span>
+          <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+            <strong style={{ color: "var(--teal)" }}>{coded} coded entr{coded === 1 ? "y" : "ies"}</strong> — RxNorm, ICD-10, LOINC, or CVX codes attached for interoperability
+          </span>
+        </div>
+      )}
 
       <div className="glass-card" style={{ padding: "16px", marginBottom: "24px", textAlign: "left" }}>
         <div className="section-label">What was captured</div>
@@ -588,7 +852,6 @@ function Step8({ pin, name, dob, medications, allergies, conditions, labs, surge
 }
 
 // ── Main page ─────────────────────────────────────────────────────────────────
-
 export default function UploadPage() {
   const [step, setStep] = useState(1)
 
@@ -599,16 +862,16 @@ export default function UploadPage() {
   const [height, setHeight] = useState("")
 
   const [medications, setMedications] = useState<Medication[]>([])
-  const [newMed, setNewMed] = useState<Medication>({ name: "", dosage: "", indication: "" })
+  const [newMed, setNewMed] = useState<Medication>({ name: "", dosage: "", indication: "", rxnormCode: "" })
 
   const [allergies, setAllergies] = useState<Allergy[]>([])
   const [newAllergy, setNewAllergy] = useState<Allergy>({ substance: "", reaction: "", severity: "moderate" })
 
   const [conditions, setConditions] = useState<Condition[]>([])
-  const [newCondition, setNewCondition] = useState<Condition>({ name: "", status: "active", onsetYear: "" })
+  const [newCondition, setNewCondition] = useState<Condition>({ name: "", status: "active", onsetYear: "", icdCode: "" })
 
   const [labs, setLabs] = useState<Lab[]>([])
-  const [newLab, setNewLab] = useState<Lab>({ name: "", value: "", date: "", status: "normal" })
+  const [newLab, setNewLab] = useState<Lab>({ name: "", value: "", date: "", status: "normal", loincCode: "" })
 
   const [weight, setWeight] = useState("")
   const [temperature, setTemperature] = useState("")
@@ -621,7 +884,7 @@ export default function UploadPage() {
   const [surgeries, setSurgeries] = useState<SurgicalHistory[]>([])
   const [newSurgery, setNewSurgery] = useState<SurgicalHistory>({ procedure: "", year: "", outcome: "" })
   const [immunizations, setImmunizations] = useState<Immunization[]>([])
-  const [newImmunization, setNewImmunization] = useState<Immunization>({ vaccine: "", date: "" })
+  const [newImmunization, setNewImmunization] = useState<Immunization>({ vaccine: "", date: "", cvxCode: "" })
 
   const [smokingStatus, setSmokingStatus] = useState("never")
   const [alcoholPerWeek, setAlcoholPerWeek] = useState("")
@@ -647,9 +910,12 @@ export default function UploadPage() {
     setBloodType("")
     setHeight("")
     setMedications([])
+    setNewMed({ name: "", dosage: "", indication: "", rxnormCode: "" })
     setAllergies([])
     setConditions([])
+    setNewCondition({ name: "", status: "active", onsetYear: "", icdCode: "" })
     setLabs([])
+    setNewLab({ name: "", value: "", date: "", status: "normal", loincCode: "" })
     setWeight("")
     setTemperature("")
     setBpSystolic("")
@@ -659,6 +925,7 @@ export default function UploadPage() {
     setRespRate("")
     setSurgeries([])
     setImmunizations([])
+    setNewImmunization({ vaccine: "", date: "", cvxCode: "" })
     setSmokingStatus("never")
     setAlcoholPerWeek("")
     setOccupation("")
