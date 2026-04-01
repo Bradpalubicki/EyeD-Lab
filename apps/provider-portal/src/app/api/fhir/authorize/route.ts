@@ -1,31 +1,17 @@
 // src/app/api/fhir/authorize/route.ts
 // Initiates Epic SMART on FHIR OAuth2 PKCE flow
+// State param encodes the verifier: "<uuid>.<base64url(verifier)>"
+// This avoids cookie loss on cross-site redirects from Epic back to our portal
 import { NextResponse } from 'next/server'
 import { generateCodeVerifier, generateCodeChallenge, buildAuthorizeUrl } from '@/lib/epic-fhir'
 
 export async function GET(): Promise<Response> {
   const codeVerifier = generateCodeVerifier()
   const codeChallenge = await generateCodeChallenge(codeVerifier)
-  const state = crypto.randomUUID()
+  const nonce = crypto.randomUUID()
+  // Embed verifier in state: "<nonce>.<verifier>" — callback splits on first '.'
+  const state = `${nonce}.${codeVerifier}`
   const authorizeUrl = buildAuthorizeUrl(state, codeChallenge)
 
-  const response = NextResponse.redirect(authorizeUrl)
-
-  response.cookies.set('pkce_verifier', codeVerifier, {
-    httpOnly: true,
-    sameSite: 'none',
-    path: '/',
-    maxAge: 300,
-    secure: true,
-  })
-
-  response.cookies.set('oauth_state', state, {
-    httpOnly: true,
-    sameSite: 'none',
-    path: '/',
-    maxAge: 300,
-    secure: true,
-  })
-
-  return response
+  return NextResponse.redirect(authorizeUrl)
 }
