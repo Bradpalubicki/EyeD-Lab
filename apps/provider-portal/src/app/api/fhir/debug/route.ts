@@ -1,11 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { exchangeCodeForToken, generateCodeVerifier, generateCodeChallenge, buildAuthorizeUrl } from '@/lib/epic-fhir'
+import { exchangeCodeForToken, generateCodeVerifier, generateCodeChallenge, buildAuthorizeUrl, fetchFhirResource } from '@/lib/epic-fhir'
+import { cookies } from 'next/headers'
 
 export async function GET(req: NextRequest): Promise<Response> {
   const { searchParams } = new URL(req.url)
   const code = searchParams.get('code')
   const state = searchParams.get('state')
   const error = searchParams.get('error')
+  const testFhir = searchParams.get('test_fhir')
+
+  // ?test_fhir=1 — read session cookie and try fetching Patient resource
+  if (testFhir) {
+    const cookieStore = await cookies()
+    const raw = cookieStore.get('epic_session')
+    if (!raw) return NextResponse.json({ error: 'no epic_session cookie' })
+    let session: { access_token: string; patient_id: string; expires_at: number }
+    try {
+      session = JSON.parse(decodeURIComponent(raw.value))
+    } catch {
+      return NextResponse.json({ error: 'cookie parse failed', raw_value_start: raw.value.slice(0, 50) })
+    }
+    if (session.expires_at < Date.now()) return NextResponse.json({ error: 'session expired', expires_at: session.expires_at })
+    try {
+      const patientData = await fetchFhirResource(session.access_token, session.patient_id, 'Patient')
+      return NextResponse.json({ ok: true, patient_id: session.patient_id, patient_resource: patientData })
+    } catch (err) {
+      return NextResponse.json({ error: err instanceof Error ? err.message : String(err), patient_id: session.patient_id })
+    }
+  }
 
   // No params = show config + sample authorize URL
   if (!code && !state && !error) {
