@@ -41,8 +41,10 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   const patientId = tokenData.patient || 'DEFAULT'
 
+  // Redirect to dashboard with epic_patient param — dashboard will show the records link
+  // Using dashboard (not /records directly) so Clerk session is confirmed before accessing protected data
   const response = NextResponse.redirect(
-    new URL(`/records/${patientId}`, req.url)
+    new URL(`/dashboard?epic_patient=${patientId}`, req.url)
   )
 
   response.cookies.set(
