@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPatientByPin } from "@/lib/get-patient";
+import { cookies } from "next/headers";
+import { getPatientByPin, getPatientByEpicId } from "@/lib/get-patient";
 import { claudeSummarize } from "@/lib/claude";
 import { getRatelimit } from "@/lib/ratelimit";
 
@@ -40,7 +41,23 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { patient } = await getPatientByPin(sessionId);
+    // Try Epic session first if sessionId looks like an Epic ID (not a numeric PIN)
+    let patient
+    const cookieStore = await cookies()
+    const raw = cookieStore.get('epic_session')
+    if (raw && !/^\d+$/.test(sessionId)) {
+      try {
+        const session = JSON.parse(decodeURIComponent(raw.value)) as { access_token: string; patient_id: string; expires_at: number }
+        if (session.expires_at > Date.now() && session.patient_id === sessionId) {
+          const bundle = await getPatientByEpicId(session.patient_id, session.access_token)
+          patient = bundle.patient
+        }
+      } catch { /* fall through */ }
+    }
+    if (!patient) {
+      const bundle = await getPatientByPin(sessionId)
+      patient = bundle.patient
+    }
     const result = await claudeSummarize(patient);
     return NextResponse.json(result, { status: 200 });
   } catch (err) {

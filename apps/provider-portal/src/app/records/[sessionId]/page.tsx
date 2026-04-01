@@ -71,7 +71,7 @@ export default async function RecordsPage({
           </div>
           <div>
             <div style={{ fontSize: "10px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: "2px" }}>Blood Type</div>
-            <div style={{ fontSize: "13px", color: "var(--text-primary)", fontWeight: 600 }}>{patient.bloodType ?? "Unknown"}</div>
+            <div style={{ fontSize: "13px", color: "var(--text-primary)", fontWeight: 600 }}>{patient.bloodType || "N/A"}</div>
           </div>
           <div>
             <div style={{ fontSize: "10px", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, marginBottom: "2px" }}>Provider</div>
