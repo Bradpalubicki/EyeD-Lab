@@ -6,43 +6,16 @@ type Allergy = { substance: string; reaction: string; severity: string }
 type Condition = { name: string; status: string; onsetYear: string }
 type Lab = { name: string; value: string; date: string; status: string }
 
-export default function UploadPage() {
-  const [step, setStep] = useState(1)
-  const TOTAL_STEPS = 5
+const STEP_LABELS = ["Demographics", "Medications", "Allergies", "Conditions & Labs", "Your PIN"]
+const TOTAL_STEPS = 5
 
-  // Demographics
-  const [name, setName] = useState("")
-  const [dob, setDob] = useState("")
-  const [gender, setGender] = useState("")
-  const [bloodType, setBloodType] = useState("")
+// ── Hoisted to module level — prevents remount on every state change ──────────
 
-  // Dynamic lists
-  const [medications, setMedications] = useState<Medication[]>([])
-  const [newMed, setNewMed] = useState<Medication>({ name: "", dosage: "", indication: "" })
-
-  const [allergies, setAllergies] = useState<Allergy[]>([])
-  const [newAllergy, setNewAllergy] = useState<Allergy>({ substance: "", reaction: "", severity: "moderate" })
-
-  const [conditions, setConditions] = useState<Condition[]>([])
-  const [newCondition, setNewCondition] = useState<Condition>({ name: "", status: "active", onsetYear: "" })
-
-  const [labs, setLabs] = useState<Lab[]>([])
-  const [newLab, setNewLab] = useState<Lab>({ name: "", value: "", date: "", status: "normal" })
-
-  // Generated PIN
-  const [pin, setPin] = useState("")
-
-  function generatePin() {
-    const generated = String(Math.floor(100000 + Math.random() * 900000))
-    setPin(generated)
-    setStep(5)
-  }
-
-  // Progress bar
-  const ProgressBar = () => (
+function ProgressBar({ step }: { step: number }) {
+  return (
     <div style={{ marginBottom: "32px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-        {["Demographics", "Medications", "Allergies", "Conditions & Labs", "Your PIN"].map((label, i) => (
+        {STEP_LABELS.map((label, i) => (
           <div key={i} style={{
             fontSize: "10px",
             color: step > i + 1 ? "var(--teal)" : step === i + 1 ? "var(--text-primary)" : "var(--text-muted)",
@@ -65,9 +38,17 @@ export default function UploadPage() {
       </div>
     </div>
   )
+}
 
-  // Step 1: Demographics
-  const Step1 = () => (
+interface Step1Props {
+  name: string; setName: (v: string) => void
+  dob: string; setDob: (v: string) => void
+  gender: string; setGender: (v: string) => void
+  bloodType: string; setBloodType: (v: string) => void
+  onNext: () => void
+}
+function Step1({ name, setName, dob, setDob, gender, setGender, bloodType, setBloodType, onNext }: Step1Props) {
+  return (
     <div>
       <h2 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", letterSpacing: "-0.01em" }}>Your Information</h2>
       <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "28px" }}>Basic details that help providers identify your record.</p>
@@ -97,12 +78,21 @@ export default function UploadPage() {
           </select>
         </div>
       </div>
-      <button className="btn-primary" onClick={() => setStep(2)} disabled={!name || !dob || !gender} style={{ width: "100%", marginTop: "8px" }}>Continue →</button>
+      <button className="btn-primary" onClick={onNext} disabled={!name || !dob || !gender} style={{ width: "100%", marginTop: "8px" }}>Continue →</button>
     </div>
   )
+}
 
-  // Step 2: Medications
-  const Step2 = () => (
+interface Step2Props {
+  medications: Medication[]
+  setMedications: (v: Medication[]) => void
+  newMed: Medication
+  setNewMed: (v: Medication) => void
+  onBack: () => void
+  onNext: () => void
+}
+function Step2({ medications, setMedications, newMed, setNewMed, onBack, onNext }: Step2Props) {
+  return (
     <div>
       <h2 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", letterSpacing: "-0.01em" }}>Current Medications</h2>
       <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "24px" }}>List all prescription and over-the-counter medications you currently take.</p>
@@ -142,14 +132,23 @@ export default function UploadPage() {
       </div>
 
       <div style={{ display: "flex", gap: "10px" }}>
-        <button className="btn-ghost" onClick={() => setStep(1)}>← Back</button>
-        <button className="btn-primary" onClick={() => setStep(3)} style={{ flex: 1 }}>Continue →</button>
+        <button className="btn-ghost" onClick={onBack}>← Back</button>
+        <button className="btn-primary" onClick={onNext} style={{ flex: 1 }}>Continue →</button>
       </div>
     </div>
   )
+}
 
-  // Step 3: Allergies
-  const Step3 = () => (
+interface Step3Props {
+  allergies: Allergy[]
+  setAllergies: (v: Allergy[]) => void
+  newAllergy: Allergy
+  setNewAllergy: (v: Allergy) => void
+  onBack: () => void
+  onNext: () => void
+}
+function Step3({ allergies, setAllergies, newAllergy, setNewAllergy, onBack, onNext }: Step3Props) {
+  return (
     <div>
       <h2 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", letterSpacing: "-0.01em" }}>Allergies</h2>
       <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "24px" }}>List any known drug, food, or environmental allergies.</p>
@@ -193,19 +192,31 @@ export default function UploadPage() {
       </div>
 
       <div style={{ display: "flex", gap: "10px" }}>
-        <button className="btn-ghost" onClick={() => setStep(2)}>← Back</button>
-        <button className="btn-primary" onClick={() => setStep(4)} style={{ flex: 1 }}>Continue →</button>
+        <button className="btn-ghost" onClick={onBack}>← Back</button>
+        <button className="btn-primary" onClick={onNext} style={{ flex: 1 }}>Continue →</button>
       </div>
     </div>
   )
+}
 
-  // Step 4: Conditions + Labs
-  const Step4 = () => (
+interface Step4Props {
+  conditions: Condition[]
+  setConditions: (v: Condition[]) => void
+  newCondition: Condition
+  setNewCondition: (v: Condition) => void
+  labs: Lab[]
+  setLabs: (v: Lab[]) => void
+  newLab: Lab
+  setNewLab: (v: Lab) => void
+  onBack: () => void
+  onGenerate: () => void
+}
+function Step4({ conditions, setConditions, newCondition, setNewCondition, labs, setLabs, newLab, setNewLab, onBack, onGenerate }: Step4Props) {
+  return (
     <div>
       <h2 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", letterSpacing: "-0.01em" }}>Medical History & Labs</h2>
       <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "24px" }}>Active conditions and any recent lab results you have.</p>
 
-      {/* Conditions */}
       <div className="section-label">Conditions</div>
       {conditions.map((c, i) => (
         <div key={i} className="glass-card" style={{ padding: "12px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -243,7 +254,6 @@ export default function UploadPage() {
         }} style={{ width: "100%" }}>+ Add Condition</button>
       </div>
 
-      {/* Labs */}
       <div className="section-label">Recent Lab Results</div>
       {labs.map((l, i) => (
         <div key={i} className="glass-card" style={{ padding: "12px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -287,14 +297,25 @@ export default function UploadPage() {
       </div>
 
       <div style={{ display: "flex", gap: "10px" }}>
-        <button className="btn-ghost" onClick={() => setStep(3)}>← Back</button>
-        <button className="btn-primary" onClick={generatePin} style={{ flex: 1 }}>Generate My PIN →</button>
+        <button className="btn-ghost" onClick={onBack}>← Back</button>
+        <button className="btn-primary" onClick={onGenerate} style={{ flex: 1 }}>Generate My PIN →</button>
       </div>
     </div>
   )
+}
 
-  // Step 5: PIN Generated
-  const Step5 = () => (
+interface Step5Props {
+  pin: string
+  name: string
+  dob: string
+  medications: Medication[]
+  allergies: Allergy[]
+  conditions: Condition[]
+  labs: Lab[]
+  onReset: () => void
+}
+function Step5({ pin, name, dob, medications, allergies, conditions, labs, onReset }: Step5Props) {
+  return (
     <div style={{ textAlign: "center" }}>
       <div style={{ marginBottom: "32px" }}>
         <div style={{
@@ -336,22 +357,55 @@ export default function UploadPage() {
         In production, this record is encrypted and stored in EyeD&apos;s HIPAA-compliant database. The PIN is single-use and expires after 24 hours. Demo mode — no data was stored.
       </p>
 
-      <button className="btn-ghost" onClick={() => {
-        setStep(1)
-        setPin("")
-        setName("")
-        setDob("")
-        setGender("")
-        setBloodType("")
-        setMedications([])
-        setAllergies([])
-        setConditions([])
-        setLabs([])
-      }} style={{ marginTop: "16px", width: "100%" }}>
+      <button className="btn-ghost" onClick={onReset} style={{ marginTop: "16px", width: "100%" }}>
         Start New Record
       </button>
     </div>
   )
+}
+
+// ── Main page ─────────────────────────────────────────────────────────────────
+
+export default function UploadPage() {
+  const [step, setStep] = useState(1)
+
+  const [name, setName] = useState("")
+  const [dob, setDob] = useState("")
+  const [gender, setGender] = useState("")
+  const [bloodType, setBloodType] = useState("")
+
+  const [medications, setMedications] = useState<Medication[]>([])
+  const [newMed, setNewMed] = useState<Medication>({ name: "", dosage: "", indication: "" })
+
+  const [allergies, setAllergies] = useState<Allergy[]>([])
+  const [newAllergy, setNewAllergy] = useState<Allergy>({ substance: "", reaction: "", severity: "moderate" })
+
+  const [conditions, setConditions] = useState<Condition[]>([])
+  const [newCondition, setNewCondition] = useState<Condition>({ name: "", status: "active", onsetYear: "" })
+
+  const [labs, setLabs] = useState<Lab[]>([])
+  const [newLab, setNewLab] = useState<Lab>({ name: "", value: "", date: "", status: "normal" })
+
+  const [pin, setPin] = useState("")
+
+  function generatePin() {
+    const generated = String(Math.floor(100000 + Math.random() * 900000))
+    setPin(generated)
+    setStep(5)
+  }
+
+  function handleReset() {
+    setStep(1)
+    setPin("")
+    setName("")
+    setDob("")
+    setGender("")
+    setBloodType("")
+    setMedications([])
+    setAllergies([])
+    setConditions([])
+    setLabs([])
+  }
 
   return (
     <div style={{ maxWidth: "680px", margin: "0 auto", padding: "40px 24px" }}>
@@ -362,12 +416,47 @@ export default function UploadPage() {
       </div>
 
       <div className="glass-card" style={{ padding: "32px" }}>
-        <ProgressBar />
-        {step === 1 && <Step1 />}
-        {step === 2 && <Step2 />}
-        {step === 3 && <Step3 />}
-        {step === 4 && <Step4 />}
-        {step === 5 && <Step5 />}
+        <ProgressBar step={step} />
+        {step === 1 && (
+          <Step1
+            name={name} setName={setName}
+            dob={dob} setDob={setDob}
+            gender={gender} setGender={setGender}
+            bloodType={bloodType} setBloodType={setBloodType}
+            onNext={() => setStep(2)}
+          />
+        )}
+        {step === 2 && (
+          <Step2
+            medications={medications} setMedications={setMedications}
+            newMed={newMed} setNewMed={setNewMed}
+            onBack={() => setStep(1)} onNext={() => setStep(3)}
+          />
+        )}
+        {step === 3 && (
+          <Step3
+            allergies={allergies} setAllergies={setAllergies}
+            newAllergy={newAllergy} setNewAllergy={setNewAllergy}
+            onBack={() => setStep(2)} onNext={() => setStep(4)}
+          />
+        )}
+        {step === 4 && (
+          <Step4
+            conditions={conditions} setConditions={setConditions}
+            newCondition={newCondition} setNewCondition={setNewCondition}
+            labs={labs} setLabs={setLabs}
+            newLab={newLab} setNewLab={setNewLab}
+            onBack={() => setStep(3)} onGenerate={generatePin}
+          />
+        )}
+        {step === 5 && (
+          <Step5
+            pin={pin} name={name} dob={dob}
+            medications={medications} allergies={allergies}
+            conditions={conditions} labs={labs}
+            onReset={handleReset}
+          />
+        )}
       </div>
     </div>
   )

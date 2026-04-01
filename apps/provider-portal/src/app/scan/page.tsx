@@ -33,11 +33,11 @@ export default function ScanPage() {
           gap: "12px"
         }}>
           <div style={{ fontSize: "40px", opacity: 0.3 }}>▣</div>
-          <div style={{ fontSize: "13px", color: "var(--text-muted)", textAlign: "center" }}>Camera scanner<br />coming in v2</div>
+          <div style={{ fontSize: "13px", color: "var(--text-muted)", textAlign: "center" }}>Point camera at<br />patient QR code</div>
         </div>
         <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "8px" }}>
           <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--text-muted)" }} />
-          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Camera inactive — use PIN entry below</span>
+          <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Camera access required — or use PIN entry below</span>
         </div>
       </div>
 
