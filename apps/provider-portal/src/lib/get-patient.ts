@@ -1,8 +1,54 @@
 // src/lib/get-patient.ts
 // Resolves a PIN to a patient record — Supabase for real PINs, mock fallback for demo/unknown PINs
 import { getMockPatient, MockFhirBundle, MockMedication, MockAllergy, MockCondition, MockLabResult, MockVital, MockTreatmentSession } from '@/lib/mock-fhir'
+import { fetchFhirResource, mapFhirBundleToPatient } from '@/lib/epic-fhir'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import type { Patient, Provider, Medication, Allergy, Condition, LabResult, Vital, TreatmentSession } from '@/lib/db-types'
+
+// ─── Epic FHIR path ───────────────────────────────────────────────────────────
+
+export async function getPatientByEpicId(
+  epicPatientId: string,
+  accessToken: string
+): Promise<MockFhirBundle> {
+  try {
+    const [
+      patientResource,
+      allergies,
+      conditions,
+      medications,
+      labsObs,
+      vitalsObs,
+      immunizations,
+    ] = await Promise.all([
+      fetchFhirResource(accessToken, epicPatientId, 'Patient'),
+      fetchFhirResource(accessToken, epicPatientId, 'AllergyIntolerance'),
+      fetchFhirResource(accessToken, epicPatientId, 'Condition'),
+      fetchFhirResource(accessToken, epicPatientId, 'MedicationRequest'),
+      fetchFhirResource(accessToken, epicPatientId, 'Observation', 'laboratory'),
+      fetchFhirResource(accessToken, epicPatientId, 'Observation', 'vital-signs'),
+      fetchFhirResource(accessToken, epicPatientId, 'Immunization'),
+    ])
+
+    const mappedPatient = mapFhirBundleToPatient(
+      patientResource,
+      allergies,
+      conditions,
+      medications,
+      labsObs,
+      vitalsObs,
+      immunizations
+    )
+
+    return { patient: mappedPatient }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[get-patient] Epic FHIR fetch failed, falling back to mock:', message)
+    return getMockPatient('DEFAULT')
+  }
+}
+
+// ─── Supabase / mock path ─────────────────────────────────────────────────────
 
 const PIN_TO_CHART: Record<string, string> = {
   '111111': '90001',

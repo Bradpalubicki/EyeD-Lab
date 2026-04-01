@@ -22,6 +22,17 @@ export default function DashboardPage() {
         <p style={{ fontSize: "15px", color: "var(--text-secondary)", margin: 0 }}>Scan a QR code or enter a PIN to pull a patient&apos;s complete medical record with AI-powered clinical brief.</p>
       </div>
 
+      {/* Epic MyChart CTA */}
+      <div style={{ marginBottom: "24px", padding: "16px 20px", background: "rgba(0,122,255,0.08)", border: "1px solid rgba(0,122,255,0.2)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+        <div>
+          <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "2px" }}>Connect via Epic MyChart</div>
+          <div style={{ fontSize: "12px", color: "var(--text-secondary)" }}>Fetch live patient records directly from Epic. Test with <code style={{ color: "var(--teal)", fontFamily: "monospace" }}>fhircamila / epicepic1</code></div>
+        </div>
+        <a href="/api/fhir/authorize" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 18px", background: "rgba(0,122,255,0.15)", border: "1px solid rgba(0,122,255,0.35)", borderRadius: "8px", color: "#4a9eff", fontSize: "13px", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+          Connect via Epic MyChart →
+        </a>
+      </div>
+
       {/* Primary CTAs */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "48px" }}>
         <Link href="/scan" style={{ textDecoration: "none" }}>

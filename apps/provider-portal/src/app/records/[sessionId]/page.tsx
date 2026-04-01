@@ -1,7 +1,8 @@
 import { Suspense } from "react";
+import { cookies } from "next/headers";
 import AiBriefCard from "@/components/AiBriefCard";
 import AiBriefSkeleton from "@/components/AiBriefSkeleton";
-import { getPatientByPin } from "@/lib/get-patient";
+import { getPatientByPin, getPatientByEpicId } from "@/lib/get-patient";
 
 export default async function RecordsPage({
   params,
@@ -9,7 +10,32 @@ export default async function RecordsPage({
   params: Promise<{ sessionId: string }>;
 }) {
   const { sessionId } = await params;
-  const { patient } = await getPatientByPin(sessionId);
+
+  // Check for live Epic session cookie
+  const cookieStore = await cookies();
+  const epicCookie = cookieStore.get("epic_session");
+
+  let patient;
+  if (epicCookie) {
+    try {
+      const session = JSON.parse(epicCookie.value) as {
+        access_token: string;
+        patient_id: string;
+        expires_at: number;
+      };
+      if (session.expires_at > Date.now() && session.patient_id === sessionId) {
+        const bundle = await getPatientByEpicId(session.patient_id, session.access_token);
+        patient = bundle.patient;
+      }
+    } catch {
+      // Malformed cookie — fall through to mock/Supabase
+    }
+  }
+
+  if (!patient) {
+    const bundle = await getPatientByPin(sessionId);
+    patient = bundle.patient;
+  }
 
   return (
     <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 24px", position: "relative" }}>
