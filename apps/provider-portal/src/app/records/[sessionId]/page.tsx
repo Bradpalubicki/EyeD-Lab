@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import AiBriefCard from "@/components/AiBriefCard";
+import ParticleHealthPanel from "@/components/ParticleHealthPanel";
 import { getPatientByPin, getPatientByEpicId } from "@/lib/get-patient";
 
 export default async function RecordsPage({
@@ -83,9 +84,16 @@ export default async function RecordsPage({
       </div>
 
       {/* AI Brief — client component, no Suspense needed */}
-      <div style={{ marginBottom: "28px" }}>
+      <div style={{ marginBottom: "16px" }}>
         <AiBriefCard sessionId={sessionId} isEpicPatient={!!epicCookie} />
       </div>
+
+      {/* Particle Health — national network record pull */}
+      <ParticleHealthPanel
+        patientName={patient.name}
+        patientDob={patient.dob}
+        patientGender={patient.gender}
+      />
 
       {/* Medical Data Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
