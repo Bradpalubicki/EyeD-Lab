@@ -2,7 +2,7 @@
 // src/app/actions/upload.ts
 // Persists patient self-upload wizard data to Supabase
 
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
 // ── Input schemas ─────────────────────────────────────────────────────────────

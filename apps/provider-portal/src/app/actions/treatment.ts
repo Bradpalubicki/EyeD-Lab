@@ -1,6 +1,6 @@
 'use server'
 // src/app/actions/treatment.ts
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { getSupabaseAdmin } from '@/lib/supabase'
 
 export const TreatmentSchema = z.object({
