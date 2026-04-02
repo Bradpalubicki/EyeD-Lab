@@ -45,7 +45,7 @@ export async function logTreatment(input: TreatmentInput): Promise<TreatmentActi
   }
 
   const toNum = (v?: string) => (v && v !== '' ? Number(v) : null)
-  const { session_pin: _, followup_date: _followup_date, dosage_mg, pellet_count, testosterone_total, ...rest } = parsed.data
+  const { session_pin: _pin, followup_date: _followup, dosage_mg, pellet_count, testosterone_total, ...rest } = parsed.data
 
   const { data, error } = await db
     .from('treatment_sessions')

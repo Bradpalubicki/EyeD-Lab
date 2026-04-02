@@ -335,7 +335,7 @@ export default function RecordSourcesPanel({
           }
         >
           <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-            Patient exports from Google Health / Android: <strong>Health Connect app → Export data</strong>, or from their health provider's portal as a FHIR/CCD file.
+            Patient exports from Google Health / Android: <strong>Health Connect app &rarr; Export data</strong>, or from their health provider&apos;s portal as a FHIR/CCD file.
           </div>
           <input
             ref={googleInputRef}
