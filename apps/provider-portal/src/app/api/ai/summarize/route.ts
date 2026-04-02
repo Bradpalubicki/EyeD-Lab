@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
     if (message.includes("rate limit") || message.includes("429")) {
       return NextResponse.json({ error: "Rate limit exceeded — try again shortly" }, { status: 429 });
     }
-    return NextResponse.json({ error: "AI service error" }, { status: 500 });
+    console.error("[ai/summarize] error:", message);
+    return NextResponse.json({ error: `AI service error: ${message}` }, { status: 500 });
   }
 }
