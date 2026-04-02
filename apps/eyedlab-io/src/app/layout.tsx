@@ -65,7 +65,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <a href="#main-content" className="skip-to-main">Skip to main content</a>
+        {children}
+      </body>
     </html>
   );
 }

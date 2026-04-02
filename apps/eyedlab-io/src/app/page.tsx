@@ -3,9 +3,9 @@ export default function HomePage() {
     <>
       {/* NAV */}
       <nav className="nav">
-        <div className="nav-wordmark">
+        <a href="/" className="nav-wordmark">
           EyeD <span>ID</span> Lab
-        </div>
+        </a>
         <div className="nav-links">
           <a href="mailto:partnerships@eyedlab.io" className="nav-link">
             Partnerships
@@ -17,7 +17,7 @@ export default function HomePage() {
       </nav>
 
       {/* HERO */}
-      <section className="hero">
+      <section className="hero" id="main-content">
         <div className="hero-eyebrow">
           <span className="hero-eyebrow-dot" />
           Powered by Particle Health
