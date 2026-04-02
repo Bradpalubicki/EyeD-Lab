@@ -36,7 +36,7 @@ export default function HomePage() {
   return (
     <>
       {/* ── NAV ─────────────────────────────────────────── */}
-      <nav className="nav">
+      <nav className="nav" aria-label="Main navigation">
         <div className="nav-inner">
           <div className="nav-logo">
             MyPulseScan<span>.health</span>
@@ -54,6 +54,7 @@ export default function HomePage() {
       </nav>
 
       {/* ── HERO ────────────────────────────────────────── */}
+      <main id="main-content">
       <section className="hero" id="hero">
         <div className="hero-inner">
           <div className="hero-left">
@@ -319,6 +320,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      </main>
       {/* ── FOOTER ───────────────────────────────────────── */}
       <footer className="footer">
         <div className="footer-inner">

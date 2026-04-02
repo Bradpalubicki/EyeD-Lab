@@ -54,9 +54,10 @@ export default function HomePage() {
   return (
     <>
       <Nav />
+      <main id="main-content">
 
       {/* ── HERO ── */}
-      <section className="hero" id="main-content" aria-label="Hero">
+      <section className="hero" aria-label="Hero">
         <div className="hero-inner">
           <div style={{marginBottom: 24, display: 'flex', justifyContent: 'center'}}>
             <HeartbeatLogo size={88} />
@@ -357,6 +358,7 @@ export default function HomePage() {
       />
 
       <Footer />
+      </main>
     </>
   )
 }

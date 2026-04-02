@@ -120,51 +120,59 @@ export default function RoiCalculator() {
         {/* CONTROLS */}
         <div className="controls-grid">
           <div className="control-group">
-            <div className="control-label">
+            <label id="lbl-patients" className="control-label" htmlFor="slider-patients">
               Monthly patient volume
               <span>{patients.toLocaleString()} patients</span>
-            </div>
+            </label>
             <input
+              id="slider-patients"
               type="range" min={10} max={2000} step={10}
               value={patients}
               onChange={e => setPatients(Number(e.target.value))}
               className="control-slider"
+              aria-labelledby="lbl-patients"
             />
           </div>
           <div className="control-group">
-            <div className="control-label">
+            <label id="lbl-staff" className="control-label" htmlFor="slider-staff">
               Staff hourly rate
               <span>{fmt(staffRate)}/hr</span>
-            </div>
+            </label>
             <input
+              id="slider-staff"
               type="range" min={12} max={60} step={1}
               value={staffRate}
               onChange={e => setStaffRate(Number(e.target.value))}
               className="control-slider"
+              aria-labelledby="lbl-staff"
             />
           </div>
           <div className="control-group">
-            <div className="control-label">
+            <label id="lbl-rpm" className="control-label" htmlFor="slider-rpm">
               RPM enrollment rate
               <span>{fmtPct(rpmPct)} ({r.rpmPatients} patients)</span>
-            </div>
+            </label>
             <input
+              id="slider-rpm"
               type="range" min={5} max={80} step={5}
               value={rpmPct}
               onChange={e => setRpmPct(Number(e.target.value))}
               className="control-slider"
+              aria-labelledby="lbl-rpm"
             />
           </div>
           <div className="control-group">
-            <div className="control-label">
+            <label id="lbl-recurring" className="control-label" htmlFor="slider-recurring">
               Returning patients (recurring)
               <span>{fmtPct(recurringPct)} ({r.recurringPatients} patients)</span>
-            </div>
+            </label>
             <input
+              id="slider-recurring"
               type="range" min={10} max={90} step={5}
               value={recurringPct}
               onChange={e => setRecurringPct(Number(e.target.value))}
               className="control-slider"
+              aria-labelledby="lbl-recurring"
             />
           </div>
         </div>
