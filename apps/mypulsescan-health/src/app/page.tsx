@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'MyPulseScan.health — Clinical Intelligence at Scale for MSOs & PE-Backed Platforms',
   description:
-    'Built for multi-location practices, PE-backed MSOs, and enterprise health networks. Turn patient data into revenue with per-location pricing, RPM billing automation, and 30-day pilots.',
+    'Built for multi-location practices, PE-backed MSOs, and enterprise health networks. Usage-based pricing that scales with patient volume — not headcount. RPM billing automation + 30-day pilots.',
 }
 
 export default function HomePage() {
@@ -130,13 +130,13 @@ export default function HomePage() {
         <div className="section-header container">
           <p className="kicker">The Economics</p>
           <h2>
-            Per-location pricing.
+            Usage-based pricing.
             <br />
-            <em className="italic-teal">Revenue-share alignment.</em>
+            <em className="italic-teal">Revenue-share at scale.</em>
           </h2>
           <p>
-            We structured pricing so the math works at 5 locations or 500. Start with a pilot.
-            Scale when the numbers prove out.
+            Low-volume clinics pay for what they use. High-volume platforms share the upside.
+            Start with a pilot — scale when the numbers prove out.
           </p>
         </div>
 
@@ -179,20 +179,20 @@ export default function HomePage() {
           <div className="math-equation">
             <span className="math-highlight">100 locations</span> × 200 patients × 40% chronic ×
             $95/month ×{' '}
-            <span className="math-highlight">15% revenue share</span>
+            <span className="math-highlight">10% revenue share</span>
             {' = '}
           </div>
           <div className="math-result">
             <div className="math-result-item">
-              <div className="math-result-number">$114K</div>
+              <div className="math-result-number">$76K</div>
               <div className="math-result-label">/ month to MyPulseScan</div>
             </div>
             <div className="math-result-item">
-              <div className="math-result-number">$646K</div>
+              <div className="math-result-number">$684K</div>
               <div className="math-result-label">/ month to your network</div>
             </div>
             <div className="math-result-item">
-              <div className="math-result-number">5.7×</div>
+              <div className="math-result-number">9×</div>
               <div className="math-result-label">revenue returned to you</div>
             </div>
           </div>
@@ -404,31 +404,31 @@ const PRICING_TIERS = [
     name: 'Pilot',
     tagline: 'Prove it works before you commit.',
     price: '$0',
-    priceSub: '1 location · 30 days',
+    priceSub: '1 location · 30 days · no commitment',
     featured: false,
     cta: 'Start Your Pilot',
     features: [
-      'One location, 30-day term',
-      'Full platform access',
+      'One location, full 30-day term',
+      'Full platform access — nothing gated',
       'Day-30 ROI summary report',
       'Records retrieved + interactions flagged',
-      'RPM revenue potential analysis',
+      'RPM-eligible patient identification',
       'Rollout recommendation included',
     ],
   },
   {
     tier: 'Tier 2',
-    name: 'Chain',
-    tagline: 'Predictable cost across your portfolio.',
-    price: '$800–$1,500',
-    priceSub: 'per location / month · flat rate',
+    name: 'Growth',
+    tagline: 'Cost scales with patient volume, not headcount.',
+    price: '$299',
+    priceSub: 'per location / month + $0.50 per pull over 200',
     featured: true,
-    cta: 'Get Chain Pricing',
+    cta: 'Get Growth Pricing',
     features: [
       '5–50 locations',
-      'Flat per-location rate (no revenue share)',
-      'Volume pricing at 20+ locations',
-      'Full RPM billing automation',
+      'Base rate covers first 200 record pulls/location/month',
+      'Usage-based overage — low-volume clinics stay lean',
+      'Full RPM billing automation included',
       'Dedicated implementation team',
       'Quarterly ROI reviews',
     ],
@@ -436,16 +436,16 @@ const PRICING_TIERS = [
   {
     tier: 'Tier 3',
     name: 'Platform',
-    tagline: 'Aligned incentives at enterprise scale.',
-    price: '$500',
-    priceSub: 'per location / month + 15% RPM collected',
+    tagline: 'Our fee tied directly to revenue we generate for you.',
+    price: '$299',
+    priceSub: 'per location / month + 10% of net new RPM billing',
     featured: false,
     cta: 'Schedule a Platform Call',
     features: [
       '50+ locations',
-      'Lower base rate — we share the upside',
-      'Custom EMR integrations',
-      'Dedicated success manager',
+      'Same base rate — revenue share replaces usage overage',
+      'We only win when you win on RPM',
+      'Custom EMR integrations + dedicated CSM',
       'Executive reporting dashboard',
       'BAA + enterprise SLA included',
     ],
