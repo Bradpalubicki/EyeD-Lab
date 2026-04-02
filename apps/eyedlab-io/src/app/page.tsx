@@ -285,6 +285,64 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* USE CASES */}
+      <section className="section">
+        <div className="section-label">Built for your most pressing use cases</div>
+        <h2 className="section-title">Deliver a better understanding of patient risk.</h2>
+        <p className="section-subtitle">
+          More complete data leads to a more accurate understanding of patient risk.
+          Build advanced analytics that support improved diagnostics, treatment
+          recommendations, and applications that stratify or manage risk at scale.
+        </p>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 16,
+          }}
+        >
+          {[
+            { title: "AI, Machine Learning & Analytics", desc: "Power models with the most complete longitudinal record available nationally." },
+            { title: "Clinical Decision Support", desc: "Surface relevant history — medications, labs, diagnoses — at the moment of care." },
+            { title: "Care Management", desc: "Identify gaps in care across populations using data aggregated across all providers." },
+            { title: "Quality Measure Reporting", desc: "Meet HEDIS and other reporting requirements with comprehensive encounter data." },
+            { title: "Disease Progression", desc: "Track condition trajectories across the full care continuum, not just one system." },
+            { title: "Medication Reconciliation", desc: "Use complete medication records to reduce adverse events and duplication at transitions of care." },
+          ].map(({ title, desc }) => (
+            <div
+              key={title}
+              style={{
+                padding: "28px 24px",
+                background: "rgba(13,107,110,0.08)",
+                borderRadius: 12,
+                border: "1px solid rgba(93,232,192,0.12)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: "#5de8c0",
+                  marginBottom: 10,
+                  lineHeight: 1.3,
+                }}
+              >
+                {title}
+              </div>
+              <div
+                style={{
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.55)",
+                  lineHeight: 1.6,
+                }}
+              >
+                {desc}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* CTA SECTION */}
       <div className="cta-section">
         <div className="cta-inner">
@@ -304,12 +362,13 @@ export default function HomePage() {
             </div>
             <div className="cta-card">
               <div className="cta-card-label">For Developers &amp; Builders</div>
-              <div className="cta-card-title">Build on EyeD ID</div>
+              <div className="cta-card-title">Build fast with clinical insights that are fit-for-purpose.</div>
               <p className="cta-card-desc">
-                Access the most complete foundation of clinical data through a
-                single authenticated FHIR R4 API. HIPAA BAA available.
-                HITRUST certified infrastructure. Developer docs and API keys
-                issued on review.
+                No need to start from scratch. Plug into a library of integrations,
+                data marts, APIs, and analytics modules. Tackle healthcare&apos;s
+                toughest problems — AI, clinical decision support, care management,
+                quality reporting, disease progression — using flexible building blocks
+                that deliver FHIR R4, C-CDA, or analytics-optimized schema.
               </p>
               <a href="mailto:developers@eyedlab.io" className="btn-cta">
                 developers@eyedlab.io →
