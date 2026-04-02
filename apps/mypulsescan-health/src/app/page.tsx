@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     siteName: 'MyPulseScan Health',
     images: [
       {
-        url: 'https://mypulsescan.health/og-image.jpg',
+        url: 'https://mypulsescan.health/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'MyPulseScan Enterprise Clinical Intelligence Platform',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: 'MSO Clinical Intelligence Platform | MyPulseScan',
     description:
       'Clinical intelligence for multi-location practices and PE-backed MSOs. Usage-based pricing, RPM billing automation, 30-day pilot included.',
-    images: ['https://mypulsescan.health/og-image.jpg'],
+    images: ['https://mypulsescan.health/opengraph-image'],
   },
   alternates: {
     canonical: 'https://mypulsescan.health',
