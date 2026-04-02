@@ -20,15 +20,19 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-eyebrow">
           <span className="hero-eyebrow-dot" />
-          Clinical Data Infrastructure
+          Powered by Particle Health
         </div>
         <h1 className="hero-wordmark">
           EyeD <span className="accent">ID</span> Lab
         </h1>
-        <p className="hero-tagline">The identity layer for healthcare.</p>
+        <p className="hero-tagline">
+          Build off the most complete foundation of clinical data.
+        </p>
         <p className="hero-subtagline">
-          We aggregate, verify, and deliver patient health records at the point
-          of care — across every major US health network.
+          Relying on a single EMR leaves critical gaps in a patient&apos;s health
+          history. EyeD ID Lab delivers a comprehensive, longitudinal picture —
+          aggregated across every provider and system — so your application works
+          from the most accurate record available.
         </p>
         <div className="hero-ctas">
           <a
@@ -48,13 +52,43 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PLATFORM */}
+      {/* TRUST BAR */}
+      <div
+        className="network-section"
+        style={{ borderTop: "none", marginTop: 0, paddingTop: 24, paddingBottom: 24 }}
+      >
+        <div className="network-inner">
+          <div className="network-label">Compliance &amp; Security</div>
+          <div className="network-logos">
+            {["HITRUST Certified", "SOC 2 Type II", "HIPAA BAA", "FHIR R4", "TEFCA"].map(
+              (name) => (
+                <div
+                  key={name}
+                  className="network-badge"
+                  style={{
+                    background: "rgba(13,107,110,0.15)",
+                    border: "1px solid rgba(93,232,192,0.3)",
+                  }}
+                >
+                  {name}
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* WHY COMPLETE DATA MATTERS */}
       <section className="section">
-        <div className="section-label">The Platform</div>
-        <h2 className="section-title">The Infrastructure</h2>
+        <div className="section-label">The Foundation</div>
+        <h2 className="section-title">
+          One EMR is never the whole story.
+        </h2>
         <p className="section-subtitle">
-          Three layers of clinical data infrastructure working in concert — so
-          clinicians get the right record for the right patient, instantly.
+          A patient&apos;s medications, labs, diagnoses, and procedures exist across
+          dozens of providers and systems — most of which your EMR never sees.
+          EyeD ID Lab aggregates all of it, deduplicates it, and delivers a single
+          accurate record through one API call.
         </p>
         <div className="pillars-grid">
           {/* Pillar 1 */}
@@ -67,13 +101,13 @@ export default function HomePage() {
                 <path d="M12 7v4M12 11l-5.5 6M12 11l5.5 6" />
               </svg>
             </div>
-            <div className="pillar-title">Multi-Network Aggregation</div>
+            <div className="pillar-title">National + State Partners</div>
             <div className="pillar-desc">
-              Connected to CommonWell, Carequality, TEFCA, and Surescripts —
-              the four dominant health information exchange networks in the US.
-              One API call retrieves records from all of them simultaneously.
+              Access clinical data through our national and state network partners —
+              CommonWell, Carequality, TEFCA, and Surescripts. One API call reaches
+              all of them simultaneously, so no provider is missed.
             </div>
-            <div className="pillar-stat">320M+ US patients covered</div>
+            <div className="pillar-stat">320M+ patients · 160,000+ organizations</div>
           </div>
           {/* Pillar 2 */}
           <div className="pillar">
@@ -83,13 +117,14 @@ export default function HomePage() {
                 <path d="M9 12l2 2 4-4" />
               </svg>
             </div>
-            <div className="pillar-title">Identity Verification</div>
+            <div className="pillar-title">Highest Data Quality</div>
             <div className="pillar-desc">
-              Powered by Verato MPI — the clinical standard for Master Patient
-              Index matching. Probabilistic algorithms resolve identity across
-              networks with confidence scoring. Zero wrong-patient risk.
+              We work hard to extract maximum value from every data source. Verato
+              MPI resolves patient identity across networks with confidence scoring,
+              so the record your application receives is complete, accurate,
+              and deduplicated.
             </div>
-            <div className="pillar-stat">Verato MPI · Confidence scoring</div>
+            <div className="pillar-stat">Verato MPI · 90% national match rate</div>
           </div>
           {/* Pillar 3 */}
           <div className="pillar">
@@ -101,14 +136,66 @@ export default function HomePage() {
                 <path d="M17 13v8M13 17h8" />
               </svg>
             </div>
-            <div className="pillar-title">EMR Integration</div>
+            <div className="pillar-title">FHIR R4 or C-CDA</div>
             <div className="pillar-desc">
-              Direct write-back to Epic, Athena, eClinicalWorks, and Cerner via
-              the Redox integration layer. Records surface inside the existing
-              clinical workflow. Zero re-entry. Zero tab-switching.
+              Data delivered as structured FHIR R4 resources or C-CDA documents
+              via a single RESTful API. Direct write-back to Epic, Athena,
+              eClinicalWorks, and Cerner. Zero re-entry. Zero tab-switching.
             </div>
-            <div className="pillar-stat">Epic · Athena · eClinicalWorks · Cerner</div>
+            <div className="pillar-stat">FHIR R4 · C-CDA · Epic · Athena · Cerner</div>
           </div>
+        </div>
+      </section>
+
+      {/* STATS STRIP */}
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 2,
+            background: "rgba(13,107,110,0.12)",
+            borderRadius: 16,
+            overflow: "hidden",
+            border: "1px solid rgba(93,232,192,0.15)",
+          }}
+        >
+          {[
+            { stat: "320M+", label: "Patient records accessible" },
+            { stat: "160,000+", label: "Healthcare organizations connected" },
+            { stat: "90%", label: "Average national patient match rate" },
+          ].map(({ stat, label }) => (
+            <div
+              key={stat}
+              style={{
+                padding: "40px 32px",
+                textAlign: "center",
+                background: "rgba(6,13,14,0.6)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 48,
+                  fontWeight: 700,
+                  color: "#5de8c0",
+                  fontFamily: "var(--font-inter)",
+                  lineHeight: 1,
+                }}
+              >
+                {stat}
+              </div>
+              <div
+                style={{
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.5)",
+                  marginTop: 8,
+                  lineHeight: 1.4,
+                }}
+              >
+                {label}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -119,18 +206,13 @@ export default function HomePage() {
             Connected to every major US health network
           </div>
           <div className="network-logos">
-            {[
-              "CommonWell",
-              "Carequality",
-              "TEFCA",
-              "Surescripts",
-              "Epic",
-              "Redox",
-            ].map((name) => (
-              <div key={name} className="network-badge">
-                {name}
-              </div>
-            ))}
+            {["CommonWell", "Carequality", "TEFCA", "Surescripts", "Epic", "Redox"].map(
+              (name) => (
+                <div key={name} className="network-badge">
+                  {name}
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>
@@ -140,8 +222,9 @@ export default function HomePage() {
         <div className="section-label">Our Products</div>
         <h2 className="section-title">Built for every care setting</h2>
         <p className="section-subtitle">
-          Two purpose-built products sharing the same data infrastructure —
-          one optimized for the clinic, one for the enterprise.
+          Two purpose-built products sharing the same complete clinical data
+          infrastructure — one optimized for the individual clinic, one for
+          enterprise networks and PE-backed operators.
         </p>
         <div className="products-grid">
           {/* MyPulseScan */}
@@ -156,10 +239,11 @@ export default function HomePage() {
               </div>
             </div>
             <p className="product-desc">
-              Patient health records in 30 seconds at the front desk. Staff
-              scan or enter patient demographics, EyeD ID queries all four
-              networks simultaneously, and a reconciled clinical summary lands
-              in the EMR — before the physician walks in the room.
+              Patient health records in 30 seconds at the point of care. Staff
+              enter patient demographics, EyeD ID queries all four networks
+              simultaneously, and a longitudinal clinical summary — medications,
+              labs, diagnoses, procedures — lands in the EMR before the physician
+              walks in. Medicare-billable RPM included.
             </p>
             <a
               href="https://mypulsescan.com"
@@ -185,8 +269,9 @@ export default function HomePage() {
             <p className="product-desc">
               Clinical intelligence at scale. Portfolio-wide record retrieval,
               cross-site patient deduplication, population health reporting, and
-              API access for custom integrations. Built for operators managing
-              50 to 500+ locations under a single platform.
+              direct API access for custom integrations. Built for operators
+              managing 50 to 500+ locations who need actionable clinical insights
+              across the entire network — not just individual encounters.
             </p>
             <a
               href="https://mypulsescan.health"
@@ -209,8 +294,9 @@ export default function HomePage() {
               <div className="cta-card-title">Platform partnerships</div>
               <p className="cta-card-desc">
                 EHR vendors, health systems, MSO platforms, and payers — let&apos;s
-                talk about how EyeD ID infrastructure can accelerate your
-                clinical data strategy.
+                discuss how EyeD ID Lab infrastructure can accelerate your
+                clinical data strategy. We&apos;re expanding entity licensing
+                for multi-platform deployments.
               </p>
               <a href="mailto:partnerships@eyedlab.io" className="btn-cta">
                 partnerships@eyedlab.io →
@@ -220,9 +306,10 @@ export default function HomePage() {
               <div className="cta-card-label">For Developers &amp; Builders</div>
               <div className="cta-card-title">Build on EyeD ID</div>
               <p className="cta-card-desc">
-                Access 320M+ patient records through a single authenticated API.
-                FHIR R4 compliant, HIPAA BAA available, sandbox environment on
-                request. Developer docs and API keys issued on review.
+                Access the most complete foundation of clinical data through a
+                single authenticated FHIR R4 API. HIPAA BAA available.
+                HITRUST certified infrastructure. Developer docs and API keys
+                issued on review.
               </p>
               <a href="mailto:developers@eyedlab.io" className="btn-cta">
                 developers@eyedlab.io →
@@ -236,8 +323,7 @@ export default function HomePage() {
       <footer className="footer">
         <div className="footer-inner">
           <div className="footer-brand">
-            EyeD ID Lab{" "}
-            <span>· NuStack Digital Ventures</span>
+            EyeD ID Lab <span>· Powered by Particle Health · NuStack Digital Ventures</span>
           </div>
           <div className="footer-links">
             <a href="mailto:partnerships@eyedlab.io" className="footer-link">

@@ -9,25 +9,25 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eyedlab.io"),
-  title: "EyeD ID Lab — Clinical Data Infrastructure",
+  title: "EyeD ID Lab — Complete Clinical Data Infrastructure",
   description:
-    "The identity layer for healthcare. EyeD ID Lab aggregates, verifies, and delivers patient health records at the point of care across every major US health network.",
+    "Build on the most complete foundation of clinical data. Access 320M+ patient records across 160,000+ healthcare organizations via a single FHIR R4 API. Powered by Particle Health.",
   alternates: {
     canonical: "https://eyedlab.io",
   },
   openGraph: {
-    title: "EyeD ID Lab — Clinical Data Infrastructure",
+    title: "EyeD ID Lab — Complete Clinical Data Infrastructure",
     description:
-      "The identity layer for healthcare. EyeD ID Lab aggregates, verifies, and delivers patient health records at the point of care across every major US health network.",
+      "Build on the most complete foundation of clinical data. Access 320M+ patient records across 160,000+ healthcare organizations via a single FHIR R4 API. Powered by Particle Health.",
     url: "https://eyedlab.io",
     siteName: "EyeD ID Lab",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "EyeD ID Lab — Clinical Data Infrastructure",
+    title: "EyeD ID Lab — Complete Clinical Data Infrastructure",
     description:
-      "The identity layer for healthcare. EyeD ID Lab aggregates, verifies, and delivers patient health records at the point of care across every major US health network.",
+      "Build on the most complete foundation of clinical data. Access 320M+ patient records across 160,000+ healthcare organizations via a single FHIR R4 API. Powered by Particle Health.",
   },
 };
 
