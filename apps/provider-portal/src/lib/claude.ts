@@ -1,7 +1,6 @@
 // src/lib/claude.ts
 // Server-side only — never import this in "use client" components
 
-import Anthropic from "@anthropic-ai/sdk";
 import type { MockPatient } from "./mock-fhir";
 
 export interface DrugInteractionFlag {
@@ -70,39 +69,48 @@ If there are no drug interactions, return an empty array for drugInteractions.
 Only flag interactions supported by the medication list above. Do not speculate.`;
 }
 
-let _client: Anthropic | null = null;
-
-function getClient(): Anthropic {
-  if (!_client) {
-    if (!process.env.ANTHROPIC_API_KEY) {
-      throw new Error("ANTHROPIC_API_KEY is not configured");
-    }
-    _client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  }
-  return _client;
-}
-
 export async function claudeSummarize(patient: MockPatient): Promise<AiSummaryResult> {
-  const client = getClient();
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error("ANTHROPIC_API_KEY is not configured");
+  }
 
-  const message = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 1024,
-    system:
-      "You are a clinical decision support assistant for a DEMO healthcare application. " +
-      "All patient data is SYNTHETIC — no real patient information. " +
-      "Summarize patient health status in plain English and identify drug interactions. " +
-      "Never invent information not present in the provided data. " +
-      "If a field is missing, omit it from the summary. " +
-      "Respond only with valid JSON as instructed.",
-    messages: [{ role: "user", content: buildPrompt(patient) }],
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      system:
+        "You are a clinical decision support assistant for a DEMO healthcare application. " +
+        "All patient data is SYNTHETIC — no real patient information. " +
+        "Summarize patient health status in plain English and identify drug interactions. " +
+        "Never invent information not present in the provided data. " +
+        "If a field is missing, omit it from the summary. " +
+        "Respond only with valid JSON as instructed.",
+      messages: [{ role: "user", content: buildPrompt(patient) }],
+    }),
   });
 
-  if (message.content[0]?.type !== "text") {
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Anthropic API ${res.status}: ${errText.slice(0, 200)}`);
+  }
+
+  const data = await res.json() as {
+    content: Array<{ type: string; text: string }>;
+  };
+
+  const textBlock = data.content.find(b => b.type === "text");
+  if (!textBlock) {
     throw new Error("Unexpected Claude response format");
   }
 
-  const rawText = message.content[0].text;
+  const rawText = textBlock.text;
 
   try {
     const parsed = JSON.parse(rawText) as { summary: string; drugInteractions: DrugInteractionFlag[] };
@@ -112,7 +120,6 @@ export async function claudeSummarize(patient: MockPatient): Promise<AiSummaryRe
       generatedAt: new Date().toISOString(),
     };
   } catch {
-    // Graceful fallback if JSON parse fails
     return {
       summary: rawText,
       drugInteractions: [],
