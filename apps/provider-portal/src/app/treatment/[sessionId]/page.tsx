@@ -1,14 +1,18 @@
 "use client"
-import { useState, use } from "react"
+import { use } from "react"
 import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { TreatmentSchema, type TreatmentInput, logTreatment } from "@/app/actions/treatment"
+import { useState } from "react"
 
 const SESSION_TYPES = [
-  { value: "tcyp_injection", label: "T-Cyp Injection" },
+  { value: "tcyp_injection",   label: "T-Cyp Injection" },
   { value: "pellet_insertion", label: "Pellet Insertion" },
-  { value: "shockwave", label: "Shockwave Therapy" },
-  { value: "eros", label: "Eros Therapy" },
-  { value: "follow_up", label: "Follow-Up Visit" },
-  { value: "initial_visit", label: "Initial Visit" },
+  { value: "shockwave",        label: "Shockwave Therapy" },
+  { value: "eros",             label: "Eros Therapy" },
+  { value: "follow_up",        label: "Follow-Up Visit" },
+  { value: "initial_visit",    label: "Initial Visit" },
 ]
 
 export default function TreatmentPage({
@@ -18,27 +22,29 @@ export default function TreatmentPage({
 }) {
   const router = useRouter()
   const { sessionId } = use(params)
-
-  const [sessionType, setSessionType] = useState("")
-  const [dosageMg, setDosageMg] = useState("")
-  const [side, setSide] = useState("")
-  const [notes, setNotes] = useState("")
-  const [followupDate, setFollowupDate] = useState("")
-  const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState("")
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!sessionType) {
-      setError("Select a session type")
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<TreatmentInput>({
+    resolver: zodResolver(TreatmentSchema),
+    defaultValues: { session_pin: sessionId },
+  })
+
+  const sessionType = watch("session_type")
+  const showDosageFields = sessionType === "tcyp_injection" || sessionType === "pellet_insertion"
+
+  async function onSubmit(data: TreatmentInput) {
+    const result = await logTreatment(data)
+    if (!result.success) {
+      setError("root", { message: result.error ?? "Failed to save" })
       return
     }
-    setError("")
-    setSubmitting(true)
-    // Demo mode — no server write yet
-    await new Promise(r => setTimeout(r, 600))
-    setSubmitting(false)
     setSubmitted(true)
   }
 
@@ -55,11 +61,14 @@ export default function TreatmentPage({
           Treatment Recorded
         </h2>
         <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "32px" }}>
-          Session logged for PIN <code style={{ fontFamily: "monospace", color: "var(--teal)", background: "var(--teal-dim)", padding: "2px 8px", borderRadius: "4px" }}>{sessionId}</code>
+          Session logged for PIN{" "}
+          <code style={{ fontFamily: "monospace", color: "var(--teal)", background: "var(--teal-dim)", padding: "2px 8px", borderRadius: "4px" }}>
+            {sessionId}
+          </code>
         </p>
         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
           <button className="btn-ghost" onClick={() => router.push(`/records/${sessionId}`)}>← Back to Records</button>
-          <button className="btn-primary" onClick={() => { setSubmitted(false); setSessionType(""); setDosageMg(""); setSide(""); setNotes(""); setFollowupDate("") }}>
+          <button className="btn-primary" onClick={() => { setSubmitted(false); reset({ session_pin: sessionId }) }}>
             Add Another
           </button>
         </div>
@@ -78,31 +87,32 @@ export default function TreatmentPage({
         </h1>
         <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0 }}>
           Log a treatment for PIN{" "}
-          <code style={{ fontFamily: "monospace", color: "var(--teal)", background: "var(--teal-dim)", padding: "2px 8px", borderRadius: "4px" }}>{sessionId}</code>
+          <code style={{ fontFamily: "monospace", color: "var(--teal)", background: "var(--teal-dim)", padding: "2px 8px", borderRadius: "4px" }}>
+            {sessionId}
+          </code>
         </p>
       </div>
 
       <div className="glass-card" style={{ padding: "32px" }}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input type="hidden" {...register("session_pin")} />
 
           {/* Session Type */}
           <div style={{ marginBottom: "20px" }}>
             <label className="field-label">Session Type *</label>
-            <select
-              className="field-input"
-              value={sessionType}
-              onChange={e => setSessionType(e.target.value)}
-              required
-            >
+            <select className="field-input" {...register("session_type")}>
               <option value="">Select type</option>
               {SESSION_TYPES.map(t => (
                 <option key={t.value} value={t.value}>{t.label}</option>
               ))}
             </select>
+            {errors.session_type && (
+              <p style={{ fontSize: "12px", color: "var(--red)", marginTop: "4px" }}>{errors.session_type.message}</p>
+            )}
           </div>
 
-          {/* Dosage + Side — only relevant for injections / pellets */}
-          {(sessionType === "tcyp_injection" || sessionType === "pellet_insertion") && (
+          {/* Dosage + Side — injections / pellets only */}
+          {showDosageFields && (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
               <div>
                 <label className="field-label">Dosage (mg)</label>
@@ -110,15 +120,14 @@ export default function TreatmentPage({
                   className="field-input"
                   type="number"
                   placeholder="e.g. 200"
-                  value={dosageMg}
-                  onChange={e => setDosageMg(e.target.value)}
-                  min={0}
-                  step={0.1}
+                  step="0.1"
+                  min="0"
+                  {...register("dosage_mg")}
                 />
               </div>
               <div>
                 <label className="field-label">Side</label>
-                <select className="field-input" value={side} onChange={e => setSide(e.target.value)}>
+                <select className="field-input" {...register("side")}>
                   <option value="">N/A</option>
                   <option value="left">Left</option>
                   <option value="right">Right</option>
@@ -131,12 +140,7 @@ export default function TreatmentPage({
           {/* Follow-up Date */}
           <div style={{ marginBottom: "20px" }}>
             <label className="field-label">Follow-up Date</label>
-            <input
-              className="field-input"
-              type="date"
-              value={followupDate}
-              onChange={e => setFollowupDate(e.target.value)}
-            />
+            <input className="field-input" type="date" {...register("followup_date")} />
           </div>
 
           {/* Notes */}
@@ -146,14 +150,13 @@ export default function TreatmentPage({
               className="field-input"
               rows={4}
               placeholder="Observations, patient response, next steps..."
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
               style={{ resize: "vertical", minHeight: "96px" }}
+              {...register("notes")}
             />
           </div>
 
-          {error && (
-            <p style={{ fontSize: "13px", color: "var(--red)", marginBottom: "16px" }}>{error}</p>
+          {errors.root && (
+            <p style={{ fontSize: "13px", color: "var(--red)", marginBottom: "16px" }}>{errors.root.message}</p>
           )}
 
           <div style={{ display: "flex", gap: "10px" }}>
@@ -168,9 +171,9 @@ export default function TreatmentPage({
               type="submit"
               className="btn-primary"
               style={{ flex: 1 }}
-              disabled={submitting || !sessionType}
+              disabled={isSubmitting}
             >
-              {submitting ? "Saving…" : "Save Treatment Record"}
+              {isSubmitting ? "Saving…" : "Save Treatment Record"}
             </button>
           </div>
         </form>
