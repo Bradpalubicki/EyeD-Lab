@@ -2,7 +2,7 @@ export default function HomePage() {
   return (
     <>
       {/* NAV */}
-      <nav className="nav">
+      <nav className="nav" aria-label="Main navigation">
         <a href="/" className="nav-wordmark">
           EyeD <span>ID</span> Lab
         </a>
@@ -17,7 +17,8 @@ export default function HomePage() {
       </nav>
 
       {/* HERO */}
-      <section className="hero" id="main-content">
+      <main id="main-content">
+      <section className="hero">
         <div className="hero-eyebrow">
           <span className="hero-eyebrow-dot" />
           Powered by Particle Health
@@ -380,6 +381,8 @@ export default function HomePage() {
         </div>
       </div>
 
+      </main>
+
       {/* FOOTER */}
       <footer className="footer">
         <div className="footer-inner">
@@ -387,6 +390,12 @@ export default function HomePage() {
             EyeD ID Lab <span>· Powered by Particle Health · NuStack Digital Ventures</span>
           </div>
           <div className="footer-links">
+            <a href="/terms" className="footer-link">
+              Terms of Service
+            </a>
+            <a href="/privacy" className="footer-link">
+              Privacy Policy
+            </a>
             <a href="mailto:partnerships@eyedlab.io" className="footer-link">
               partnerships@eyedlab.io
             </a>
