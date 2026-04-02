@@ -11,35 +11,36 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-inner">
           <div className="hero-kicker">For Urgent Care &amp; Primary Care Operators</div>
-          <h1>Your intake forms are <em>costing you money.</em></h1>
+          <h1>Your patient just walked in. <em>You already know their history.</em></h1>
           <p className="hero-sub">
-            Every patient that walks through your door gives you their full medical history in 30 seconds —
-            no forms, no faxing, no liability gaps — and Medicare pays for it.
+            MyPulseScan gives every provider a complete, verified patient record before the exam room door opens —
+            pulled instantly from 320M+ US patients across every major health network.
+            No forms. No faxing. No guessing.
           </p>
           <div className="hero-actions">
-            <a href="#calculator" className="btn-primary">
-              Calculate My ROI →
+            <a href="#cost-of-waiting" className="btn-primary">
+              See the cost of waiting →
             </a>
             <a href="#how-it-works" className="btn-ghost">
-              See how it works ↓
+              How it works ↓
             </a>
           </div>
           <div className="hero-stats">
             <div className="hero-stat">
               <div className="hero-stat-n">30s</div>
-              <div className="hero-stat-l">Patient lookup time</div>
+              <div className="hero-stat-l">Complete record retrieval</div>
             </div>
             <div className="hero-stat">
               <div className="hero-stat-n">320M+</div>
               <div className="hero-stat-l">US patients covered</div>
             </div>
             <div className="hero-stat">
-              <div className="hero-stat-n">4×</div>
-              <div className="hero-stat-l">Average ROI on cost</div>
+              <div className="hero-stat-n">90%</div>
+              <div className="hero-stat-l">US population coverage</div>
             </div>
             <div className="hero-stat">
-              <div className="hero-stat-n">$1,470</div>
-              <div className="hero-stat-l">Annual RPM revenue / patient</div>
+              <div className="hero-stat-n">6 min</div>
+              <div className="hero-stat-l">Saved per patient visit</div>
             </div>
           </div>
         </div>
@@ -60,14 +61,35 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── FEATURES ── */}
-      <section className="section" id="features">
+      {/* ── COST OF WAITING ── */}
+      <section className="section" id="cost-of-waiting">
         <div className="section-inner">
-          <div className="section-kicker">Platform capabilities</div>
-          <h2 className="section-title">Everything your clinic needs to <em>know more, bill more.</em></h2>
+          <div className="section-kicker">The problem every urgent care faces</div>
+          <h2 className="section-title">Every patient who walks in is a <em>stranger to your system.</em></h2>
           <p className="section-sub">
-            Stop asking patients to remember their medication lists. MyPulseScan pulls verified records from
-            every major health network — automatically, compliantly, and in real time.
+            They tell you what they remember. You document what they say. And everyone hopes nothing was missed.
+            That&apos;s not medicine — that&apos;s guesswork at scale.
+          </p>
+          <div className="feature-grid">
+            {costOfWaiting.map(f => (
+              <div key={f.title} className="feature-card" style={{borderTop: '3px solid var(--red-lt)'}}>
+                <div className="feature-icon" style={{background: 'var(--red-lt)'}}>{f.icon}</div>
+                <div className="feature-title">{f.title}</div>
+                <p className="feature-text">{f.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURES ── */}
+      <section className="section section-alt" id="features">
+        <div className="section-inner">
+          <div className="section-kicker">What MyPulseScan delivers</div>
+          <h2 className="section-title">Complete clinical intelligence. <em>Before the door opens.</em></h2>
+          <p className="section-sub">
+            Stop asking patients to remember their medications. MyPulseScan pulls verified records from
+            every major health network — automatically, compliantly, in real time.
           </p>
           <div className="feature-grid">
             {features.map(f => (
@@ -82,7 +104,7 @@ export default function HomePage() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="section section-alt" id="how-it-works">
+      <section className="section" id="how-it-works">
         <div className="section-inner">
           <div className="section-kicker">The workflow</div>
           <h2 className="section-title">Patient arrives. Records appear. <em>You&apos;re already ready.</em></h2>
@@ -102,13 +124,14 @@ export default function HomePage() {
       </section>
 
       {/* ── CPT CODES / REVENUE ── */}
-      <section className="section" id="revenue">
+      <section className="section section-alt" id="revenue">
         <div className="section-inner">
-          <div className="section-kicker">Medicare billing</div>
-          <h2 className="section-title">Three CPT codes. <em>$1,470 per patient per year.</em></h2>
+          <div className="section-kicker">Optional revenue layer — for practices that offer RPM</div>
+          <h2 className="section-title">Already offering Remote Patient Monitoring? <em>Bill it automatically.</em></h2>
           <p className="section-sub">
-            Remote Patient Monitoring is already reimbursed by Medicare. Most clinics are leaving this
-            revenue on the table because setup is too complex. MyPulseScan wires it in automatically.
+            If your practice offers RPM, MyPulseScan wires the billing automatically — no separate platform needed.
+            Medicare reimburses up to $1,470 per enrolled patient per year across three CPT codes.
+            This is a bonus layer, not the reason to sign up. The reason is what happens before this.
           </p>
           <div className="cpt-grid">
             {cptCodes.map(c => (
@@ -205,10 +228,10 @@ export default function HomePage() {
       <section className="section section-alt" id="calculator">
         <div className="section-inner">
           <div className="section-kicker">Build your business case</div>
-          <h2 className="section-title" style={{marginBottom: 8}}>Calculate your <em>exact ROI.</em></h2>
+          <h2 className="section-title" style={{marginBottom: 8}}>See the exact dollar value of <em>knowing more.</em></h2>
           <p className="section-sub">
-            Adjust your patient volume, staffing costs, and RPM enrollment to see your precise
-            monthly and annual return on MyPulseScan.
+            Adjust your patient volume and staffing costs. The calculator shows staff time recovered,
+            plus optional RPM revenue for practices that choose to activate it.
           </p>
           <RoiCalculator />
         </div>
@@ -217,10 +240,10 @@ export default function HomePage() {
       {/* ── CTA ── */}
       <div className="cta-section">
         <div className="cta-section-inner">
-          <h2>Start seeing complete patient records in 30 seconds.</h2>
+          <h2>Your next patient already has a record. <em style={{color: 'var(--teal-lt)'}}>You just don&apos;t have it yet.</em></h2>
           <p>
-            Setup takes one afternoon. Your first month of RPM billing covers the platform cost.
-            No long-term contracts.
+            Setup takes one afternoon. No EHR replacement required. No IT project.
+            Just complete patient history — every visit, from day one.
           </p>
           <div className="cta-actions">
             <a href="mailto:hello@mypulsescan.com" className="btn-white">
@@ -240,44 +263,62 @@ export default function HomePage() {
 
 // ── DATA ──
 
-const features = [
+const costOfWaiting = [
   {
-    icon: '⚡',
-    title: 'Instant Record Retrieval',
-    text: 'Pull verified patient history from 320M+ US records in under 30 seconds. Medications, allergies, conditions, labs — everything, instantly.',
-  },
-  {
-    icon: '🏥',
-    title: 'TEFCA Network Access',
-    text: 'Connected to CommonWell and Carequality — the two largest US health data networks. Cross-organization records included.',
-  },
-  {
-    icon: '💰',
-    title: 'Automatic RPM Billing',
-    text: 'Medicare reimburses $95/month per enrolled patient for Remote Patient Monitoring. MyPulseScan automates the paperwork.',
-  },
-  {
-    icon: '🔒',
-    title: 'HIPAA Compliant by Default',
-    text: 'Every data request is logged, auditable, and scoped to treatment purpose. BAA included. FHIR R4 standard throughout.',
+    icon: '💊',
+    title: 'Drug interactions you never see coming',
+    text: 'A patient on warfarin gets ibuprofen. A patient on SSRIs gets tramadol. They forgot to mention it. Your staff didn\'t ask. The clipboard never had a chance.',
   },
   {
     icon: '📋',
-    title: 'No-Form Patient Intake',
-    text: 'Eliminate clipboards and PDF intake forms. Records arrive before the patient sits down. Staff spends time on care, not data entry.',
+    title: '6 minutes of staff time. Per patient. Every visit.',
+    text: 'At 200 patients/day, your team spends 20 hours a week transcribing information patients can\'t accurately recall. That\'s half an FTE — gone.',
+  },
+  {
+    icon: '⚖️',
+    title: 'The liability gap no one talks about',
+    text: 'When a decision is made on incomplete history, documented or not, the practice bears the risk. Verified records close that gap before it opens.',
+  },
+]
+
+const features = [
+  {
+    icon: '⚡',
+    title: 'Complete Record in 30 Seconds',
+    text: 'Name, date of birth, ZIP — that\'s all your staff enters. Active medications, allergies, conditions, recent labs, and imaging history appear instantly.',
+  },
+  {
+    icon: '🏥',
+    title: 'Every Network. One Query.',
+    text: 'CommonWell and Carequality cover 90% of US patients. Epic MyChart, Apple Health, and Google Health fill the rest. One request. Everything.',
+  },
+  {
+    icon: '🔒',
+    title: 'HIPAA-Compliant by Architecture',
+    text: 'Every record request is logged, auditable, and scoped to treatment purpose. BAA included on day one. FHIR R4 standard throughout.',
+  },
+  {
+    icon: '📋',
+    title: 'No Clipboards. No Intake Forms.',
+    text: 'Eliminate paper forms entirely. Records arrive before the patient sits down. Staff time shifts from data entry to actual care.',
+  },
+  {
+    icon: '🧾',
+    title: 'Verified History for Every Prior Auth',
+    text: 'Insurance-based practices: attach verified records to every authorization request. Fewer denials. Less back-and-forth. Faster approvals.',
   },
   {
     icon: '📊',
-    title: 'Revenue Intelligence Dashboard',
-    text: 'See CPT billing opportunities, enrollment rates, and revenue per patient — in one place. Know your single number every morning.',
+    title: 'RPM Billing — When You\'re Ready',
+    text: 'If your practice offers Remote Patient Monitoring, MyPulseScan wires the billing automatically. $95/patient/month. When you choose to activate it.',
   },
 ]
 
 const steps = [
-  { n: '01', title: 'Patient Checks In', text: 'Staff enters name, DOB, and ZIP. That\'s it. No paper forms, no manual data entry.' },
-  { n: '02', title: 'Records Retrieved', text: 'MyPulseScan queries CommonWell + Carequality in real time. Full medical history in 30 seconds.' },
-  { n: '03', title: 'Provider Reviews', text: 'Medications, allergies, recent labs, and active conditions appear in a clean clinical view. Care decisions improve immediately.' },
-  { n: '04', title: 'RPM Billed Automatically', text: 'Eligible patients are enrolled in RPM automatically. Medicare billing flows through your existing billing system.' },
+  { n: '01', title: 'Patient Checks In', text: 'Staff enters name, DOB, and ZIP. No forms. No clipboard. No manual transcription.' },
+  { n: '02', title: 'Full History Retrieved', text: 'MyPulseScan queries CommonWell, Carequality, Epic, Apple Health, and Google Health simultaneously. Complete record in 30 seconds.' },
+  { n: '03', title: 'Provider Walks In Ready', text: 'Active medications, allergies, conditions, recent labs — all visible before the exam begins. No surprises. Better decisions.' },
+  { n: '04', title: 'Staff Recovers 6 Minutes', text: 'Multiply 6 minutes by your daily patient volume. That\'s how much time MyPulseScan returns to your team — every single day.' },
 ]
 
 const cptCodes = [
@@ -308,7 +349,7 @@ const proofStats = [
   { n: '320M+', l: 'US patients in network' },
   { n: '90%', l: 'US population coverage' },
   { n: '30s', l: 'Average retrieval time' },
-  { n: '$1,470', l: 'Annual RPM rev/patient' },
+  { n: '6 min', l: 'Saved per patient visit' },
 ]
 
 const verticals = [
@@ -334,13 +375,13 @@ const verticals = [
 
 const testimonials = [
   {
-    quote: 'We were asking patients to remember their medications on a clipboard. Now we have their actual pharmacy history before they sit down. It changed how we practice.',
+    quote: 'We were asking patients to remember their medications on a clipboard. Now we have their actual pharmacy history before they sit down. We caught a drug interaction on day two. It changed how we practice.',
     name: 'Dr. Sarah M.',
     role: 'Medical Director, Urgent Care Network (Chicago)',
     initials: 'SM',
   },
   {
-    quote: 'The RPM billing alone paid for the platform in the first month. We enrolled 40 patients and added $3,800 in monthly recurring revenue we weren\'t capturing before.',
+    quote: 'I didn\'t realize how much time my front desk was spending re-entering information. At 150 patients a day, we\'ve recovered almost two full staff hours. That math is obvious.',
     name: 'James K.',
     role: 'Practice Manager, Primary Care Group (Dallas)',
     initials: 'JK',
