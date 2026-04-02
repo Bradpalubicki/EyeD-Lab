@@ -47,9 +47,9 @@ let _cachedToken: string | null = null
 let _tokenExpiry = 0
 
 /**
- * Get a valid JWT for the Particle Health API.
- * Requires PARTICLE_CLIENT_ID + PARTICLE_CLIENT_SECRET (two separate env vars)
- * or PARTICLE_API_KEY as the client_secret with PARTICLE_CLIENT_ID for the id.
+ * Get a valid Bearer token for the Particle Health API.
+ * Auth: HTTP Basic (clientId:clientSecret) with empty JSON body.
+ * Response: form-encoded access_token=<jwt>
  */
 export async function getParticleToken(): Promise<string> {
   if (_cachedToken && Date.now() < _tokenExpiry - 30_000) {
@@ -63,30 +63,40 @@ export async function getParticleToken(): Promise<string> {
     throw new Error('PARTICLE_CLIENT_ID and PARTICLE_CLIENT_SECRET (or PARTICLE_API_KEY) required')
   }
 
-  const res = await fetch(`${PARTICLE_BASE}/auth`, {
+  const basicCred = Buffer.from(clientId + ':' + clientSecret).toString('base64')
+  const res = await fetch(PARTICLE_BASE + '/auth', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ clientId, clientSecret }),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + basicCred,
+    },
+    body: '{}',
   })
 
   if (!res.ok) {
     const text = await res.text()
-    throw new Error(`Particle auth failed (${res.status}): ${text}`)
+    throw new Error('Particle auth failed (' + res.status + '): ' + text)
   }
 
-  const data = await res.json() as { token?: string; access_token?: string; expires_in?: number }
-  const token = data.token ?? data.access_token
+  // Response is form-encoded: access_token=<jwt>
+  const text = await res.text()
+  let token: string | undefined
+  if (text.startsWith('{')) {
+    const data = JSON.parse(text) as { token?: string; access_token?: string }
+    token = data.token ?? data.access_token
+  } else {
+    const params = new URLSearchParams(text)
+    token = params.get('access_token') ?? undefined
+  }
   if (!token) throw new Error('Particle auth: no token in response')
 
   _cachedToken = token
-  _tokenExpiry = Date.now() + (data.expires_in ?? 3600) * 1000
+  _tokenExpiry = Date.now() + 3600 * 1000
   return token
 }
 
-// Check if Particle is configured
 export function isParticleConfigured(): boolean {
-  const clientId = process.env.PARTICLE_CLIENT_ID
-  return !!clientId
+  return !!(process.env.PARTICLE_CLIENT_ID)
 }
 
 // ─── Patient Match ─────────────────────────────────────────────────────────────
@@ -97,11 +107,11 @@ export async function matchPatient(
   try {
     const token = await getParticleToken()
 
-    const res = await fetch(`${PARTICLE_BASE}/api/v2/patients/search`, {
+    const res = await fetch(PARTICLE_BASE + '/api/v2/patients/search', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `JWT ${token}`,
+        'Authorization': 'Bearer ' + token,
       },
       body: JSON.stringify(input),
     })
@@ -109,7 +119,7 @@ export async function matchPatient(
     if (res.status === 204) return null
     if (!res.ok) {
       const text = await res.text()
-      console.error(`[particle] patient match failed (${res.status}):`, text)
+      console.error('[particle] patient match failed (' + res.status + '):', text)
       return null
     }
 
@@ -127,10 +137,10 @@ export async function submitQuery(particlePatientId: string): Promise<string | n
   try {
     const token = await getParticleToken()
 
-    const res = await fetch(`${PARTICLE_BASE}/R4/Patient/${particlePatientId}/$query`, {
+    const res = await fetch(PARTICLE_BASE + '/R4/Patient/' + particlePatientId + '/$query', {
       method: 'POST',
       headers: {
-        'Authorization': `JWT ${token}`,
+        'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({}),
@@ -138,7 +148,7 @@ export async function submitQuery(particlePatientId: string): Promise<string | n
 
     if (!res.ok) {
       const text = await res.text()
-      console.error(`[particle] $query submit failed (${res.status}):`, text)
+      console.error('[particle] $query submit failed (' + res.status + '):', text)
       return null
     }
 
@@ -157,8 +167,8 @@ export async function waitForQuery(particlePatientId: string): Promise<boolean> 
 
   for (let i = 0; i < maxAttempts; i++) {
     try {
-      const res = await fetch(`${PARTICLE_BASE}/R4/Patient/${particlePatientId}/$query`, {
-        headers: { 'Authorization': `JWT ${token}` },
+      const res = await fetch(PARTICLE_BASE + '/R4/Patient/' + particlePatientId + '/$query', {
+        headers: { 'Authorization': 'Bearer ' + token },
       })
 
       if (res.status === 200) return true
@@ -186,12 +196,12 @@ export async function fetchFhirResources(
     const token = await getParticleToken()
     const qs = new URLSearchParams({ patient: particlePatientId, ...params })
 
-    const res = await fetch(`${PARTICLE_BASE}/R4/${resourceType}?${qs}`, {
-      headers: { 'Authorization': `JWT ${token}` },
+    const res = await fetch(PARTICLE_BASE + '/R4/' + resourceType + '?' + qs, {
+      headers: { 'Authorization': 'Bearer ' + token },
     })
 
     if (!res.ok) {
-      console.error(`[particle] fetchFhirResources ${resourceType} failed (${res.status})`)
+      console.error('[particle] fetchFhirResources ' + resourceType + ' failed (' + res.status + ')')
       return empty
     }
 
