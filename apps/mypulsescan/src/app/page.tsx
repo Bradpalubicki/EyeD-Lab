@@ -3,13 +3,60 @@ import Footer from '@/components/Footer'
 import RoiCalculator from '@/components/RoiCalculator'
 import HeartbeatLogo from '@/components/HeartbeatLogo'
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How does MyPulseScan retrieve patient records?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'MyPulseScan queries CommonWell, Carequality, and TEFCA simultaneously using only a patient\'s name, date of birth, and ZIP code. Records are aggregated from every connected health network and returned with a patient match confidence score in under 30 seconds.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Which health networks does MyPulseScan connect to?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'MyPulseScan connects to CommonWell, Carequality, TEFCA, Epic MyChart, Apple Health, Google Health, and Surescripts — covering 90% of US patients and 6,000+ pharmacies for real pharmacy fill history.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does it take to get a patient\'s medical history?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'MyPulseScan returns an aggregated, multi-network patient history in under 30 seconds. Staff enters the patient\'s name, date of birth, and ZIP code at check-in. Records are confirmed and pushed to the EMR before the provider opens the exam room door.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does MyPulseScan work with Epic EMR?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. MyPulseScan pushes verified records directly into Epic, Athena, eClinicalWorks, and Cerner via Redox. No manual re-entry is required — the chart is pre-populated before the provider walks in.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How does Medicare pay for patient record retrieval?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Practices that offer Remote Patient Monitoring (RPM) can bill Medicare under CPT codes 99453 (device setup, $20 one-time), 99454 (device supply, $47/month), and 99457 (remote monitoring, $48/month) — up to $1,470 per enrolled patient per year. MyPulseScan automates the billing workflow for practices that choose to activate RPM.',
+      },
+    },
+  ],
+}
+
 export default function HomePage() {
   return (
     <>
       <Nav />
 
       {/* ── HERO ── */}
-      <section className="hero">
+      <section className="hero" id="main-content" aria-label="Hero">
         <div className="hero-inner">
           <div style={{marginBottom: 24, display: 'flex', justifyContent: 'center'}}>
             <HeartbeatLogo size={88} />
@@ -268,6 +315,11 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
 
       <Footer />
     </>
