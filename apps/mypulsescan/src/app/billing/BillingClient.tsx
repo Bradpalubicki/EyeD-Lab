@@ -6,8 +6,8 @@ import Link from 'next/link'
 const CPT_SETUP  = 20   // 99453 one-time
 const CPT_DEVICE = 47   // 99454 /month
 const CPT_MGMT   = 48   // 99457 /month
-const PLAT_BASE  = 250
-const PLAT_PER_PT = 5
+const PLAT_BASE  = 299
+const PLAT_PER_PT = 6
 
 function fmt(n: number) {
   return '$' + Math.round(Math.abs(n)).toLocaleString()

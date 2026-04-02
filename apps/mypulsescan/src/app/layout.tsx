@@ -2,15 +2,15 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'MyPulseScan — Patient Health Record Intelligence for Clinics',
-  description: 'Give every patient the care they deserve. MyPulseScan connects your clinic to 320M+ US patient records in 30 seconds — no forms, no faxing. Built for urgent care, primary care, and insurance-based practices.',
+  title: 'Patient Health Records in 30 Seconds | MyPulseScan',
+  description: 'Connect your clinic to 320M+ patient records in 30 seconds. No forms, no faxing. Medicare-billable RPM included. Built for urgent care and primary care.',
   metadataBase: new URL('https://mypulsescan.com'),
   alternates: {
     canonical: 'https://mypulsescan.com',
   },
   openGraph: {
-    title: 'MyPulseScan — Patient Health Record Intelligence',
-    description: 'Connect your clinic to 320M+ US patient records in 30 seconds. Medicare-billable RPM included.',
+    title: 'Patient Health Records in 30 Seconds | MyPulseScan',
+    description: 'Connect your clinic to 320M+ patient records in 30 seconds. No forms, no faxing. Medicare-billable RPM included. Built for urgent care and primary care.',
     url: 'https://mypulsescan.com',
     siteName: 'MyPulseScan',
     type: 'website',
@@ -25,8 +25,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MyPulseScan — Patient Health Record Intelligence',
-    description: 'Connect your clinic to 320M+ US patient records in 30 seconds. Medicare-billable RPM included.',
+    title: 'Patient Health Records in 30 Seconds | MyPulseScan',
+    description: 'Connect your clinic to 320M+ patient records in 30 seconds. No forms, no faxing. Medicare-billable RPM included. Built for urgent care and primary care.',
     images: ['/og-image.jpg'],
   },
   keywords: ['urgent care EHR', 'patient record retrieval', 'FHIR integration', 'RPM billing', 'CommonWell health', 'Carequality', 'TEFCA'],

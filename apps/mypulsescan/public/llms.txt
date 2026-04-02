@@ -1,0 +1,30 @@
+# MyPulseScan — Patient Health Record Intelligence
+
+## About
+MyPulseScan connects clinics to 320M+ US patient records in 30 seconds at the point of care — no forms, no faxing. Built for urgent care, primary care, and insurance-based practices.
+
+## Core Capabilities
+- Multi-network patient record aggregation (CommonWell, Carequality, TEFCA, Surescripts)
+- Real pharmacy fill history — actual dispense records, not self-reported medications
+- Patient match confidence scoring to eliminate wrong-patient liability
+- Direct EMR push via Redox (Epic, Athena, eClinicalWorks, Cerner) — zero re-entry
+- HIPAA audit trail on every record pull with treatment relationship attestation
+- RPM billing automation (CPT 99453, 99454, 99457) — $1,140/enrolled patient/year
+
+## Medicare Billing
+MyPulseScan activates three Medicare CPT codes:
+- CPT 99453: Device setup — $20 one-time per patient
+- CPT 99454: Monthly device supply — $47/month per enrolled patient
+- CPT 99457: Remote physiologic monitoring — $48/month per patient
+
+A clinic enrolling 50 patients can generate approximately $5,700/month in additional Medicare revenue.
+
+## Target Customers
+- Urgent care clinics
+- Primary care practices
+- Insurance-based practices seeing Medicare patients
+
+## Contact
+hello@mypulsescan.com
+https://mypulsescan.com
+https://mypulsescan.com/billing — Medicare CPT billing reference page

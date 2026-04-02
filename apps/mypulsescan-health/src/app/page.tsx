@@ -1,9 +1,35 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'MyPulseScan.health — Clinical Intelligence at Scale for MSOs & PE-Backed Platforms',
+  title: 'MSO Clinical Intelligence Platform | MyPulseScan',
   description:
-    'Built for multi-location practices, PE-backed MSOs, and enterprise health networks. Usage-based pricing that scales with patient volume — not headcount. RPM billing automation + 30-day pilots.',
+    'Clinical intelligence for multi-location practices and PE-backed MSOs. Usage-based pricing, RPM billing automation, 30-day pilot included.',
+  openGraph: {
+    title: 'MSO Clinical Intelligence Platform | MyPulseScan',
+    description:
+      'Clinical intelligence for multi-location practices and PE-backed MSOs. Usage-based pricing, RPM billing automation, 30-day pilot included.',
+    url: 'https://mypulsescan.health',
+    siteName: 'MyPulseScan Health',
+    images: [
+      {
+        url: 'https://mypulsescan.health/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'MyPulseScan Enterprise Clinical Intelligence Platform',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MSO Clinical Intelligence Platform | MyPulseScan',
+    description:
+      'Clinical intelligence for multi-location practices and PE-backed MSOs. Usage-based pricing, RPM billing automation, 30-day pilot included.',
+    images: ['https://mypulsescan.health/og-image.jpg'],
+  },
+  alternates: {
+    canonical: 'https://mypulsescan.health',
+  },
 }
 
 export default function HomePage() {
@@ -130,13 +156,13 @@ export default function HomePage() {
         <div className="section-header container">
           <p className="kicker">The Economics</p>
           <h2>
-            Usage-based pricing.
+            Medicare pays your network $95.
             <br />
-            <em className="italic-teal">Revenue-share at scale.</em>
+            <em className="italic-teal">We charge $6. You keep $89.</em>
           </h2>
           <p>
-            Low-volume clinics pay for what they use. High-volume platforms share the upside.
-            Start with a pilot — scale when the numbers prove out.
+            Per enrolled RPM patient, per month. Platform fee covers everything else.
+            Our revenue comes from new reimbursement — not your existing budget.
           </p>
         </div>
 
@@ -171,7 +197,7 @@ export default function HomePage() {
         </div>
 
         <p className="pricing-tagline container">
-          &ldquo;We only make money when you do.&rdquo;
+          &ldquo;Medicare pays you $95. We charge $6. You keep $89. Per patient, per month.&rdquo;
         </p>
 
         <div className="economics-math container">
@@ -419,16 +445,16 @@ const PRICING_TIERS = [
   {
     tier: 'Tier 2',
     name: 'Growth',
-    tagline: 'Cost scales with patient volume, not headcount.',
+    tagline: 'Medicare pays $95/patient. We take $6. You keep $89.',
     price: '$299',
-    priceSub: 'per location / month + $0.50 per pull over 200',
+    priceSub: 'per location / month + $6 per enrolled RPM patient',
     featured: true,
     cta: 'Get Growth Pricing',
     features: [
       '5–50 locations',
-      'Base rate covers first 200 record pulls/location/month',
-      'Usage-based overage — low-volume clinics stay lean',
-      'Full RPM billing automation included',
+      'Platform fee: $299/location/month (record pulls, EMR push, audit trail)',
+      'RPM fee: $6/enrolled patient/month — funded by Medicare reimbursement',
+      'Medicare pays $95 → you keep $89 net per patient',
       'Dedicated implementation team',
       'Quarterly ROI reviews',
     ],
@@ -436,15 +462,15 @@ const PRICING_TIERS = [
   {
     tier: 'Tier 3',
     name: 'Platform',
-    tagline: 'Our fee tied directly to revenue we generate for you.',
-    price: '$299',
-    priceSub: 'per location / month + 10% of net new RPM billing',
+    tagline: 'Same $6/patient fee. Platform rate negotiated at volume.',
+    price: 'Custom',
+    priceSub: 'per location / month + $6 per enrolled RPM patient',
     featured: false,
     cta: 'Schedule a Platform Call',
     features: [
       '50+ locations',
-      'Same base rate — revenue share replaces usage overage',
-      'We only win when you win on RPM',
+      'Same $6/patient RPM fee — funded by Medicare reimbursement',
+      'Platform rate negotiated based on location count',
       'Custom EMR integrations + dedicated CSM',
       'Executive reporting dashboard',
       'BAA + enterprise SLA included',

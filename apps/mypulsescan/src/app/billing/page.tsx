@@ -2,16 +2,16 @@ import type { Metadata } from 'next'
 import BillingClient from './BillingClient'
 
 export const metadata: Metadata = {
-  title: 'How Medicare Pays You Back | MyPulseScan',
+  title: 'Medicare RPM Billing: CPT 99453 99454 99457 | MyPulseScan',
   description:
-    'The government has a billing code for exactly what MyPulseScan does. See how CPT 99453, 99454, and 99457 turn patient record retrieval into recurring Medicare revenue — for urgent care and primary care practices.',
+    'CPT codes 99453, 99454, and 99457 turn patient record retrieval into recurring Medicare revenue. Real examples for urgent care and primary care practices.',
   alternates: {
     canonical: 'https://mypulsescan.com/billing',
   },
   openGraph: {
-    title: 'How Medicare Pays You Back | MyPulseScan',
+    title: 'Medicare RPM Billing: CPT 99453 99454 99457 | MyPulseScan',
     description:
-      'See how CPT 99453, 99454, and 99457 turn patient record retrieval into recurring Medicare revenue for urgent care and primary care practices.',
+      'CPT codes 99453, 99454, and 99457 turn patient record retrieval into recurring Medicare revenue. Real examples for urgent care and primary care.',
     url: 'https://mypulsescan.com/billing',
     siteName: 'MyPulseScan',
     type: 'website',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'How Medicare Pays You Back | MyPulseScan',
+    title: 'Medicare RPM Billing: CPT 99453 99454 99457 | MyPulseScan',
     description:
       'See how CPT 99453, 99454, and 99457 turn patient record retrieval into recurring Medicare revenue.',
     images: ['/og-image.jpg'],

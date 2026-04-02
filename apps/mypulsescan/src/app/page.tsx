@@ -297,6 +297,41 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── PRICING ── */}
+      <section className="section" id="pricing">
+        <div className="section-inner">
+          <div className="section-kicker">Simple pricing</div>
+          <h2 className="section-title"><em>Medicare pays you $95.</em><br />We charge you $6. You keep $89.</h2>
+          <p className="section-sub">
+            Per enrolled RPM patient, per month. Our fee comes entirely from new reimbursement —
+            not your existing budget.
+          </p>
+          <div className="pricing-cpt-row">
+            {[
+              { code: 'CPT 99453', label: 'Device setup', medicare: '$20', fee: '$0', keep: '$20', sub: 'one-time per patient', note: 'Covered in platform fee' },
+              { code: 'CPT 99454', label: 'Monthly monitoring', medicare: '$47', fee: '$3', keep: '$44', sub: 'per patient / month' },
+              { code: 'CPT 99457', label: 'Provider review', medicare: '$48', fee: '$3', keep: '$45', sub: 'per patient / month' },
+            ].map(c => (
+              <div key={c.code} className="pricing-cpt-card">
+                <div className="pricing-cpt-code">{c.code}</div>
+                <div className="pricing-cpt-name">{c.label}</div>
+                <div className="pricing-cpt-sub">{c.sub}</div>
+                <div className="pricing-cpt-rows">
+                  <div className="pricing-cpt-row-item"><span>Medicare pays you</span><span className="teal">{c.medicare}</span></div>
+                  <div className="pricing-cpt-row-item"><span>MyPulseScan fee</span><span>{c.fee}</span></div>
+                  <div className="pricing-cpt-row-item strong"><span>You keep</span><span className="teal">{c.keep}</span></div>
+                </div>
+                {c.note && <div className="pricing-cpt-note">{c.note}</div>}
+              </div>
+            ))}
+          </div>
+          <div className="pricing-platform-note">
+            + <strong>$299/location/month</strong> platform fee covers record retrieval, patient matching, EMR push, and HIPAA audit trail.
+            {' '}<a href="mailto:hello@mypulsescan.com" style={{color: 'var(--teal)'}}>30-day pilot is free →</a>
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
       <div className="cta-section">
         <div className="cta-section-inner">

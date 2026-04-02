@@ -1,0 +1,27 @@
+# MyPulseScan Health — Enterprise Clinical Intelligence
+
+## About
+MyPulseScan Health is a clinical intelligence platform for multi-location medical practices, PE-backed MSOs, and enterprise health networks. It aggregates patient health records from CommonWell, Carequality, TEFCA, and Surescripts at the point of care — no forms, no faxing.
+
+## Core Capabilities
+- Multi-network patient record aggregation (320M+ US patients)
+- Real pharmacy fill history via Surescripts
+- Patient match confidence scoring (Verato MPI)
+- Direct EMR push via Redox (Epic, Athena, eClinicalWorks, Cerner)
+- HIPAA-compliant audit trail on every pull
+- RPM billing automation (CPT 99453, 99454, 99457)
+
+## Pricing Model
+- Pilot: Free, 1 location, 30 days
+- Growth: $299/location/month + $0.50/pull over 200/month
+- Platform (50+ locations): $299/location/month + 10% of net new RPM billing
+
+## Target Customers
+- PE-backed multi-location urgent care chains (5–300 locations)
+- MSOs managing primary care, urgent care, or specialty networks
+- Enterprise health systems evaluating RPM revenue opportunities
+
+## Contact
+pilot@mypulsescan.health
+hello@mypulsescan.health
+https://mypulsescan.health
