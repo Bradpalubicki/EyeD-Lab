@@ -11,6 +11,7 @@ export default [
       '**/coverage/**',
       'packages/contracts/**',
       'packages/zk-circuits/**',
+      '**/next-env.d.ts',
     ],
   },
 ];
