@@ -32,7 +32,6 @@ export interface ParticleFhirBundle {
   total?: number
 }
 
-// Resource types we care about for the patient record view
 export type ParticleFhirResource =
   | 'AllergyIntolerance'
   | 'Condition'
@@ -49,25 +48,25 @@ let _tokenExpiry = 0
 
 /**
  * Get a valid JWT for the Particle Health API.
- * Tokens expire after 60 minutes — cached in memory for the lambda lifecycle.
+ * Requires PARTICLE_CLIENT_ID + PARTICLE_CLIENT_SECRET (two separate env vars)
+ * or PARTICLE_API_KEY as the client_secret with PARTICLE_CLIENT_ID for the id.
  */
-async function getToken(): Promise<string> {
+export async function getParticleToken(): Promise<string> {
   if (_cachedToken && Date.now() < _tokenExpiry - 30_000) {
     return _cachedToken
   }
 
-  const apiKey = process.env.PARTICLE_API_KEY
-  if (!apiKey) throw new Error('PARTICLE_API_KEY not set')
+  const clientId = process.env.PARTICLE_CLIENT_ID
+  const clientSecret = process.env.PARTICLE_CLIENT_SECRET ?? process.env.PARTICLE_API_KEY
 
-  // Particle sandbox: POST /auth with client credentials
-  // The single API key serves as the client_secret; client_id is the key prefix
+  if (!clientId || !clientSecret) {
+    throw new Error('PARTICLE_CLIENT_ID and PARTICLE_CLIENT_SECRET (or PARTICLE_API_KEY) required')
+  }
+
   const res = await fetch(`${PARTICLE_BASE}/auth`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      clientId: apiKey.slice(0, 32),   // first 32 chars as client_id
-      clientSecret: apiKey,
-    }),
+    body: JSON.stringify({ clientId, clientSecret }),
   })
 
   if (!res.ok) {
@@ -84,17 +83,19 @@ async function getToken(): Promise<string> {
   return token
 }
 
+// Check if Particle is configured
+export function isParticleConfigured(): boolean {
+  const clientId = process.env.PARTICLE_CLIENT_ID
+  return !!clientId
+}
+
 // ─── Patient Match ─────────────────────────────────────────────────────────────
 
-/**
- * Match a patient by demographics against the Particle Health network.
- * Returns null if no match found (204) or on error.
- */
 export async function matchPatient(
   input: ParticleMatchInput
 ): Promise<ParticleMatchResult | null> {
   try {
-    const token = await getToken()
+    const token = await getParticleToken()
 
     const res = await fetch(`${PARTICLE_BASE}/api/v2/patients/search`, {
       method: 'POST',
@@ -105,7 +106,7 @@ export async function matchPatient(
       body: JSON.stringify(input),
     })
 
-    if (res.status === 204) return null  // no match
+    if (res.status === 204) return null
     if (!res.ok) {
       const text = await res.text()
       console.error(`[particle] patient match failed (${res.status}):`, text)
@@ -120,15 +121,11 @@ export async function matchPatient(
   }
 }
 
-// ─── Query submission (async) ──────────────────────────────────────────────────
+// ─── Query submission ──────────────────────────────────────────────────────────
 
-/**
- * Submit a query against CommonWell/CareQuality for the patient.
- * Returns queryId or null on failure.
- */
 export async function submitQuery(particlePatientId: string): Promise<string | null> {
   try {
-    const token = await getToken()
+    const token = await getParticleToken()
 
     const res = await fetch(`${PARTICLE_BASE}/R4/Patient/${particlePatientId}/$query`, {
       method: 'POST',
@@ -153,12 +150,8 @@ export async function submitQuery(particlePatientId: string): Promise<string | n
   }
 }
 
-/**
- * Poll query status until complete or timeout (max 20s).
- * Returns true when ready, false on timeout/error.
- */
 export async function waitForQuery(particlePatientId: string): Promise<boolean> {
-  const token = await getToken()
+  const token = await getParticleToken()
   const maxAttempts = 4
   const delayMs = 5000
 
@@ -170,7 +163,6 @@ export async function waitForQuery(particlePatientId: string): Promise<boolean> 
 
       if (res.status === 200) return true
       if (res.status === 202) {
-        // still processing
         await new Promise(r => setTimeout(r, delayMs))
         continue
       }
@@ -184,9 +176,6 @@ export async function waitForQuery(particlePatientId: string): Promise<boolean> 
 
 // ─── FHIR Resource Fetch ───────────────────────────────────────────────────────
 
-/**
- * Fetch a FHIR resource bundle for a matched patient.
- */
 export async function fetchFhirResources(
   particlePatientId: string,
   resourceType: ParticleFhirResource,
@@ -194,7 +183,7 @@ export async function fetchFhirResources(
 ): Promise<ParticleFhirBundle> {
   const empty: ParticleFhirBundle = { resourceType: 'Bundle', entry: [] }
   try {
-    const token = await getToken()
+    const token = await getParticleToken()
     const qs = new URLSearchParams({ patient: particlePatientId, ...params })
 
     const res = await fetch(`${PARTICLE_BASE}/R4/${resourceType}?${qs}`, {
@@ -213,7 +202,7 @@ export async function fetchFhirResources(
   }
 }
 
-// ─── High-level: fetch all records for matched patient ────────────────────────
+// ─── High-level: fetch all records ────────────────────────────────────────────
 
 export interface ParticleRecords {
   source: 'particle'
@@ -226,7 +215,6 @@ export interface ParticleRecords {
 }
 
 export async function fetchAllRecords(particlePatientId: string): Promise<ParticleRecords> {
-  // Submit async query first, wait for results
   await submitQuery(particlePatientId)
   await waitForQuery(particlePatientId)
 

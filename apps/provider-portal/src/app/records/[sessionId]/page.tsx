@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import AiBriefCard from "@/components/AiBriefCard";
-import ParticleHealthPanel from "@/components/ParticleHealthPanel";
+import RecordSourcesPanel from "@/components/RecordSourcesPanel";
 import { getPatientByPin, getPatientByEpicId } from "@/lib/get-patient";
 
 export default async function RecordsPage({
@@ -14,6 +14,7 @@ export default async function RecordsPage({
   const cookieStore = await cookies();
   const epicCookie = cookieStore.get("epic_session");
 
+  let epicActive = false
   let patient;
   if (epicCookie) {
     try {
@@ -25,6 +26,7 @@ export default async function RecordsPage({
       if (session.expires_at > Date.now()) {
         const bundle = await getPatientByEpicId(session.patient_id, session.access_token);
         patient = bundle.patient;
+        epicActive = true
       }
     } catch (err) {
       console.error('[records] Epic session parse/fetch failed:', err instanceof Error ? err.message : String(err))
@@ -88,11 +90,12 @@ export default async function RecordsPage({
         <AiBriefCard sessionId={sessionId} isEpicPatient={!!epicCookie} />
       </div>
 
-      {/* Particle Health — national network record pull */}
-      <ParticleHealthPanel
+      {/* All health record sources: Epic, Particle, Apple Health, Google Health */}
+      <RecordSourcesPanel
         patientName={patient.name}
         patientDob={patient.dob}
         patientGender={patient.gender}
+        epicSource={epicActive ? 'live' : 'none'}
       />
 
       {/* Medical Data Grid */}
