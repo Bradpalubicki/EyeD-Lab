@@ -110,7 +110,8 @@ export async function claudeSummarize(patient: MockPatient): Promise<AiSummaryRe
     throw new Error("Unexpected Claude response format");
   }
 
-  const rawText = textBlock.text;
+  // Strip markdown code fences if Claude wrapped the JSON
+  const rawText = textBlock.text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
 
   try {
     const parsed = JSON.parse(rawText) as { summary: string; drugInteractions: DrugInteractionFlag[] };
