@@ -1,6 +1,5 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
-import { savePatientRecord } from "@/app/actions/upload"
 
 // ── Local types ────────────────────────────────────────────────────────────────
 type Medication = { name: string; dosage: string; indication: string; rxnormCode?: string }
@@ -900,20 +899,13 @@ export default function UploadPage() {
   async function generatePin() {
     const generated = String(Math.floor(100000 + Math.random() * 900000))
     setSaveError("")
-    const result = await savePatientRecord({
-      name, dob, gender: gender as "male" | "female" | "other",
-      bloodType, height,
-      medications,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      allergies: allergies as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      conditions: conditions as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      labs: labs as any,
-      weight, bpSystolic, bpDiastolic, heartRate,
-      pin: generated,
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, dob, gender, bloodType, medications, allergies, conditions, labs, weight, bpSystolic, bpDiastolic, heartRate, pin: generated }),
     })
-    if (!result.success) {
+    const result = await res.json()
+    if (!res.ok || !result.success) {
       setSaveError(result.error ?? "Failed to save record")
       return
     }
