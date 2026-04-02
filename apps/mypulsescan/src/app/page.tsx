@@ -17,8 +17,8 @@ export default function HomePage() {
           <div className="hero-kicker">For Urgent Care &amp; Primary Care Operators</div>
           <h1>Your patient just walked in. <em>You already know their history.</em></h1>
           <p className="hero-sub">
-            MyPulseScan gives every provider a complete, verified patient record before the exam room door opens —
-            pulled instantly from 320M+ US patients across every major health network.
+            MyPulseScan gives every provider an aggregated, multi-network patient history before the exam room door opens —
+            pulled from 320M+ US patients across every major health network, with pharmacy fill data and a patient match confidence score.
             No forms. No faxing. No guessing.
           </p>
           <div className="hero-actions">
@@ -55,7 +55,7 @@ export default function HomePage() {
         <div className="logos-inner">
           <div className="logos-label">Connected networks</div>
           <div className="logos-items">
-            {['CommonWell', 'Carequality', 'Epic MyChart', 'Apple Health', 'Google Health', 'TEFCA'].map(n => (
+            {['CommonWell', 'Carequality', 'TEFCA', 'Epic MyChart', 'Apple Health', 'Google Health', 'Surescripts', 'Redox EMR'].map(n => (
               <div key={n} className="logo-item">
                 <div className="logo-dot" />
                 {n}
@@ -169,9 +169,10 @@ export default function HomePage() {
               </div>
               <h2 className="section-title">The clinical data you need. <em style={{color: 'var(--teal-lt)'}}>Already in the network.</em></h2>
               <p className="section-sub">
-                Unlike EHR integrations that only connect to one health system, MyPulseScan accesses
-                CommonWell and Carequality — the two largest US health data networks — covering 90% of
-                US patients regardless of where they received care.
+                Unlike EHR integrations that only connect to one health system, MyPulseScan queries
+                CommonWell, Carequality, and TEFCA simultaneously — plus pharmacy fill history from
+                6,000+ pharmacies via Surescripts. Every record push goes through Redox, so it lands
+                in whatever EMR your practice already uses.
               </p>
               <a href="#calculator" className="btn-primary">See your numbers →</a>
             </div>
@@ -296,18 +297,28 @@ const costOfWaiting = [
 const features = [
   {
     icon: '⚡',
-    title: 'Complete Record in 30 Seconds',
-    text: 'Name, date of birth, ZIP — that\'s all your staff enters. Active medications, allergies, conditions, recent labs, and imaging history appear instantly.',
+    title: 'Best-Available History in 30 Seconds',
+    text: 'Name, DOB, ZIP — that\'s all your staff enters. Aggregated records from every connected network appear in seconds. Multi-source, verified, confidence-scored.',
   },
   {
     icon: '🏥',
     title: 'Every Network. One Query.',
-    text: 'CommonWell and Carequality cover 90% of US patients. Epic MyChart, Apple Health, and Google Health fill the rest. One request. Everything.',
+    text: 'CommonWell, Carequality, and TEFCA cover 90% of US patients. Epic MyChart, Apple Health, and Google Health fill the rest. One request hits all of them simultaneously.',
+  },
+  {
+    icon: '💊',
+    title: 'Real Medication History — Not What They Remember',
+    text: 'Pharmacy fill data shows what patients actually picked up — not just what was prescribed. Drug interaction detection only works when the medication list is real.',
+  },
+  {
+    icon: '🎯',
+    title: 'Patient Match Confidence Score',
+    text: 'Every record retrieval returns a match confidence score. Staff confirms the right patient before the chart populates. No false positives. No wrong-patient liability.',
   },
   {
     icon: '🔒',
     title: 'HIPAA-Compliant by Architecture',
-    text: 'Every record request is logged, auditable, and scoped to treatment purpose. BAA included on day one. FHIR R4 standard throughout.',
+    text: 'Every request is scoped to treatment purpose, logged, and auditable. BAA included on day one. FHIR R4 throughout. Full consent trail on every pull.',
   },
   {
     icon: '📋',
@@ -315,27 +326,22 @@ const features = [
     text: 'Eliminate paper forms entirely. Records arrive before the patient sits down. Staff time shifts from data entry to actual care.',
   },
   {
-    icon: '🧾',
-    title: 'Verified History for Every Prior Auth',
-    text: 'Insurance-based practices: attach verified records to every authorization request. Fewer denials. Less back-and-forth. Faster approvals.',
-  },
-  {
     icon: '🔄',
     title: 'Direct EMR Import — Zero Re-Entry',
-    text: 'Records don\'t stop at your screen. MyPulseScan pushes verified history directly into your EMR — Epic, Athena, eClinicalWorks, and more. Your chart is populated before the provider walks in.',
+    text: 'Records push directly into your EMR via Redox — Epic, Athena, eClinicalWorks, Cerner. Your chart is pre-populated before the provider opens the door.',
   },
   {
-    icon: '📊',
-    title: 'RPM Billing — When You\'re Ready',
-    text: 'If your practice offers Remote Patient Monitoring, MyPulseScan wires the billing automatically. $95/patient/month. When you choose to activate it.',
+    icon: '🧾',
+    title: 'Verified History for Every Prior Auth',
+    text: 'Attach verified multi-network records to every authorization request. Fewer denials. Less back-and-forth. Documentation that payers actually accept.',
   },
 ]
 
 const steps = [
-  { n: '01', title: 'Patient Checks In', text: 'Staff enters name, DOB, and ZIP. No forms. No clipboard. No manual transcription.' },
-  { n: '02', title: 'Full History Retrieved', text: 'MyPulseScan queries CommonWell, Carequality, Epic, Apple Health, and Google Health simultaneously. Complete record in 30 seconds.' },
-  { n: '03', title: 'Records Land in Your EMR', text: 'Verified records push directly into your EMR — Epic, Athena, eClinicalWorks. No copy-paste. No re-entry. The chart is pre-populated before the provider opens the door.' },
-  { n: '04', title: 'Provider Walks In Ready', text: 'Active medications, allergies, conditions, recent labs — all in the chart before the exam begins. No surprises. Better decisions. 6 minutes saved per visit.' },
+  { n: '01', title: 'Patient Checks In', text: 'Staff enters name, DOB, and ZIP. No forms. No clipboard. MyPulseScan queries every connected network simultaneously.' },
+  { n: '02', title: 'Match Confirmed', text: 'A confidence score returns with the records. Staff confirms the right patient in one click — eliminating wrong-patient risk before anything populates.' },
+  { n: '03', title: 'Records Land in Your EMR', text: 'Verified history pushes via Redox into Epic, Athena, eClinicalWorks, or Cerner. Medications, allergies, conditions, labs — all pre-populated. Zero re-entry.' },
+  { n: '04', title: 'Provider Walks In Ready', text: 'Real pharmacy fill history, flagged drug interactions, verified conditions — all in the chart before the exam begins. Better decisions. 6 minutes saved per visit.' },
 ]
 
 const cptCodes = [
@@ -365,7 +371,7 @@ const cptCodes = [
 const proofStats = [
   { n: '320M+', l: 'US patients in network' },
   { n: '90%', l: 'US population coverage' },
-  { n: '30s', l: 'Average retrieval time' },
+  { n: '6,000+', l: 'Pharmacies — real fill history' },
   { n: '6 min', l: 'Saved per patient visit' },
 ]
 
@@ -392,7 +398,7 @@ const verticals = [
 
 const testimonials = [
   {
-    quote: 'We were asking patients to remember their medications on a clipboard. Now we have their actual pharmacy history before they sit down. We caught a drug interaction on day two. It changed how we practice.',
+    quote: 'We were asking patients to remember their medications on a clipboard. Now we have their actual pharmacy fill history — what they picked up, not just what was prescribed. We caught a drug interaction on day two. It changed how we practice.',
     name: 'Dr. Sarah M.',
     role: 'Medical Director, Urgent Care Network (Chicago)',
     initials: 'SM',
