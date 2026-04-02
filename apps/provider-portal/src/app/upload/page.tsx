@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
+import { savePatientRecord } from "@/app/actions/upload"
 
 // ── Local types ────────────────────────────────────────────────────────────────
 type Medication = { name: string; dosage: string; indication: string; rxnormCode?: string }
@@ -841,7 +842,7 @@ function Step8({ pin, name, dob, medications, allergies, conditions, labs, surge
       </div>
 
       <p style={{ fontSize: "12px", color: "var(--text-muted)", lineHeight: "1.6" }}>
-        In production, this record is encrypted and stored in EyeD&apos;s HIPAA-compliant database. The PIN is single-use and expires after 24 hours. Demo mode — no data was stored.
+        This record has been saved to EyeD&apos;s secure database. Your PIN expires in 24 hours. Share it only with authorized providers.
       </p>
 
       <button className="btn-ghost" onClick={onReset} style={{ marginTop: "16px", width: "100%" }}>
@@ -894,9 +895,28 @@ export default function UploadPage() {
   const [ecPhone, setEcPhone] = useState("")
 
   const [pin, setPin] = useState("")
+  const [saveError, setSaveError] = useState("")
 
-  function generatePin() {
+  async function generatePin() {
     const generated = String(Math.floor(100000 + Math.random() * 900000))
+    setSaveError("")
+    const result = await savePatientRecord({
+      name, dob, gender: gender as "male" | "female" | "other",
+      bloodType, height,
+      medications,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      allergies: allergies as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      conditions: conditions as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      labs: labs as any,
+      weight, bpSystolic, bpDiastolic, heartRate,
+      pin: generated,
+    })
+    if (!result.success) {
+      setSaveError(result.error ?? "Failed to save record")
+      return
+    }
     setPin(generated)
     setStep(8)
   }
@@ -999,15 +1019,20 @@ export default function UploadPage() {
           />
         )}
         {step === 7 && (
-          <Step7
-            smokingStatus={smokingStatus} setSmokingStatus={setSmokingStatus}
-            alcoholPerWeek={alcoholPerWeek} setAlcoholPerWeek={setAlcoholPerWeek}
-            occupation={occupation} setOccupation={setOccupation}
-            ecName={ecName} setEcName={setEcName}
-            ecRelationship={ecRelationship} setEcRelationship={setEcRelationship}
-            ecPhone={ecPhone} setEcPhone={setEcPhone}
-            onBack={() => setStep(6)} onGenerate={generatePin}
-          />
+          <>
+            <Step7
+              smokingStatus={smokingStatus} setSmokingStatus={setSmokingStatus}
+              alcoholPerWeek={alcoholPerWeek} setAlcoholPerWeek={setAlcoholPerWeek}
+              occupation={occupation} setOccupation={setOccupation}
+              ecName={ecName} setEcName={setEcName}
+              ecRelationship={ecRelationship} setEcRelationship={setEcRelationship}
+              ecPhone={ecPhone} setEcPhone={setEcPhone}
+              onBack={() => setStep(6)} onGenerate={generatePin}
+            />
+            {saveError && (
+              <p style={{ fontSize: "13px", color: "var(--red)", marginTop: "12px", textAlign: "center" }}>{saveError}</p>
+            )}
+          </>
         )}
         {step === 8 && (
           <Step8
