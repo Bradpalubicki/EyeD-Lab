@@ -1,6 +1,7 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import RoiCalculator from '@/components/RoiCalculator'
+import HeartbeatLogo from '@/components/HeartbeatLogo'
 
 export default function HomePage() {
   return (
@@ -10,6 +11,9 @@ export default function HomePage() {
       {/* ── HERO ── */}
       <section className="hero">
         <div className="hero-inner">
+          <div style={{marginBottom: 24, display: 'flex', justifyContent: 'center'}}>
+            <HeartbeatLogo size={88} />
+          </div>
           <div className="hero-kicker">For Urgent Care &amp; Primary Care Operators</div>
           <h1>Your patient just walked in. <em>You already know their history.</em></h1>
           <p className="hero-sub">
@@ -133,6 +137,14 @@ export default function HomePage() {
             Medicare reimburses up to $1,470 per enrolled patient per year across three CPT codes.
             This is a bonus layer, not the reason to sign up. The reason is what happens before this.
           </p>
+          <div style={{marginBottom: 40, display: 'flex', gap: 16, flexWrap: 'wrap' as const}}>
+            <a href="/billing" style={{display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--teal)', color: '#fff', fontWeight: 500, fontSize: 14, padding: '12px 22px', borderRadius: 6, textDecoration: 'none'}}>
+              See exactly how the billing works →
+            </a>
+            <a href="https://careloop.digital" target="_blank" rel="noopener noreferrer" style={{display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid var(--border)', color: 'var(--ink-soft)', fontSize: 14, padding: '12px 22px', borderRadius: 6, textDecoration: 'none'}}>
+              RPM management platform ↗
+            </a>
+          </div>
           <div className="cpt-grid">
             {cptCodes.map(c => (
               <div key={c.code} className="cpt-card">
@@ -308,6 +320,11 @@ const features = [
     text: 'Insurance-based practices: attach verified records to every authorization request. Fewer denials. Less back-and-forth. Faster approvals.',
   },
   {
+    icon: '🔄',
+    title: 'Direct EMR Import — Zero Re-Entry',
+    text: 'Records don\'t stop at your screen. MyPulseScan pushes verified history directly into your EMR — Epic, Athena, eClinicalWorks, and more. Your chart is populated before the provider walks in.',
+  },
+  {
     icon: '📊',
     title: 'RPM Billing — When You\'re Ready',
     text: 'If your practice offers Remote Patient Monitoring, MyPulseScan wires the billing automatically. $95/patient/month. When you choose to activate it.',
@@ -317,8 +334,8 @@ const features = [
 const steps = [
   { n: '01', title: 'Patient Checks In', text: 'Staff enters name, DOB, and ZIP. No forms. No clipboard. No manual transcription.' },
   { n: '02', title: 'Full History Retrieved', text: 'MyPulseScan queries CommonWell, Carequality, Epic, Apple Health, and Google Health simultaneously. Complete record in 30 seconds.' },
-  { n: '03', title: 'Provider Walks In Ready', text: 'Active medications, allergies, conditions, recent labs — all visible before the exam begins. No surprises. Better decisions.' },
-  { n: '04', title: 'Staff Recovers 6 Minutes', text: 'Multiply 6 minutes by your daily patient volume. That\'s how much time MyPulseScan returns to your team — every single day.' },
+  { n: '03', title: 'Records Land in Your EMR', text: 'Verified records push directly into your EMR — Epic, Athena, eClinicalWorks. No copy-paste. No re-entry. The chart is pre-populated before the provider opens the door.' },
+  { n: '04', title: 'Provider Walks In Ready', text: 'Active medications, allergies, conditions, recent labs — all in the chart before the exam begins. No surprises. Better decisions. 6 minutes saved per visit.' },
 ]
 
 const cptCodes = [
