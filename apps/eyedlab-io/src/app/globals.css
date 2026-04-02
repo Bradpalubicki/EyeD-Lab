@@ -775,11 +775,20 @@ body::before {
 
 @media (max-width: 768px) {
   .nav {
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
+    height: 60px;
+  }
+
+  .nav-wordmark {
+    font-size: 1rem;
   }
 
   .nav-links {
-    gap: 1.25rem;
+    gap: 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.8rem;
   }
 
   .products-grid {
@@ -793,28 +802,49 @@ body::before {
   .footer-inner {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1.25rem;
   }
 
   .hero {
-    padding: 8rem 1.5rem 6rem;
+    padding: 7rem 1.25rem 5rem;
+  }
+
+  .hero-subtagline {
+    max-width: 100%;
   }
 
   .section {
-    padding: 5rem 1.5rem;
+    padding: 4rem 1.25rem;
+  }
+
+  .section-subtitle {
+    max-width: 100%;
   }
 
   .cta-section {
-    padding: 5rem 1.5rem;
+    padding: 4rem 1.25rem;
+  }
+
+  .network-section {
+    padding: 3rem 1.25rem;
+  }
+
+  .product-card {
+    padding: 2rem;
+  }
+
+  .cta-card {
+    padding: 2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .nav-wordmark {
-    font-size: 1rem;
+  .nav-links {
+    gap: 0.75rem;
   }
 
   .nav-link {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   .hero-ctas {
@@ -826,5 +856,23 @@ body::before {
   .btn-ghost {
     width: 100%;
     justify-content: center;
+  }
+
+  /* stats strip — 1 col on mobile */
+  .stats-strip {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* use cases — 1 col on mobile */
+  .use-cases-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .pillar {
+    padding: 2rem 1.5rem;
   }
 }

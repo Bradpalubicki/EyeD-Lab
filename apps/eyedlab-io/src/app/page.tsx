@@ -80,9 +80,9 @@ export default function HomePage() {
 
       {/* WHY COMPLETE DATA MATTERS */}
       <section className="section">
-        <div className="section-label">The Foundation</div>
+        <div className="section-label">The Platform</div>
         <h2 className="section-title">
-          One EMR is never the whole story.
+          One API. Every patient. Every network.
         </h2>
         <p className="section-subtitle">
           A patient&apos;s medications, labs, diagnoses, and procedures exist across
@@ -150,6 +150,7 @@ export default function HomePage() {
       {/* STATS STRIP */}
       <section className="section" style={{ paddingTop: 0 }}>
         <div
+          className="stats-strip"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
@@ -295,6 +296,7 @@ export default function HomePage() {
           recommendations, and applications that stratify or manage risk at scale.
         </p>
         <div
+          className="use-cases-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
