@@ -53,11 +53,8 @@ export async function getPatientByEpicId(
 
 // ─── Supabase / mock path ─────────────────────────────────────────────────────
 
-const PIN_TO_CHART: Record<string, string> = {
-  '111111': '90001',
-  '222222': '90002',
-  '333333': '90003',
-}
+// Demo PINs that always resolve to mock data (training/demo patients)
+const DEMO_PINS = new Set(['123456', '654321'])
 
 interface PatientRow extends Patient {
   providers: Provider | null
@@ -79,21 +76,36 @@ const SESSION_TYPE_LABELS: Record<string, string> = {
 }
 
 export async function getPatientByPin(pin: string): Promise<MockFhirBundle> {
-  const chartNumber = PIN_TO_CHART[pin]
-
-  // Fall back to mock for demo PINs or any unrecognised PIN
-  if (!chartNumber) {
+  // Known demo/training PINs always use mock data
+  if (DEMO_PINS.has(pin)) {
     return getMockPatient(pin)
   }
 
   try {
     const supabase = getSupabaseAdmin()
 
+    // Resolve patient_id from access_sessions using the PIN
+    const { data: sessionData, error: sessionError } = await supabase
+      .from('access_sessions')
+      .select('patient_id, status, expires_at')
+      .eq('session_pin', pin)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (sessionError || !sessionData) {
+      console.error('[get-patient] PIN not found in access_sessions, falling back to mock:', pin)
+      return getMockPatient(pin)
+    }
+
+    // Check expiry (expired sessions still show the record — provider needs the data)
+    const patientId = sessionData.patient_id
+
     // Fetch patient + provider in one query
     const { data: patientData, error: patientError } = await supabase
       .from('patients')
       .select('*, providers(*)')
-      .eq('chart_number', chartNumber)
+      .eq('id', patientId)
       .single()
 
     if (patientError || !patientData) {
