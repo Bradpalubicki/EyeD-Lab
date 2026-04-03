@@ -647,6 +647,9 @@ export default function TravelPage() {
                     <span className="t-lang-badge">ZH 中文</span>
                     <span className="t-lang-badge">+40</span>
                   </div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: 9, letterSpacing: ".14em", textTransform: "uppercase", color: "var(--ink-3)", borderTop: "1px solid var(--border-w)", paddingTop: 10, marginTop: 10 }}>
+                    Powered by Particle Health · via CommonWell · Carequality · eHealthExchange
+                  </div>
                 </div>
               </div>
               <div className="reveal rd2" {...r(2)}>
@@ -657,7 +660,7 @@ export default function TravelPage() {
                       {[
                         "Patient enrolls via MyPulseScan before travel. US records cached as \u2018travel-ready\u2019 in Particle Health network.",
                         "Patient collapses abroad. Hotel medic, clinic, or first responder opens EyeD ID on any smartphone — iPhone or Android.",
-                        "Camera scans the patient's iris. Biometric match retrieves complete US medical record in 30 seconds.",
+                        "Camera scans the patient's iris. Biometric match retrieves complete US medical record in seconds (time varies by network).",
                         "Record displays in local language. Allergies flagged. Drug interactions checked. Emergency contact notified.",
                       ].map((text, i) => (
                         <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>

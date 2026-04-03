@@ -140,13 +140,13 @@ export default function HomePage() {
                 <path d="M17 13v8M13 17h8" />
               </svg>
             </div>
-            <div className="pillar-title">FHIR R4 or C-CDA</div>
+            <div className="pillar-title">Four Data Formats</div>
             <div className="pillar-desc">
-              Data delivered as structured FHIR R4 resources or C-CDA documents
-              via a single RESTful API. Direct write-back to Epic, Athena,
-              eClinicalWorks, and Cerner. Zero re-entry. Zero tab-switching.
+              Data delivered as FHIR R4 resources, C-CDA documents, analytics-optimized
+              Flat JSON, or Tuva schema via a single RESTful API. Direct write-back to
+              Epic, Athena, eClinicalWorks, and Cerner. Zero re-entry. Zero tab-switching.
             </div>
-            <div className="pillar-stat">FHIR R4 · C-CDA · Epic · Athena · Cerner</div>
+            <div className="pillar-stat">FHIR R4 · C-CDA · Flat JSON · Tuva Schema</div>
           </div>
         </div>
       </section>
@@ -211,7 +211,7 @@ export default function HomePage() {
             Connected to every major US health network
           </div>
           <div className="network-logos">
-            {["CommonWell", "Carequality", "TEFCA", "Surescripts", "Epic", "Redox"].map(
+            {["CommonWell", "Carequality", "eHealthExchange", "Surescripts", "TEFCA", "Healthix (NY)", "Manifest MedEx (CA)"].map(
               (name) => (
                 <div key={name} className="network-badge">
                   {name}
@@ -374,7 +374,7 @@ export default function HomePage() {
                 data marts, APIs, and analytics modules. Tackle healthcare&apos;s
                 toughest problems — AI, clinical decision support, care management,
                 quality reporting, disease progression — using flexible building blocks
-                that deliver FHIR R4, C-CDA, or analytics-optimized schema.
+                that deliver FHIR R4, C-CDA, Flat JSON, or Tuva schema.
               </p>
               <a href="mailto:developers@eyedlab.io" className="btn-cta">
                 developers@eyedlab.io →
