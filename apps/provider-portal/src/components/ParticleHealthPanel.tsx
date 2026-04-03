@@ -1,7 +1,8 @@
 'use client'
 // src/components/ParticleHealthPanel.tsx
-// Provider-facing panel: pull patient records from Particle Health (CommonWell + CareQuality)
-// Displays FHIR resources returned from the national network
+// Provider-facing panel: pull patient records from Particle Health
+// Networks: CommonWell, Carequality, eHealthExchange, Surescripts, Healthix (NY), Manifest MedEx (CA)
+// Flow: register → async query → webhook fires → DB updated → UI shows data
 
 import { useState } from 'react'
 
@@ -9,54 +10,38 @@ interface Props {
   patientName: string
   patientDob: string
   patientGender: string
+  patientCity?: string      // REQUIRED for accurate record matching
+  patientState?: string     // REQUIRED for accurate record matching (2-letter)
+  patientPostalCode?: string
+  // If patient already registered with Particle, pass ID to skip re-registration
+  existingParticlePatientId?: string
+  lastQueriedAt?: string
 }
 
-interface FhirEntry {
-  resource: {
-    resourceType: string
-    // AllergyIntolerance
-    code?: { coding?: Array<{ display?: string }>; text?: string }
-    reaction?: Array<{ description?: string; severity?: string }>
-    // Condition
-    clinicalStatus?: { coding?: Array<{ code?: string }> }
-    // MedicationRequest
-    medicationCodeableConcept?: { text?: string; coding?: Array<{ display?: string }> }
-    dosageInstruction?: Array<{ text?: string }>
-    // Observation
-    valueQuantity?: { value?: number; unit?: string }
-    valueString?: string
-    effectiveDateTime?: string
-    // Immunization
-    vaccineCode?: { text?: string; coding?: Array<{ display?: string }> }
-    occurrenceDateTime?: string
-    // shared
-    onsetDateTime?: string
-    recordedDate?: string
-    subject?: { reference?: string }
-  }
-}
 
-interface NetworkRecords {
-  matched: boolean
-  patientId?: string
-  matchedName?: string
-  records?: {
-    allergies: { entry?: FhirEntry[] }
-    conditions: { entry?: FhirEntry[] }
-    medications: { entry?: FhirEntry[] }
-    observations: { entry?: FhirEntry[] }
-    immunizations: { entry?: FhirEntry[] }
-  }
+interface NetworkResponse {
+  // v2 async response — query is queued, data arrives via webhook
+  queued?: boolean
+  particle_patient_id?: string
+  query_id?: string
+  needsClientId?: boolean
   message?: string
+  error?: string
 }
 
-function entryCount(bundle?: { entry?: unknown[] }) {
-  return bundle?.entry?.length ?? 0
-}
-
-export default function ParticleHealthPanel({ patientName, patientDob, patientGender }: Props) {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
-  const [data, setData] = useState<NetworkRecords | null>(null)
+export default function ParticleHealthPanel({
+  patientName,
+  patientDob,
+  patientGender,
+  patientCity,
+  patientState,
+  patientPostalCode,
+  existingParticlePatientId,
+  lastQueriedAt,
+}: Props) {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'queued' | 'error'>('idle')
+  const [queryId, setQueryId] = useState<string | null>(null)
+  const [particleId, setParticleId] = useState<string | null>(existingParticlePatientId ?? null)
   const [error, setError] = useState('')
 
   async function handlePull() {
@@ -70,12 +55,28 @@ export default function ParticleHealthPanel({ patientName, patientDob, patientGe
           name: patientName,
           dob: patientDob,
           gender: patientGender,
+          addressCity: patientCity,
+          addressState: patientState,
+          postalCode: patientPostalCode,
+          existingParticlePatientId: existingParticlePatientId ?? undefined,
+          lastQueriedAt: lastQueriedAt ?? undefined,
         }),
       })
-      const json = await res.json() as NetworkRecords & { error?: string }
+      const json = await res.json() as NetworkResponse
       if (!res.ok) throw new Error(json.error ?? 'Request failed')
-      setData(json)
-      setStatus('done')
+      if (json.needsClientId) {
+        setError(json.message ?? 'Particle Health not configured')
+        setStatus('error')
+        return
+      }
+      if (json.queued) {
+        setQueryId(json.query_id ?? null)
+        setParticleId(json.particle_patient_id ?? null)
+        setStatus('queued')
+      } else {
+        setError(json.message ?? 'Query could not be submitted')
+        setStatus('error')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error')
       setStatus('error')
@@ -84,7 +85,6 @@ export default function ParticleHealthPanel({ patientName, patientDob, patientGe
 
   const teal = 'var(--teal)'
   const textPrimary = 'var(--text-primary)'
-  const textSecondary = 'var(--text-secondary)'
   const textMuted = 'var(--text-muted)'
   const bgElevated = 'var(--bg-elevated)'
 
@@ -95,7 +95,7 @@ export default function ParticleHealthPanel({ patientName, patientDob, patientGe
         <div>
           <div className="section-label" style={{ marginBottom: '4px' }}>National Health Network</div>
           <div style={{ fontSize: '12px', color: textMuted }}>
-            CommonWell + CareQuality via Particle Health · 320M US patients · FHIR R4
+            CommonWell · Carequality · eHealthExchange · Surescripts via Particle Health · 320M US patients
           </div>
         </div>
         {status === 'idle' || status === 'error' ? (
@@ -110,9 +110,9 @@ export default function ParticleHealthPanel({ patientName, patientDob, patientGe
           </button>
         ) : status === 'loading' ? (
           <div style={{ fontSize: '13px', color: teal }}>
-            Querying network<span style={{ animation: 'blink 1s step-end infinite' }}>...</span>
+            Registering patient<span style={{ animation: 'blink 1s step-end infinite' }}>...</span>
           </div>
-        ) : (
+        ) : status === 'queued' ? (
           <button
             onClick={handlePull}
             style={{
@@ -120,9 +120,9 @@ export default function ParticleHealthPanel({ patientName, patientDob, patientGe
               borderRadius: '6px', padding: '7px 16px', fontSize: '12px', cursor: 'pointer',
             }}
           >
-            Refresh
+            Re-query
           </button>
-        )}
+        ) : null}
       </div>
 
       {/* Error */}
@@ -132,172 +132,31 @@ export default function ParticleHealthPanel({ patientName, patientDob, patientGe
         </div>
       )}
 
-      {/* No match */}
-      {status === 'done' && data && !data.matched && (
-        <div style={{ fontSize: '13px', color: textMuted, padding: '10px 14px', background: bgElevated, borderRadius: '6px' }}>
-          {data.message ?? 'No matching records found in the national network for this patient.'}
+      {/* Query queued — async, data arrives via webhook */}
+      {status === 'queued' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(20,184,166,0.08)', border: '1px solid rgba(20,184,166,0.2)', borderRadius: '6px' }}>
+            <span style={{ color: teal, fontWeight: 700 }}>⟳</span>
+            <span style={{ fontSize: '13px', color: textPrimary }}>
+              Query submitted — querying CommonWell, Carequality, eHealthExchange, Surescripts
+            </span>
+          </div>
+          <div style={{ fontSize: '12px', color: textMuted, padding: '8px 14px', background: bgElevated, borderRadius: '6px', lineHeight: 1.6 }}>
+            Records typically arrive in 3–6 minutes. This page will update automatically when the network responds.
+            {queryId && (
+              <div style={{ fontFamily: 'monospace', fontSize: '11px', marginTop: '4px', opacity: 0.6 }}>
+                Query ID: {queryId}
+              </div>
+            )}
+            {particleId && (
+              <div style={{ fontFamily: 'monospace', fontSize: '11px', marginTop: '2px', opacity: 0.6 }}>
+                Network ID: {particleId.slice(0, 8)}…
+              </div>
+            )}
+          </div>
         </div>
       )}
-
-      {/* Match found */}
-      {status === 'done' && data?.matched && data.records && (
-        <>
-          {/* Match badge */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', padding: '8px 14px', background: 'rgba(20,184,166,0.08)', border: '1px solid rgba(20,184,166,0.2)', borderRadius: '6px' }}>
-            <span style={{ color: 'rgb(20,184,166)', fontWeight: 700 }}>✓</span>
-            <span style={{ fontSize: '13px', color: textPrimary }}>
-              Matched: <strong>{data.matchedName}</strong>
-            </span>
-            <code style={{ fontSize: '11px', color: textMuted, marginLeft: 'auto', fontFamily: 'monospace' }}>
-              {data.patientId}
-            </code>
-          </div>
-
-          {/* Record counts */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px', marginBottom: '20px' }}>
-            {[
-              { label: 'Allergies', count: entryCount(data.records.allergies) },
-              { label: 'Conditions', count: entryCount(data.records.conditions) },
-              { label: 'Medications', count: entryCount(data.records.medications) },
-              { label: 'Observations', count: entryCount(data.records.observations) },
-              { label: 'Immunizations', count: entryCount(data.records.immunizations) },
-            ].map(({ label, count }) => (
-              <div key={label} style={{ background: bgElevated, borderRadius: '6px', padding: '10px 12px', textAlign: 'center' }}>
-                <div style={{ fontSize: '20px', fontWeight: 700, color: count > 0 ? teal : textMuted, fontFamily: 'monospace' }}>{count}</div>
-                <div style={{ fontSize: '10px', color: textMuted, textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: '2px' }}>{label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Allergies */}
-          {(data.records.allergies.entry?.length ?? 0) > 0 && (
-            <Section label="Allergies (Network)">
-              {data.records.allergies.entry!.map((e, i) => {
-                const r = e.resource
-                const name = r.code?.text ?? r.code?.coding?.[0]?.display ?? 'Unknown'
-                const reaction = r.reaction?.[0]?.description ?? ''
-                const severity = r.reaction?.[0]?.severity ?? ''
-                return (
-                  <Row key={i}>
-                    <div>
-                      <div style={{ fontSize: '13px', fontWeight: 600, color: textPrimary }}>{name}</div>
-                      {reaction && <div style={{ fontSize: '12px', color: textSecondary, marginTop: '2px' }}>{reaction}</div>}
-                    </div>
-                    {severity && <Pill label={severity} />}
-                  </Row>
-                )
-              })}
-            </Section>
-          )}
-
-          {/* Conditions */}
-          {(data.records.conditions.entry?.length ?? 0) > 0 && (
-            <Section label="Conditions (Network)">
-              {data.records.conditions.entry!.map((e, i) => {
-                const r = e.resource
-                const name = (r.code as { text?: string; coding?: Array<{ display?: string }> } | undefined)?.text ??
-                  (r.code as { text?: string; coding?: Array<{ display?: string }> } | undefined)?.coding?.[0]?.display ?? 'Unknown'
-                const status = r.clinicalStatus?.coding?.[0]?.code ?? 'unknown'
-                return (
-                  <Row key={i}>
-                    <div style={{ fontSize: '13px', fontWeight: 600, color: textPrimary }}>{name}</div>
-                    <Pill label={status} />
-                  </Row>
-                )
-              })}
-            </Section>
-          )}
-
-          {/* Medications */}
-          {(data.records.medications.entry?.length ?? 0) > 0 && (
-            <Section label="Medications (Network)">
-              {data.records.medications.entry!.map((e, i) => {
-                const r = e.resource
-                const name = r.medicationCodeableConcept?.text ??
-                  r.medicationCodeableConcept?.coding?.[0]?.display ?? 'Unknown'
-                const dosage = r.dosageInstruction?.[0]?.text ?? ''
-                return (
-                  <Row key={i}>
-                    <div>
-                      <div style={{ fontSize: '13px', fontWeight: 600, color: textPrimary }}>{name}</div>
-                      {dosage && <div style={{ fontSize: '12px', color: textSecondary, marginTop: '2px' }}>{dosage}</div>}
-                    </div>
-                  </Row>
-                )
-              })}
-            </Section>
-          )}
-
-          {/* Immunizations */}
-          {(data.records.immunizations.entry?.length ?? 0) > 0 && (
-            <Section label="Immunizations (Network)">
-              {data.records.immunizations.entry!.map((e, i) => {
-                const r = e.resource
-                const vaccine = r.vaccineCode?.text ?? r.vaccineCode?.coding?.[0]?.display ?? 'Unknown'
-                const date = r.occurrenceDateTime ? new Date(r.occurrenceDateTime).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : ''
-                return (
-                  <Row key={i}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ color: 'rgb(16,185,129)', fontWeight: 700, fontSize: '13px' }}>✓</span>
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: textPrimary }}>{vaccine}</span>
-                    </div>
-                    {date && <div style={{ fontSize: '12px', color: textSecondary, fontFamily: 'monospace', flexShrink: 0 }}>{date}</div>}
-                  </Row>
-                )
-              })}
-            </Section>
-          )}
-
-          {/* No records despite match */}
-          {Object.values(data.records).every(b => (b as { entry?: unknown[] }).entry?.length === 0) && (
-            <div style={{ fontSize: '13px', color: textMuted, padding: '10px 14px', background: bgElevated, borderRadius: '6px' }}>
-              Patient matched but no clinical records returned from network yet. Try refreshing in a moment.
-            </div>
-          )}
-        </>
-      )}
     </div>
   )
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: '16px' }}>
-      <div style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', marginBottom: '8px' }}>
-        {label}
-      </div>
-      {children}
-    </div>
-  )
-}
-
-function Row({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="data-row" style={{ padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
-      {children}
-    </div>
-  )
-}
-
-function Pill({ label }: { label: string }) {
-  const colors: Record<string, { bg: string; color: string; border: string }> = {
-    severe: { bg: 'rgba(239,68,68,0.12)', color: 'rgb(239,68,68)', border: 'rgba(239,68,68,0.3)' },
-    moderate: { bg: 'rgba(245,158,11,0.12)', color: 'rgb(245,158,11)', border: 'rgba(245,158,11,0.3)' },
-    mild: { bg: 'rgba(16,185,129,0.12)', color: 'rgb(16,185,129)', border: 'rgba(16,185,129,0.3)' },
-    active: { bg: 'rgba(20,184,166,0.1)', color: 'rgb(20,184,166)', border: 'rgba(20,184,166,0.2)' },
-    resolved: { bg: 'rgba(100,116,139,0.1)', color: 'rgb(100,116,139)', border: 'rgba(100,116,139,0.2)' },
-    inactive: { bg: 'rgba(100,116,139,0.1)', color: 'rgb(100,116,139)', border: 'rgba(100,116,139,0.2)' },
-  }
-  const style = colors[label.toLowerCase()] ?? { bg: 'rgba(100,116,139,0.1)', color: 'rgb(100,116,139)', border: 'rgba(100,116,139,0.2)' }
-  return (
-    <span style={{
-      fontSize: '11px', fontWeight: 600, padding: '2px 10px', borderRadius: '999px',
-      background: style.bg, color: style.color, border: `1px solid ${style.border}`,
-      textTransform: 'capitalize', flexShrink: 0,
-    }}>
-      {label}
-    </span>
-  )
-}

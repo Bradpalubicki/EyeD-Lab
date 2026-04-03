@@ -137,24 +137,37 @@ async function handleSnapshotReady(data: {
   }>;
   particle_patient_id?: string;
 }) {
+  if (!data.particle_patient_id) return;
+
   const db = supabaseAdmin();
   const baseUrl = process.env.PARTICLE_BASE_URL ?? "https://sandbox.particlehealth.com";
   const apiKey = process.env.PARTICLE_API_KEY;
 
+  // Correct retrieval: Flat endpoint with AI_OUTPUTS + AI_CITATIONS params
+  // NOT /api/v2/aioutput/{id} — that endpoint does not exist
+  const res = await fetch(
+    `${baseUrl}/api/v2/patients/${data.particle_patient_id}/flat?AI_OUTPUTS&AI_CITATIONS`,
+    { headers: { Authorization: `Bearer ${apiKey}` } }
+  );
+
+  if (!res.ok) {
+    console.error("[particle/webhook] snapshot fetch failed", res.status);
+    return;
+  }
+
+  const flatData = await res.json() as {
+    AI_Outputs?: Array<{ Output_Type?: string; Summary?: string; Generated_At?: string }>;
+    AI_Citations?: unknown[];
+  };
+
   for (const output of data.outputs ?? []) {
     if (output.status !== "COMPLETE") continue;
-
-    const res = await fetch(
-      `${baseUrl}/api/v2/aioutput/${output.ai_output_id}`,
-      { headers: { Authorization: `Bearer ${apiKey}` } }
-    );
-    const summary = await res.json();
 
     await db.from("particle_snapshots").insert({
       ai_output_id: output.ai_output_id,
       output_type: output.output_type,
-      particle_patient_id: data.particle_patient_id ?? null,
-      summary,
+      particle_patient_id: data.particle_patient_id,
+      summary: flatData,
       created_at: new Date().toISOString(),
     });
   }
@@ -167,8 +180,10 @@ async function subscribeToSignal(
   const baseUrl = process.env.PARTICLE_BASE_URL ?? "https://sandbox.particlehealth.com";
   const apiKey = process.env.PARTICLE_API_KEY;
 
+  // Correct endpoint: /api/v1/patients/{id}/subscriptions (v1, not v2)
+  // Body: { subscriptions: [{ type: "MONITORING" }] }
   const res = await fetch(
-    `${baseUrl}/api/v2/patients/${particlePatientId}/subscribe`,
+    `${baseUrl}/api/v1/patients/${particlePatientId}/subscriptions`,
     {
       method: "POST",
       headers: {
@@ -176,7 +191,7 @@ async function subscribeToSignal(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        alert_types: ["TRANSITION", "ENCOUNTER", "DISCHARGE", "REFERRAL"],
+        subscriptions: [{ type: "MONITORING" }],
       }),
     }
   );
