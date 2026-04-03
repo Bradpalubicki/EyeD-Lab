@@ -7,9 +7,34 @@ export default function HomePage() {
           EyeD <span>ID</span> Lab
         </a>
         <div className="nav-links">
-          <a href="/travel" className="nav-link">
-            Travel Health
-          </a>
+          {/* Verticals dropdown */}
+          <div className="nav-dropdown">
+            <button className="nav-dropdown-trigger" aria-haspopup="true">
+              Verticals
+              <svg className="nav-dropdown-chevron" viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div className="nav-dropdown-menu" role="menu">
+              <a href="/travel" className="nav-dropdown-item" role="menuitem">
+                <span className="nav-dropdown-item-label">Travel Health</span>
+                <span className="nav-dropdown-item-sub">Emergency records abroad · 180 countries</span>
+              </a>
+              <a href="/pet" className="nav-dropdown-item" role="menuitem">
+                <span className="nav-dropdown-item-label">Pet Biometric ID</span>
+                <span className="nav-dropdown-item-sub">Iris scan → owner + vet records instantly</span>
+              </a>
+              <div className="nav-dropdown-divider" />
+              <a href="https://mypulsescan.com" target="_blank" rel="noopener noreferrer" className="nav-dropdown-item" role="menuitem">
+                <span className="nav-dropdown-item-label">MyPulseScan</span>
+                <span className="nav-dropdown-item-sub">Clinical RPM · mypulsescan.com</span>
+              </a>
+              <a href="https://mypulsescan.health" target="_blank" rel="noopener noreferrer" className="nav-dropdown-item" role="menuitem">
+                <span className="nav-dropdown-item-label">MyPulseScan Health</span>
+                <span className="nav-dropdown-item-sub">Enterprise MSO · mypulsescan.health</span>
+              </a>
+            </div>
+          </div>
           <a href="mailto:partnerships@eyedlab.io" className="nav-link">
             Partnerships
           </a>
@@ -395,6 +420,9 @@ export default function HomePage() {
           <div className="footer-links">
             <a href="/travel" className="footer-link">
               Travel Health
+            </a>
+            <a href="/pet" className="footer-link">
+              Pet Biometric ID
             </a>
             <a href="/terms" className="footer-link">
               Terms of Service
