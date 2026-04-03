@@ -42,7 +42,7 @@ export default function TravelPage() {
       ? `$${Math.round(n / 1_000)}K`
       : `$${n}`;
 
-  const partnerNames = ["Zurich Travel Guard", "Allianz Global", "Cruise Line", "Medical Tourism"];
+  const partnerNames = ["Large Insurer (2M)", "Large Insurer (5M)", "Cruise Line", "Medical Tourism"];
   const partnerPolicies = [2_000_000, 5_000_000, 6_000_000, 500_000];
   const partnerFees = [5, 5, 3, 50];
 
@@ -443,9 +443,8 @@ export default function TravelPage() {
             <a href="#layers" className="t-nav-link">Business Model</a>
             <a href="#deals" className="t-nav-link">Deal Structure</a>
             <a href="#model" className="t-nav-link">Financials</a>
-            <a href="#noel" className="t-nav-link">John Noel</a>
           </div>
-          <a href="mailto:partnerships@eyedlab.io" className="t-nav-cta">Draft Outreach →</a>
+          <a href="mailto:partnerships@eyedlab.io" className="t-nav-cta">Get in Touch →</a>
         </nav>
 
         {/* HERO */}
@@ -557,26 +556,26 @@ export default function TravelPage() {
         <div className="t-ticker">
           <div className="t-ticker-inner">
             {[
-              ["Travel Guard / Zurich", "$600M acquisition Dec 2024"],
+              ["Travel Insurance Market", "$23B global market"],
               ["Medical Evacuation", "$50K–$300K per incident"],
-              ["Allianz Global", "40M+ travelers / year"],
+              ["Global Travelers", "1.4B international trips / year"],
               ["Royal Caribbean", "6M+ passengers / year"],
               ["Medical Tourism", "$100B+ industry"],
               ["Hardware", "iOS · Android · any smartphone camera"],
-              ["John Noel", "Travel Guard founder · known contact"],
+              ["Record Access", "30 seconds from eye scan"],
               ["Particle Health", "320M+ US records · pre-travel cache"],
             ].flatMap((item, i) => [
               <span key={`a${i}`} className="t-ti">{item[0]} <span className="tv">{item[1]}</span></span>,
               <span key={`sep${i}`} style={{ color: "rgba(0,212,255,.2)" }}>·</span>,
             ]).concat(
               [
-                ["Travel Guard / Zurich", "$600M acquisition Dec 2024"],
+                ["Travel Insurance Market", "$23B global market"],
                 ["Medical Evacuation", "$50K–$300K per incident"],
-                ["Allianz Global", "40M+ travelers / year"],
+                ["Global Travelers", "1.4B international trips / year"],
                 ["Royal Caribbean", "6M+ passengers / year"],
                 ["Medical Tourism", "$100B+ industry"],
                 ["Hardware", "iOS · Android · any smartphone camera"],
-                ["John Noel", "Travel Guard founder · known contact"],
+                ["Record Access", "30 seconds from eye scan"],
                 ["Particle Health", "320M+ US records · pre-travel cache"],
               ].flatMap((item, i) => [
                 <span key={`b${i}`} className="t-ti">{item[0]} <span className="tv">{item[1]}</span></span>,
@@ -715,19 +714,19 @@ export default function TravelPage() {
         <section className="t-section t-section-alt" id="deals">
           <div className="t-inner">
             <div className="t-eyebrow reveal" {...r()}>Deal Structures</div>
-            <h2 className="t-sh reveal rd1" {...r(1)}>HOW TO SELL<br />THIS TO <span className="tg">ZURICH.</span></h2>
-            <p className="t-sp reveal rd2" {...r(2)}>Three ways to structure the partnership. Each solves a different buyer objection. The right choice depends on how Zurich wants to account for it — as product cost, claims savings, or brand differentiation.</p>
+            <h2 className="t-sh reveal rd1" {...r(1)}>HOW TO STRUCTURE<br />THE <span className="tg">PARTNERSHIP.</span></h2>
+            <p className="t-sp reveal rd2" {...r(2)}>Three ways to structure the partnership. Each solves a different buyer objection. The right choice depends on how your partner wants to account for it — as product cost, claims savings, or brand differentiation.</p>
             <div className="t-deals reveal rd2" {...r(2)}>
               <div className="t-deal-card">
                 <div className="t-deal-top">
                   <div className="t-deal-letter">OPTION A</div>
                   <div className="t-deal-name">Per-Policy License</div>
                   <div className="t-deal-rate">$3–8 / policy</div>
-                  <p className="t-deal-desc">Zurich bundles EyeD ID enrollment into every Travel Guard policy. "Your policy includes medical record protection." They raise premiums $10–15 to cover it. Net positive for them on day one.</p>
+                  <p className="t-deal-desc">Insurer bundles EyeD ID enrollment into every travel policy. &quot;Your policy includes medical record protection.&quot; They raise premiums $10–15 to cover it. Net positive on day one.</p>
                 </div>
                 <div className="t-deal-bottom">
                   <div className="t-deal-hook">At 2M policies × $5 = <strong style={{ color: "var(--cyan)", fontStyle: "normal" }}>$10M ARR</strong> from one contract.</div>
-                  <div className="t-deal-upside">Zurich can raise premium $10–15 to cover · net positive immediately</div>
+                  <div className="t-deal-upside">Partner raises premium $10–15 to cover · net positive immediately</div>
                 </div>
               </div>
               <div className="t-deal-card featured">
@@ -739,7 +738,7 @@ export default function TravelPage() {
                 </div>
                 <div className="t-deal-bottom">
                   <div className="t-deal-hook">If EyeD ID prevents 10% of evacuations on 2M policies, that&apos;s <strong style={{ color: "var(--gold)", fontStyle: "normal" }}>$40M+ in savings</strong> — we take $4M.</div>
-                  <div className="t-deal-upside">Zero risk for Zurich to try · escalates naturally · hard to say no</div>
+                  <div className="t-deal-upside">Zero risk to try · escalates naturally · hard to say no</div>
                 </div>
               </div>
               <div className="t-deal-card">
@@ -747,7 +746,7 @@ export default function TravelPage() {
                   <div className="t-deal-letter">OPTION C</div>
                   <div className="t-deal-name">White Label</div>
                   <div className="t-deal-rate">Platform + per-activation</div>
-                  <p className="t-deal-desc">&quot;Travel Guard MedID powered by EyeD ID Lab.&quot; Zurich owns the customer relationship, we&apos;re the infrastructure. Platform fee plus per-access activation fee. Gives Zurich a differentiator vs Allianz and AXA.</p>
+                  <p className="t-deal-desc">&quot;[Partner] MedID powered by EyeD ID Lab.&quot; The insurer owns the customer relationship, we&apos;re the infrastructure. Platform fee plus per-access activation fee. Instant differentiator vs competitors.</p>
                 </div>
                 <div className="t-deal-bottom">
                   <div className="t-deal-hook">Worth <strong style={{ color: "var(--cyan)", fontStyle: "normal" }}>$20–50M</strong> in contract value at scale. Instant global credibility.</div>
@@ -777,7 +776,7 @@ export default function TravelPage() {
                 ))}
               </div>
               <div style={{ padding: "16px 28px", borderTop: "1px solid var(--border-w)", fontFamily: "var(--serif)", fontSize: 16, fontStyle: "italic", color: "var(--ink-2)" }}>
-                &ldquo;Design the pilot before pitching the pilot. Zurich will ask what success looks like in 90 days. Have a specific answer.&rdquo;
+                &ldquo;Design the pilot before pitching the pilot. Your partner will ask what success looks like in 90 days. Have a specific answer.&rdquo;
               </div>
             </div>
           </div>
@@ -862,8 +861,8 @@ export default function TravelPage() {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: "var(--border-w)", border: "1px solid var(--border-w)", borderRadius: 10, overflow: "hidden", marginTop: 20 }} className="reveal rd3" {...r(3)}>
               {[
-                { label: "Zurich / Travel Guard", n: "$10M", sub: "$5 × 2M policies/yr", color: "var(--cyan)" },
-                { label: "Allianz Global Assistance", n: "$25M", sub: "$5 × 5M policies/yr", color: "var(--gold)" },
+                { label: "Travel Insurer (2M policies)", n: "$10M", sub: "$5 × 2M policies/yr", color: "var(--cyan)" },
+                { label: "Travel Insurer (5M policies)", n: "$25M", sub: "$5 × 5M policies/yr", color: "var(--gold)" },
                 { label: "Royal Caribbean (6M pax)", n: "$18M", sub: "$3 × 6M passengers/yr", color: "var(--green)" },
                 { label: "Medical Tourism (direct)", n: "$25M", sub: "$50 × 500K patients/yr", color: "var(--amber)" },
               ].map(({ label, n, sub, color }) => (
@@ -877,13 +876,10 @@ export default function TravelPage() {
           </div>
         </section>
 
-        {/* JOHN NOEL */}
-        <section className="t-section t-section-alt" id="noel">
+        {/* JOHN NOEL — REMOVED (private) */}
+        {false && <section className="t-section t-section-alt" id="noel">
           <div className="t-inner">
-            <div className="t-eyebrow reveal" {...r()}>The John Noel Play</div>
-            <h2 className="t-sh reveal rd1" {...r(1)}>YOUR MOST<br />VALUABLE <span className="tg">ASSET.</span></h2>
-            <p className="t-sp reveal rd2" {...r(2)}>Brad knows John Noel — the man who built Travel Guard from his basement into a $600M company. This relationship is worth more than any deck, demo, or pricing model. Here&apos;s exactly how to use it.</p>
-            <div className="t-noel-card reveal rd2" {...r(2)}>
+            <div className="t-noel-card">
               <div className="t-noel-header">
                 <span className="t-noel-header-title">John Noel Brief — Travel Guard Founder</span>
                 <span className="t-noel-header-tag">Founder-to-Founder · 20 minutes</span>
@@ -935,7 +931,7 @@ export default function TravelPage() {
               </div>
             </div>
           </div>
-        </section>
+        </section>}
 
         {/* FINAL CTA */}
         <section className="t-final">
