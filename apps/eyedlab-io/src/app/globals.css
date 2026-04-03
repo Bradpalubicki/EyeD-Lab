@@ -875,4 +875,13 @@ body::before {
   .pillar {
     padding: 2rem 1.5rem;
   }
+
+  /* travel page — 5-col flow and deal grids stack on mobile */
+  .travel-flow-grid,
+  .travel-deal-grid,
+  .travel-callout-grid,
+  .travel-pilot-grid,
+  .travel-step-grid {
+    grid-template-columns: 1fr !important;
+  }
 }

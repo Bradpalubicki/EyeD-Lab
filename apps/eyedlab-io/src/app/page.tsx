@@ -7,6 +7,9 @@ export default function HomePage() {
           EyeD <span>ID</span> Lab
         </a>
         <div className="nav-links">
+          <a href="/travel" className="nav-link">
+            Travel Health
+          </a>
           <a href="mailto:partnerships@eyedlab.io" className="nav-link">
             Partnerships
           </a>
@@ -390,6 +393,9 @@ export default function HomePage() {
             EyeD ID Lab <span>· Powered by Particle Health · NuStack Digital Ventures</span>
           </div>
           <div className="footer-links">
+            <a href="/travel" className="footer-link">
+              Travel Health
+            </a>
             <a href="/terms" className="footer-link">
               Terms of Service
             </a>
