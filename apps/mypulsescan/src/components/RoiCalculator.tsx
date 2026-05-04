@@ -8,6 +8,12 @@ const CPT_SETUP       = 20     // CPT 99453 one-time
 const CPT_DEVICE      = 47     // CPT 99454 /month
 const CPT_MGMT        = 48     // CPT 99457 /month
 
+// ── FULL BILLING CONSTANTS (CCM / BHI / TCM) ──
+const CCM_RATE        = 62     // $ avg CCM reimbursement per patient/mo
+const BHI_RATE        = 57     // $ BHI per patient/mo
+const TCM_RATE        = 175    // $ avg TCM per transition event
+const PRIOR_AUTH_SAVE = 35     // $ prior auth facilitation savings per patient
+
 const TIERS = [
   { id: 'a', name: 'Starter',  pricePerPt: 2,  desc: '$2 / patient' },
   { id: 'b', name: 'Growth',   pricePerPt: 5,  desc: '$5 / patient' },
@@ -29,6 +35,12 @@ export default function RoiCalculator() {
   const [rpmPct, setRpmPct]       = useState(30)
   const [recurringPct, setRecurringPct] = useState(60)
   const [showOurPanel, setShowOurPanel] = useState(false)
+  const [fullBilling, setFullBilling]   = useState(false)
+
+  // Full billing sliders
+  const [ccmPct, setCcmPct]   = useState(37)  // % of patients eligible for CCM
+  const [bhiPct, setBhiPct]   = useState(15)  // % of patients eligible for BHI
+  const [tcmPct, setTcmPct]   = useState(10)  // % of patients with TCM events
 
   const calc = useCallback(() => {
     const t = TIERS.find(x => x.id === tier)!
@@ -43,14 +55,25 @@ export default function RoiCalculator() {
     // Staff savings: 6 min/patient @ hourly rate
     const staffSavings  = patients * (6 / 60) * staffRate
 
-    const netMonthly    = rpmRevenue + staffSavings - platformCost
+    // Full billing streams
+    const ccmPatients   = Math.round(patients * ccmPct / 100)
+    const bhiPatients   = Math.round(patients * bhiPct / 100)
+    const tcmEvents     = Math.round(patients * tcmPct / 100)
+    const ccmRevenue    = ccmPatients * CCM_RATE
+    const bhiRevenue    = bhiPatients * BHI_RATE
+    const tcmRevenue    = tcmEvents * TCM_RATE
+    const priorAuthSave = patients * PRIOR_AUTH_SAVE
+
+    const baseNet       = rpmRevenue + staffSavings - platformCost
+    const fullNet       = rpmRevenue + ccmRevenue + bhiRevenue + tcmRevenue + priorAuthSave + staffSavings - platformCost
+    const netMonthly    = fullBilling ? fullNet : baseNet
     const roi           = platformCost > 0 ? (netMonthly / platformCost) * 100 : 0
     const breakeven     = netMonthly > 0 ? (platformCost / (netMonthly / 30)).toFixed(1) : '—'
 
     // Annual
-    const annualRevenue = (rpmRevenue + staffSavings) * 12
+    const annualRevenue = (netMonthly + platformCost) * 12
     const annualCost    = platformCost * 12
-    const annualNet     = annualRevenue - annualCost
+    const annualNet     = netMonthly * 12
 
     // Our economics (NuStack)
     const particleCostTotal = patients * PARTICLE_COST
@@ -76,8 +99,10 @@ export default function RoiCalculator() {
       annualRevenue, annualCost, annualNet,
       ourRevenue, particleCostTotal, ourGross, ourMargin,
       volumeTiers,
+      ccmPatients, bhiPatients, tcmEvents,
+      ccmRevenue, bhiRevenue, tcmRevenue, priorAuthSave,
     }
-  }, [tier, patients, staffRate, rpmPct, recurringPct])
+  }, [tier, patients, staffRate, rpmPct, recurringPct, fullBilling, ccmPct, bhiPct, tcmPct])
 
   const r = calc()
   const activeTier = TIERS.find(x => x.id === tier)!
@@ -91,6 +116,40 @@ export default function RoiCalculator() {
       </div>
 
       <div className="calc-body">
+
+        {/* VIEW TOGGLE */}
+        <div style={{display: 'flex', gap: 8, marginBottom: 20, background: 'var(--bg-alt)', borderRadius: 'var(--r)', padding: 4}}>
+          <button
+            onClick={() => setFullBilling(false)}
+            style={{
+              flex: 1, padding: '10px 16px', borderRadius: 'calc(var(--r) - 2px)', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500, transition: 'all .15s',
+              background: !fullBilling ? 'var(--bg-card)' : 'transparent',
+              color: !fullBilling ? 'var(--teal)' : 'var(--ink-muted)',
+              boxShadow: !fullBilling ? 'var(--shadow)' : 'none',
+            }}
+          >
+            RPM Only
+          </button>
+          <button
+            onClick={() => setFullBilling(true)}
+            style={{
+              flex: 1, padding: '10px 16px', borderRadius: 'calc(var(--r) - 2px)', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500, transition: 'all .15s',
+              background: fullBilling ? 'var(--teal)' : 'transparent',
+              color: fullBilling ? '#fff' : 'var(--ink-muted)',
+              boxShadow: fullBilling ? 'var(--shadow-teal)' : 'none',
+            }}
+          >
+            Full Billing Picture (CCM + BHI + TCM)
+          </button>
+        </div>
+
+        {fullBilling && (
+          <div style={{background: 'var(--teal-pale)', border: '1px solid var(--teal-lt)', borderRadius: 'var(--r)', padding: '16px 20px', marginBottom: 20, fontSize: 12, color: 'var(--ink-soft)', lineHeight: 1.6}}>
+            <strong style={{color: 'var(--teal)'}}>Full billing view applies to eligible patients at practices that offer these services.</strong>{' '}
+            CCM, BHI, and TCM require clinical programs to already be in place. Your billing team determines what codes apply.
+            Adjust the sliders below to match your eligible patient population.
+          </div>
+        )}
 
         {/* TIER BUTTONS */}
         <div className="tier-btns">
@@ -176,6 +235,45 @@ export default function RoiCalculator() {
             />
           </div>
         </div>
+
+        {/* FULL BILLING SLIDERS */}
+        {fullBilling && (
+          <div style={{background: 'var(--bg-alt)', borderRadius: 'var(--r)', padding: '20px 24px', marginBottom: 24}}>
+            <div style={{fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: 16}}>
+              Additional billing streams — adjust to your patient mix
+            </div>
+            <div className="controls-grid">
+              <div className="control-group">
+                <label id="lbl-ccm" className="control-label" htmlFor="slider-ccm">
+                  CCM-eligible patients
+                  <span>{ccmPct}% ({r.ccmPatients} patients × {fmt(CCM_RATE)}/mo = {fmt(r.ccmRevenue)})</span>
+                </label>
+                <input id="slider-ccm" type="range" min={0} max={80} step={5} value={ccmPct} onChange={e => setCcmPct(Number(e.target.value))} className="control-slider" aria-labelledby="lbl-ccm" />
+              </div>
+              <div className="control-group">
+                <label id="lbl-bhi" className="control-label" htmlFor="slider-bhi">
+                  BHI-eligible patients
+                  <span>{bhiPct}% ({r.bhiPatients} patients × {fmt(BHI_RATE)}/mo = {fmt(r.bhiRevenue)})</span>
+                </label>
+                <input id="slider-bhi" type="range" min={0} max={50} step={5} value={bhiPct} onChange={e => setBhiPct(Number(e.target.value))} className="control-slider" aria-labelledby="lbl-bhi" />
+              </div>
+              <div className="control-group">
+                <label id="lbl-tcm" className="control-label" htmlFor="slider-tcm">
+                  Post-discharge TCM events
+                  <span>{tcmPct}% ({r.tcmEvents} events × {fmt(TCM_RATE)} = {fmt(r.tcmRevenue)})</span>
+                </label>
+                <input id="slider-tcm" type="range" min={0} max={50} step={5} value={tcmPct} onChange={e => setTcmPct(Number(e.target.value))} className="control-slider" aria-labelledby="lbl-tcm" />
+              </div>
+              <div className="control-group">
+                <label className="control-label">
+                  Prior auth facilitation savings
+                  <span>{patients} patients × {fmt(PRIOR_AUTH_SAVE)}/pt = {fmt(r.priorAuthSave)}</span>
+                </label>
+                <div style={{height: 6, background: 'var(--teal-lt)', borderRadius: 3, marginTop: 8}} />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* BIG PANEL */}
         <div className="big-panel">
@@ -313,9 +411,10 @@ export default function RoiCalculator() {
 
         <div className="disclaimer">
           <strong>Disclaimer:</strong> All figures are estimates based on national Medicare fee schedules and industry-average assumptions.
-          Actual RPM reimbursement varies by payer, patient eligibility, and billing codes used. Staff time savings are modeled at 6 minutes per patient.
+          Actual reimbursement varies by payer, patient eligibility, and billing codes used. Staff time savings are modeled at 6 minutes per patient.
           Platform cost assumes {activeTier.name} tier at {fmt(activeTier.pricePerPt)}/patient/month + {fmt(PROVIDER_BASE)}/month base.
-          This calculator is for illustrative purposes only and does not constitute a guarantee of revenue or savings.
+          {fullBilling && ' CCM, BHI, and TCM figures apply to eligible patients at practices that already offer these services. Your billing team determines applicable codes. MyPulseScan retrieves the verified external record — your clinical team decides what to do with it.'}
+          {' '}This calculator is for illustrative purposes only and does not constitute a guarantee of revenue or savings.
           Consult your billing department and legal counsel before implementing any new billing program.
         </div>
       </div>

@@ -11,11 +11,12 @@ export default function Nav() {
         MyPulse<span>Scan</span>
       </Link>
       <div className="nav-links">
-        <a href="#features" className="nav-link">Features</a>
-        <a href="#how-it-works" className="nav-link">How It Works</a>
-        <a href="#revenue" className="nav-link">Revenue</a>
-        <a href="#verticals" className="nav-link">Practice Types</a>
-        <a href="#calculator" className="nav-link">ROI Calculator</a>
+        <a href="/#features" className="nav-link">Features</a>
+        <a href="/#how-it-works" className="nav-link">How It Works</a>
+        <a href="/#billing-expansion" className="nav-link">Revenue</a>
+        <a href="/#calculator" className="nav-link">ROI Calculator</a>
+        <Link href="/for-chains" className="nav-link">Chains</Link>
+        <Link href="/for-billing-partners" className="nav-link">Partners</Link>
         <a href="mailto:hello@mypulsescan.com" className="nav-cta">Request Demo →</a>
       </div>
       {/* Mobile hamburger */}

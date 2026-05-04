@@ -207,6 +207,128 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── BILLING EXPANSION ── */}
+      <section className="section" id="billing-expansion">
+        <div className="section-inner">
+          <div className="section-kicker">The revenue picture beyond RPM</div>
+          <h2 className="section-title"><em>$5,700/month becomes $17,710/month</em> — same patients, same visit volume.</h2>
+          <p className="section-sub">
+            RPM is one revenue stream. For practices that already offer Chronic Care Management, Behavioral Health Integration,
+            or Transitional Care Management, MyPulseScan surfaces the complete verified history that makes those codes
+            documentable and defensible. <strong>Your billing team determines what applies.</strong>
+          </p>
+          <div className="cpt-grid" style={{marginBottom: 32}}>
+            {billingExpansionCodes.map(c => (
+              <div key={c.code} className="cpt-card">
+                <div className="cpt-code">{c.code}</div>
+                <div className="cpt-title">{c.title}</div>
+                <p className="cpt-desc">{c.desc}</p>
+                <div className="cpt-rate">{c.rate}</div>
+                <div className="cpt-rate-sub">{c.rateSub}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{background: 'var(--teal-pale)', border: '1px solid var(--teal-lt)', borderRadius: 'var(--r-lg)', padding: '28px 32px', marginBottom: 16}}>
+            <div style={{fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: 20}}>
+              Full billing picture — 200 patients/month
+            </div>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 20, marginBottom: 24}}>
+              {fullBillingRows.map(r => (
+                <div key={r.label}>
+                  <div style={{fontSize: 12, color: 'var(--ink-muted)', marginBottom: 4}}>{r.label}</div>
+                  <div style={{fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 600, color: r.highlight ? 'var(--teal)' : r.neg ? 'var(--red)' : 'var(--ink)'}}>{r.value}</div>
+                  {r.sub && <div style={{fontSize: 11, color: 'var(--ink-muted)'}}>{r.sub}</div>}
+                </div>
+              ))}
+            </div>
+            <div style={{borderTop: '1px solid var(--teal-lt)', paddingTop: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: 12}}>
+              <div>
+                <div style={{fontSize: 12, color: 'var(--ink-muted)', marginBottom: 2}}>NET MONTHLY REVENUE TO PRACTICE</div>
+                <div style={{fontFamily: 'var(--font-serif)', fontSize: 32, fontWeight: 700, color: 'var(--teal)'}}>$17,710 / mo</div>
+                <div style={{fontSize: 12, color: 'var(--ink-muted)'}}>$212,520 / year &nbsp;·&nbsp; 1,698% ROI</div>
+              </div>
+              <a href="#calculator" className="btn-primary">Run your own numbers →</a>
+            </div>
+          </div>
+          <div style={{fontSize: 12, color: 'var(--ink-muted)', lineHeight: 1.6}}>
+            CCM, BHI, and TCM figures apply to eligible patients at practices that offer these services.
+            Your billing team determines applicable codes. MyPulseScan retrieves the verified external record —
+            your clinical team decides what to do with it, your billing team determines what applies.
+          </div>
+        </div>
+      </section>
+
+      {/* ── RISK MITIGATION ── */}
+      <section className="section section-alt" id="risk">
+        <div className="section-inner">
+          <div className="section-kicker">Risk mitigation</div>
+          <h2 className="section-title">Documented retrieval changes <em>your legal and insurance position.</em></h2>
+          <p className="section-sub">
+            When a patient doesn&apos;t disclose allergies or current medications, incomplete history becomes a liability event.
+            MyPulseScan surfaces the verified record. The clinician reviews it. That documented retrieval is yours —
+            it changes the conversation with legal counsel and your insurance carrier.
+          </p>
+          <div className="feature-grid" style={{marginBottom: 40}}>
+            {riskStats.map(s => (
+              <div key={s.stat} className="feature-card" style={{borderTop: '3px solid var(--amber-lt)', textAlign: 'center' as const}}>
+                <div style={{fontFamily: 'var(--font-serif)', fontSize: 36, fontWeight: 700, color: 'var(--amber)', marginBottom: 8}}>{s.stat}</div>
+                <div className="feature-title">{s.title}</div>
+                <p className="feature-text">{s.text}</p>
+              </div>
+            ))}
+          </div>
+          <div style={{background: 'var(--amber-lt)', border: '1px solid rgba(122,78,10,.15)', borderRadius: 'var(--r-lg)', padding: '24px 32px', maxWidth: 680}}>
+            <div style={{fontWeight: 600, color: 'var(--amber)', marginBottom: 8}}>Insurance premium impact</div>
+            <p style={{fontSize: 14, color: 'var(--ink-soft)', lineHeight: 1.7, margin: 0}}>
+              Malpractice insurance carriers offer 5–15% premium discounts for practices using verified external record retrieval.
+              At $5,000/year per provider, a 10-provider urgent care recovers <strong>$5,000/year in insurance savings alone</strong> —
+              before counting a single dollar of new billing revenue.
+            </p>
+          </div>
+          <p style={{marginTop: 16, fontSize: 12, color: 'var(--ink-muted)'}}>
+            Source: Justia (Aug 2025), industry malpractice data. MyPulseScan surfaces the record.
+            The documented retrieval is the clinic&apos;s defense — not ours. Consult legal counsel regarding your specific situation.
+          </p>
+        </div>
+      </section>
+
+      {/* ── COMPETITIVE POSITIONING ── */}
+      <section className="section" id="competitive">
+        <div className="section-inner">
+          <div className="section-kicker">How we&apos;re different</div>
+          <h2 className="section-title">Built for the <em>unknown walk-in patient.</em> Not the scheduled known one.</h2>
+          <p className="section-sub">
+            Every other retrieval tool was designed for patients your system already knows.
+            MyPulseScan was built for urgent care — where 100% of patients are strangers to your system.
+          </p>
+          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20, marginBottom: 40}}>
+            {competitiveRows.map(c => (
+              <div key={c.competitor} style={{background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '24px 28px', boxShadow: 'var(--shadow)'}}>
+                <div style={{fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: 8}}>{c.competitor}</div>
+                <div style={{fontSize: 14, color: 'var(--red)', marginBottom: 12, lineHeight: 1.5}}>⚠ {c.weakness}</div>
+                <div style={{fontSize: 14, color: 'var(--teal)', lineHeight: 1.5}}>✓ {c.ourPosition}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{background: 'var(--teal-pale)', borderRadius: 'var(--r-lg)', padding: '28px 32px'}}>
+            <div style={{fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--teal)', marginBottom: 16}}>
+              Why these differences matter for urgent care
+            </div>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16}}>
+              {differentiators.map(d => (
+                <div key={d.title} style={{display: 'flex', gap: 12, alignItems: 'flex-start'}}>
+                  <div style={{color: 'var(--teal)', fontSize: 18, flexShrink: 0, marginTop: 2}}>{d.icon}</div>
+                  <div>
+                    <div style={{fontWeight: 600, fontSize: 14, marginBottom: 4}}>{d.title}</div>
+                    <div style={{fontSize: 13, color: 'var(--ink-soft)', lineHeight: 1.5}}>{d.text}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── PROOF PANEL ── */}
       <section className="section section-dark">
         <div className="section-inner">
@@ -292,7 +414,8 @@ export default function HomePage() {
           <h2 className="section-title" style={{marginBottom: 8}}>See the exact dollar value of <em>knowing more.</em></h2>
           <p className="section-sub">
             Adjust your patient volume and staffing costs. The calculator shows staff time recovered,
-            plus optional RPM revenue for practices that choose to activate it.
+            plus RPM revenue for practices that choose to activate it. Toggle to the full billing view
+            to see the complete picture including CCM, BHI, and TCM for eligible practices.
           </p>
           <RoiCalculator />
         </div>
@@ -378,8 +501,8 @@ const costOfWaiting = [
   },
   {
     icon: '⚖️',
-    title: 'The liability gap no one talks about',
-    text: 'When a decision is made on incomplete history, documented or not, the practice bears the risk. Verified records close that gap before it opens.',
+    title: '32% of urgent care malpractice claims trace to incomplete history',
+    text: 'When a provider makes a decision on incomplete information, documented retrieval changes the legal position. MyPulseScan surfaces the verified record. The clinician reviews it. That documented retrieval is yours — not ours.',
   },
 ]
 
@@ -482,6 +605,98 @@ const verticals = [
     tag: 'Insurance-Based Practice',
     title: 'Documentation-First',
     text: 'Verified record history strengthens every prior auth, reduces denials, and supports accurate risk coding at scale.',
+  },
+]
+
+const billingExpansionCodes = [
+  {
+    code: 'CPT 99490 / 99491',
+    title: 'Chronic Care Management (CCM)',
+    desc: 'For practices that offer CCM: MyPulseScan surfaces the complete verified history that makes chronic condition documentation defensible. ~70% of urgent care patients have at least one chronic condition.',
+    rate: '$50–$100',
+    rateSub: 'per patient / month',
+  },
+  {
+    code: 'CPT 99492 / 99484',
+    title: 'Behavioral Health Integration (BHI)',
+    desc: 'For practices that screen for BHI: verified longitudinal history supports behavioral health documentation. Your billing team determines eligibility.',
+    rate: '$57',
+    rateSub: 'per patient / month',
+  },
+  {
+    code: 'CPT 99495 / 99496',
+    title: 'Transitional Care Management (TCM)',
+    desc: 'For practices seeing post-hospital and post-ED patients: ~40% of urgent care visits involve patients recently discharged. Verified external records make TCM documentation complete.',
+    rate: '$150–$200',
+    rateSub: 'per transition event',
+  },
+]
+
+const fullBillingRows: { label: string; value: string; sub: string | null; neg?: boolean; highlight?: boolean }[] = [
+  { label: 'RPM (99457 + 99454 + 99453)', value: '$5,700', sub: '60 patients × $95/mo' },
+  { label: 'CCM (newly enabled)', value: '$4,650', sub: '75 patients × $62/mo' },
+  { label: 'BHI (newly enabled)', value: '$1,710', sub: '30 patients × $57/mo' },
+  { label: 'TCM (post-discharge events)', value: '$3,500', sub: '20 events × $175' },
+  { label: 'Prior Auth facilitation savings', value: '$3,500', sub: '100 patients × $35' },
+  { label: 'Platform cost (Growth tier)', value: '-$1,250', sub: null, neg: true },
+]
+
+const riskStats = [
+  {
+    stat: '32%',
+    title: 'of UC malpractice claims',
+    text: 'stem from incomplete patient history at the point of care. Verified retrieval is the documented defense.',
+  },
+  {
+    stat: '$150K+',
+    title: 'average settlement',
+    text: 'Average malpractice judgment or settlement: $150,000–$500,000. Legal costs even when you win: $40,000–$100,000.',
+  },
+  {
+    stat: '5–15%',
+    title: 'insurance premium reduction',
+    text: 'Malpractice carriers offer discounts for practices using verified external record retrieval. At $5K/provider/year, a 10-provider clinic saves $5,000/year.',
+  },
+]
+
+const competitiveRows = [
+  {
+    competitor: 'Epic Care Everywhere',
+    weakness: 'Epic-to-Epic only (~30% network coverage). Buried in the EMR. Requires scheduled workflow.',
+    ourPosition: 'Full Carequality + CommonWell + TEFCA network via Particle. Auto-triggered at chart open. Built for walk-in.',
+  },
+  {
+    competitor: 'Athena Patient Sharing',
+    weakness: 'Built for scheduled, known patients with existing chart history. Not designed for the unknown walk-in.',
+    ourPosition: 'No pre-configuration required. Works on first visit with name, DOB, and ZIP only.',
+  },
+  {
+    competitor: 'Veradigm / CareJourney',
+    weakness: 'Enterprise-only at $15,000–$50,000/month. No path for single-location or small-chain urgent care.',
+    ourPosition: 'Priced for operators: $200/location + $2–$10/patient. Viable from day one.',
+  },
+]
+
+const differentiators = [
+  {
+    icon: '⚡',
+    title: 'Auto-triggered at chart open',
+    text: 'No staff action required. Record retrieval starts the moment a chart is opened.',
+  },
+  {
+    icon: '🌐',
+    title: 'Full Carequality network',
+    text: 'Not just Epic-to-Epic. Every network via Particle — 90% US population coverage.',
+  },
+  {
+    icon: '🚶',
+    title: 'Walk-in ready by design',
+    text: 'Name, DOB, ZIP. No prior relationship with your system needed. Built for the unknown patient.',
+  },
+  {
+    icon: '💰',
+    title: 'Ties retrieval to revenue',
+    text: 'The only platform that connects record retrieval directly to CCM, BHI, TCM, and RPM billing enablement.',
   },
 ]
 
