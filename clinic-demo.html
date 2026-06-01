@@ -482,6 +482,111 @@
       background-clip: text; display: inline-block; margin-bottom: 1rem;
     }
 
+    /* ── PRODUCT TIERS ── */
+    .tier-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .tier-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .tier-card:hover { border-color: var(--border-bright); }
+    .tier-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .tier-card.tier-workbench::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal-bright)); }
+    .tier-card.tier-signal::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold)); }
+    .tier-badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .badge-workbench { background: rgba(59,130,246,0.15); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
+    .badge-signal { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+    .tier-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .tier-price { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .tier-price .price-sub { font-size: 0.75rem; font-weight: 500; color: var(--text-2); }
+    .tier-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.65; margin-bottom: 1.25rem; }
+    .tier-features { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .tier-features li {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--text-2); line-height: 1.5;
+    }
+    .tier-features li::before { content: "→"; color: var(--accent-teal-bright); flex-shrink: 0; }
+    .tier-revenue {
+      margin-top: 1.25rem;
+      padding: 0.75rem 1rem;
+      background: rgba(93,232,192,0.06);
+      border: 1px solid rgba(93,232,192,0.15);
+      border-radius: 8px;
+    }
+    .tier-rev-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.25rem; }
+    .tier-rev-value { font-size: 0.95rem; font-weight: 700; color: var(--accent-teal-bright); }
+
+    /* ── SOURCE TAG ── */
+    .source-tag {
+      font-size: 0.65rem;
+      color: var(--text-3);
+      font-style: italic;
+    }
+
+    /* ── TABS for billing ── */
+    .billing-tabs {
+      display: flex; gap: 0; margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .billing-tab {
+      padding: 0.75rem 1.5rem; cursor: pointer;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--text-3); border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all 0.2s;
+      background: none; border-top: none; border-left: none; border-right: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .billing-tab:hover { color: var(--text-2); }
+    .billing-tab.active { color: var(--accent-teal-bright); border-bottom-color: var(--accent-teal-bright); }
+    .billing-content { display: none; }
+    .billing-content.active { display: block; }
+
+    /* ── E/M COMPARISON ── */
+    .em-compare {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: rgba(13,107,110,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .em-cell {
+      background: rgba(5,11,24,0.85);
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+    .em-code { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 0.4rem; }
+    .em-rate { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.25rem; }
+    .em-desc { font-size: 0.72rem; color: var(--text-3); line-height: 1.4; }
+    .em-cell.em-highlight { border: 2px solid var(--accent-teal-bright); }
+    .em-cell.em-highlight .em-rate { color: var(--accent-green); }
+    .em-arrow { font-size: 0.72rem; color: var(--accent-teal-bright); margin-top: 0.4rem; font-weight: 700; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .screen { padding: 1.5rem; }
@@ -489,13 +594,17 @@
       .category-grid { grid-template-columns: 1fr 1fr; }
       .roi-strip { grid-template-columns: 1fr; }
       .value-grid { grid-template-columns: 1fr; }
+      .tier-grid { grid-template-columns: 1fr; }
+      .em-compare { grid-template-columns: repeat(2, 1fr); }
       .calc-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
       .calc-slider { width: 100%; }
       .patient-header { flex-direction: column; align-items: flex-start; }
+      .billing-tabs { overflow-x: auto; }
     }
     @media (max-width: 480px) {
       .category-grid { grid-template-columns: 1fr; }
       .cta-buttons { flex-direction: column; align-items: center; }
+      .em-compare { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -565,244 +674,371 @@
           <div class="patient-avatar">SM</div>
           <div>
             <div class="patient-name">Sarah Mitchell</div>
-            <div class="patient-meta">DOB: 03/15/1978 · Phoenix, AZ · 48 years old</div>
+            <div class="patient-meta">DOB: 03/15/1978 · Phoenix, AZ · Female · 48 years old · MRN: PMH-2024-08412</div>
+            <div class="patient-meta" style="margin-top:0.25rem;">Records from <strong style="color:var(--accent-teal-bright);">6 providers</strong> across <strong style="color:var(--accent-teal-bright);">3 health networks</strong> · Last updated: 04/12/2026</div>
           </div>
         </div>
 
         <!-- AI Summary -->
         <div class="ai-summary">
-          <div class="ai-summary-label">✦ AI Clinical Summary</div>
-          <div class="ai-summary-text">48-year-old female with controlled Type 2 Diabetes (HbA1c 6.8%), hypertension managed on lisinopril 20mg + amlodipine 5mg, hypothyroidism stable on levothyroxine. <strong>CRITICAL: Penicillin allergy — anaphylaxis risk.</strong> Former smoker, family history of cardiovascular disease. Active osteoarthritis. 14 encounters across 6 providers in past 24 months.</div>
+          <div class="ai-summary-label">✦ AI Clinical Summary — Longitudinal Patient History</div>
+          <div class="ai-summary-text">48-year-old female presenting with multi-system chronic disease management. Primary diagnoses: Type 2 Diabetes Mellitus (E11.65, controlled, HbA1c 6.8% as of 03/2026), Essential Hypertension (I10, managed on dual therapy — lisinopril 20mg + amlodipine 5mg, last BP 138/82), and Hypothyroidism (E03.9, stable on levothyroxine 88mcg, TSH 2.4). <strong>CRITICAL: Documented penicillin allergy with anaphylaxis history — DO NOT prescribe beta-lactam antibiotics.</strong> Additional considerations: active osteoarthritis bilateral knees (M17.0), former tobacco use (quit 2019, 15-pack-year history), BMI 31.2 (Class I obesity). Cardiovascular risk factors present: family history of MI (father, age 62), hypertension, diabetes, former smoker. Currently on aspirin 81mg for primary prevention. Renal function mildly reduced (eGFR 78). Patient seen by 6 providers across CommonWell, Carequality, and Surescripts networks in past 24 months. 14 documented encounters including 1 ER visit (11/2025, acute knee pain).</div>
         </div>
 
-        <!-- Category grid -->
+        <!-- Category grid — detailed -->
         <div class="category-grid">
 
           <div class="category-card">
             <div class="cat-header">
               <div class="cat-name">Allergies</div>
-              <div class="cat-count">4</div>
+              <div class="cat-count">4 records</div>
             </div>
             <ul class="cat-items">
-              <li class="critical">Penicillin — Anaphylaxis (Severe)</li>
-              <li>Sulfa Drugs — Rash</li>
-              <li>Latex — Contact Dermatitis</li>
-              <li>Iodine Contrast — Hives</li>
+              <li class="critical">Penicillin — Anaphylaxis (Severe) <span class="source-tag">· Banner Health 2019</span></li>
+              <li>Sulfa Drugs — Maculopapular Rash (Moderate) <span class="source-tag">· HonorHealth 2021</span></li>
+              <li>Latex — Contact Dermatitis (Mild) <span class="source-tag">· Mayo Clinic AZ 2020</span></li>
+              <li>Iodine Contrast — Hives/Urticaria (Moderate) <span class="source-tag">· Banner Health 2023</span></li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
-              <div class="cat-name">Medications</div>
-              <div class="cat-count">11</div>
+              <div class="cat-name">Active Medications</div>
+              <div class="cat-count">11 active</div>
             </div>
             <ul class="cat-items">
-              <li>Lisinopril 20mg daily</li>
-              <li>Metformin 1000mg BID</li>
-              <li>Atorvastatin 40mg daily</li>
-              <li>Amlodipine 5mg daily</li>
-              <li>Levothyroxine 88mcg daily</li>
-              <li style="color:var(--text-3); font-style:italic;">+6 more</li>
+              <li>Lisinopril 20mg PO daily <span class="source-tag">· Dr. Patel, PCP · filled 04/01/26</span></li>
+              <li>Metformin 1000mg PO BID <span class="source-tag">· Dr. Patel · filled 04/01/26</span></li>
+              <li>Atorvastatin 40mg PO qHS <span class="source-tag">· Dr. Patel · filled 03/15/26</span></li>
+              <li>Amlodipine 5mg PO daily <span class="source-tag">· Dr. Patel · filled 04/01/26</span></li>
+              <li>Levothyroxine 88mcg PO qAM <span class="source-tag">· Dr. Kim, Endo · filled 03/28/26</span></li>
+              <li>Omeprazole 20mg PO daily <span class="source-tag">· Dr. Patel · filled 03/15/26</span></li>
+              <li>Aspirin 81mg PO daily <span class="source-tag">· OTC · Surescripts verified</span></li>
+              <li>Vitamin D3 2000 IU PO daily <span class="source-tag">· OTC · Surescripts verified</span></li>
+              <li>Fish Oil 1200mg PO daily <span class="source-tag">· OTC</span></li>
+              <li>Metoprolol Succinate 25mg PO daily <span class="source-tag">· Dr. Patel · filled 02/18/26</span></li>
+              <li>Gabapentin 300mg PO TID <span class="source-tag">· Dr. Ortiz, Ortho · filled 01/22/26</span></li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
-              <div class="cat-name">Labs</div>
-              <div class="cat-count">23</div>
+              <div class="cat-name">Lab Results</div>
+              <div class="cat-count">23 results</div>
             </div>
             <ul class="cat-items">
-              <li>HbA1c — 6.8%</li>
-              <li>LDL — 112 mg/dL</li>
-              <li>eGFR — 78 mL/min</li>
-              <li>TSH — 2.4 mIU/L</li>
-              <li>BMP — Normal</li>
-              <li style="color:var(--text-3); font-style:italic;">+18 more results</li>
+              <li>HbA1c — <strong>6.8%</strong> (ref: &lt;7.0%) <span class="source-tag">· 03/15/26 · LOINC 4548-4</span></li>
+              <li>LDL Cholesterol — <strong>112 mg/dL</strong> (ref: &lt;100) <span class="source-tag">· 03/15/26</span></li>
+              <li>Total Cholesterol — <strong>198 mg/dL</strong> (ref: &lt;200) <span class="source-tag">· 03/15/26</span></li>
+              <li>HDL — <strong>52 mg/dL</strong> (ref: &gt;40) <span class="source-tag">· 03/15/26</span></li>
+              <li>Triglycerides — <strong>168 mg/dL</strong> (ref: &lt;150) <span class="source-tag">· 03/15/26</span></li>
+              <li>eGFR — <strong>78 mL/min</strong> (ref: &gt;90) <span class="source-tag">· 03/15/26 · mildly decreased</span></li>
+              <li>Creatinine — <strong>1.02 mg/dL</strong> (ref: 0.6-1.2) <span class="source-tag">· 03/15/26</span></li>
+              <li>BUN — <strong>18 mg/dL</strong> (ref: 7-20) <span class="source-tag">· 03/15/26</span></li>
+              <li>TSH — <strong>2.4 mIU/L</strong> (ref: 0.4-4.0) <span class="source-tag">· 02/28/26 · Dr. Kim</span></li>
+              <li>Free T4 — <strong>1.1 ng/dL</strong> (ref: 0.8-1.8) <span class="source-tag">· 02/28/26</span></li>
+              <li>Fasting Glucose — <strong>118 mg/dL</strong> (ref: 70-100) <span class="source-tag">· 03/15/26</span></li>
+              <li>ALT — <strong>28 U/L</strong> (ref: 7-56) <span class="source-tag">· 03/15/26</span></li>
+              <li>AST — <strong>24 U/L</strong> (ref: 10-40) <span class="source-tag">· 03/15/26</span></li>
+              <li style="color:var(--text-3); font-style:italic;">+10 more results (CBC, UA, Vitamin D, Magnesium...)</li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
-              <div class="cat-name">Problems</div>
-              <div class="cat-count">8</div>
+              <div class="cat-name">Problems / Diagnoses</div>
+              <div class="cat-count">8 conditions</div>
             </div>
             <ul class="cat-items">
-              <li>Type 2 Diabetes — Active</li>
-              <li>Hypertension — Active</li>
-              <li>Hypothyroidism — Active</li>
-              <li>Osteoarthritis — Active</li>
-              <li>GERD — Resolved</li>
-              <li style="color:var(--text-3); font-style:italic;">+3 more</li>
+              <li>Type 2 Diabetes Mellitus — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· E11.65 · onset 2018</span></li>
+              <li>Essential Hypertension — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· I10 · onset 2016</span></li>
+              <li>Hypothyroidism — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· E03.9 · onset 2020</span></li>
+              <li>Bilateral Knee Osteoarthritis — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· M17.0 · onset 2021</span></li>
+              <li>Class I Obesity — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· E66.01 · BMI 31.2</span></li>
+              <li>GERD — <strong style="color:var(--accent-green);">Resolved</strong> <span class="source-tag">· K21.0 · resolved 2024</span></li>
+              <li>Generalized Anxiety — <strong style="color:var(--accent-green);">Managed</strong> <span class="source-tag">· F41.1 · onset 2019</span></li>
+              <li>Vitamin D Deficiency — <strong style="color:var(--accent-green);">Resolved</strong> <span class="source-tag">· E55.9 · resolved 2025</span></li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
               <div class="cat-name">Encounters</div>
-              <div class="cat-count">14</div>
+              <div class="cat-count">14 visits</div>
             </div>
             <ul class="cat-items">
-              <li>PCP Visit — 04/12/2026</li>
-              <li>Endocrinology — 02/28/2026</li>
-              <li>ER Visit — 11/03/2025</li>
-              <li style="color:var(--text-3); font-style:italic;">+11 more visits</li>
+              <li>Office Visit — Dr. Patel (PCP) <span class="source-tag">· HonorHealth · 04/12/26 · Annual wellness + diabetes mgmt</span></li>
+              <li>Specialist Visit — Dr. Kim (Endocrinology) <span class="source-tag">· Banner Health · 02/28/26 · Thyroid follow-up</span></li>
+              <li>Specialist Visit — Dr. Ortiz (Orthopedics) <span class="source-tag">· Mayo Clinic AZ · 01/15/26 · Knee pain evaluation</span></li>
+              <li class="critical">ER Visit — Banner Estrella MC <span class="source-tag">· 11/03/25 · Acute L knee pain, r/o meniscal tear · Discharged same day</span></li>
+              <li>Office Visit — Dr. Patel (PCP) <span class="source-tag">· HonorHealth · 10/08/25 · Medication review</span></li>
+              <li>Lab Visit — Quest Diagnostics <span class="source-tag">· 09/20/25 · Routine labs</span></li>
+              <li style="color:var(--text-3); font-style:italic;">+8 more encounters (2024-2025)</li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
               <div class="cat-name">Immunizations</div>
-              <div class="cat-count">6</div>
+              <div class="cat-count">6 vaccines</div>
             </div>
             <ul class="cat-items">
-              <li>Influenza — 10/2025</li>
-              <li>COVID Booster — 09/2025</li>
-              <li>Tdap — 03/2023</li>
-              <li>Shingrix (2-dose) — 2024</li>
-              <li>Pneumovax — 01/2024</li>
+              <li>Influenza (Quadrivalent) <span class="source-tag">· 10/15/25 · CVS Pharmacy · Lot #FL2025-8842</span></li>
+              <li>COVID-19 Booster (Updated 2025) <span class="source-tag">· 09/22/25 · Walgreens · Lot #MOD-2025-441</span></li>
+              <li>Tdap (Boostrix) <span class="source-tag">· 03/10/23 · Dr. Patel · Lot #AC52B168AA</span></li>
+              <li>Shingrix Dose 1 <span class="source-tag">· 06/14/24 · Dr. Patel</span></li>
+              <li>Shingrix Dose 2 <span class="source-tag">· 08/20/24 · Dr. Patel</span></li>
+              <li>Pneumovax 23 <span class="source-tag">· 01/08/24 · Dr. Patel</span></li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
               <div class="cat-name">Procedures</div>
-              <div class="cat-count">3</div>
+              <div class="cat-count">3 procedures</div>
             </div>
             <ul class="cat-items">
-              <li>Colonoscopy — 06/2024</li>
-              <li>Knee Arthroscopy — 03/2022</li>
-              <li>Thyroid Ultrasound — 01/2025</li>
+              <li>Screening Colonoscopy <span class="source-tag">· 06/12/24 · Dr. Harris, GI · Banner Health · CPT 45378 · Findings: 2 benign polyps removed</span></li>
+              <li>Right Knee Arthroscopy <span class="source-tag">· 03/08/22 · Dr. Ortiz · Mayo Clinic AZ · CPT 29881 · Partial meniscectomy</span></li>
+              <li>Thyroid Ultrasound <span class="source-tag">· 01/22/25 · Banner Radiology · CPT 76536 · Findings: 4mm benign nodule, stable</span></li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
-              <div class="cat-name">Vital Signs</div>
-              <div class="cat-count">18</div>
+              <div class="cat-name">Vital Signs (Most Recent)</div>
+              <div class="cat-count">18 readings</div>
             </div>
             <ul class="cat-items">
-              <li>BP — 138/82 mmHg</li>
-              <li>Heart Rate — 72 bpm</li>
-              <li>BMI — 31.2</li>
-              <li>Temp — 98.4°F</li>
-              <li style="color:var(--text-3); font-style:italic;">+14 more readings</li>
+              <li>Blood Pressure — <strong>138/82 mmHg</strong> <span class="source-tag">· 04/12/26 · slightly elevated</span></li>
+              <li>Heart Rate — <strong>72 bpm</strong> <span class="source-tag">· 04/12/26 · regular rhythm</span></li>
+              <li>Weight — <strong>186 lbs</strong> <span class="source-tag">· 04/12/26 · ↓2 lbs from 10/25</span></li>
+              <li>BMI — <strong>31.2</strong> <span class="source-tag">· Class I Obesity</span></li>
+              <li>Temperature — <strong>98.4°F</strong> <span class="source-tag">· 04/12/26</span></li>
+              <li>O2 Sat — <strong>97%</strong> <span class="source-tag">· 04/12/26 · room air</span></li>
+              <li>Respiratory Rate — <strong>16 breaths/min</strong> <span class="source-tag">· 04/12/26</span></li>
+              <li style="color:var(--text-3); font-style:italic;">+11 historical readings (BP trend, weight trend...)</li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
               <div class="cat-name">Social History</div>
-              <div class="cat-count">2</div>
+              <div class="cat-count">4 entries</div>
             </div>
             <ul class="cat-items">
-              <li>Former smoker — quit 2019</li>
-              <li>Alcohol — social, 1-2/week</li>
+              <li>Tobacco — <strong style="color:var(--accent-gold);">Former smoker</strong> <span class="source-tag">· quit 2019 · 15-pack-year history</span></li>
+              <li>Alcohol — Social, 1-2 drinks/week <span class="source-tag">· last screened 04/12/26</span></li>
+              <li>Occupation — High school teacher <span class="source-tag">· Phoenix Union HSD</span></li>
+              <li>Exercise — Walks 3x/week, 30 min <span class="source-tag">· per patient report</span></li>
             </ul>
           </div>
 
           <div class="category-card">
             <div class="cat-header">
               <div class="cat-name">Family History</div>
-              <div class="cat-count">3</div>
+              <div class="cat-count">4 entries</div>
             </div>
             <ul class="cat-items">
-              <li>Mother — Type 2 Diabetes</li>
-              <li>Father — MI at age 62</li>
-              <li>Sister — Breast Cancer</li>
+              <li>Father — <strong class="critical">Myocardial Infarction</strong> <span class="source-tag">· age 62 · survived</span></li>
+              <li>Mother — Type 2 Diabetes <span class="source-tag">· diagnosed age 55</span></li>
+              <li>Sister — Breast Cancer <span class="source-tag">· diagnosed age 51 · in remission</span></li>
+              <li>Brother — Hypertension <span class="source-tag">· diagnosed age 45</span></li>
             </ul>
           </div>
 
         </div>
 
-        <div class="trust-badge">Powered by Particle Health — 320M+ patients · 160,000+ organizations</div>
+        <div class="trust-badge">Powered by Particle Health — 320M+ patients · 160,000+ healthcare organizations · CommonWell · Carequality · Surescripts</div>
       </div>
     </div>
   </section>
 
   <!-- ═══════════ SCREEN 4 — THE MONEY ═══════════ -->
-  <section class="screen" id="s4">
+  <section class="screen" id="s4" style="min-height: auto; padding-top: 3rem; padding-bottom: 3rem; scroll-snap-align: start;">
     <div class="screen-inner">
       <div class="label">The Business Case</div>
-      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem); margin-bottom:2rem;">Now bill insurance for it.</h1>
+      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem); margin-bottom:1rem;">That visit you just saw? <span class="grad-text">It's billable.</span></h1>
+      <p class="hero-sub" style="margin-bottom:2rem;">Complete records don't just improve care — they increase reimbursement. When your provider reviews a full patient history before the visit, you bill a higher E/M code. Legitimately.</p>
 
-      <div class="roi-strip">
-        <div class="roi-cell">
-          <div class="roi-num cost">$499<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
-          <div class="roi-label">What you pay us</div>
-        </div>
-        <div class="roi-cell">
-          <div class="roi-num revenue" id="roiRevenue">$19,754<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
-          <div class="roi-label">What you bill insurance</div>
-        </div>
-        <div class="roi-cell">
-          <div class="roi-num roi" id="roiPercent">3,858%</div>
-          <div class="roi-label">Your ROI</div>
-        </div>
+      <!-- Billing Tabs -->
+      <div class="billing-tabs">
+        <button class="billing-tab active" onclick="showBilling('initial')">Initial Visit Billing</button>
+        <button class="billing-tab" onclick="showBilling('rpm')">RPM — Phase 2</button>
       </div>
 
-      <div class="calc-row">
-        <span class="calc-label">Your patient count:</span>
-        <input type="number" class="calc-input" id="patientInput" value="200" min="10" max="2000" />
-        <input type="range" class="calc-slider" id="patientSlider" value="200" min="10" max="2000" step="10" />
+      <!-- TAB 1: Initial Visit E/M Upcoding -->
+      <div id="billing-initial" class="billing-content active">
+
+        <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1.5rem; line-height:1.7;">Without records, most new patients are billed at <strong style="color:var(--text);">99203</strong> — low complexity. With complete records from EyeD, your provider can document a thorough history review and manage multiple conditions, supporting <strong style="color:var(--accent-green);">99204 or 99205</strong>.</p>
+
+        <div class="em-compare">
+          <div class="em-cell">
+            <div class="em-code">99202</div>
+            <div class="em-rate" style="color:var(--text-3);">$76</div>
+            <div class="em-desc">Straightforward<br/>15-29 min</div>
+          </div>
+          <div class="em-cell">
+            <div class="em-code">99203</div>
+            <div class="em-rate" style="color:var(--text-2);">$128</div>
+            <div class="em-desc">Low complexity<br/>30-44 min</div>
+            <div class="em-arrow">← Without records</div>
+          </div>
+          <div class="em-cell em-highlight">
+            <div class="em-code">99204</div>
+            <div class="em-rate">$167</div>
+            <div class="em-desc">Moderate complexity<br/>45-59 min</div>
+            <div class="em-arrow">← With EyeD</div>
+          </div>
+          <div class="em-cell em-highlight">
+            <div class="em-code">99205</div>
+            <div class="em-rate">$237</div>
+            <div class="em-desc">High complexity<br/>60-74 min</div>
+            <div class="em-arrow">← Complex patients</div>
+          </div>
+        </div>
+
+        <div class="cpt-breakdown">
+          <div class="cpt-row"><span>Without EyeD — typical new patient visit</span><span style="color:var(--text);">99203 → $128</span></div>
+          <div class="cpt-row"><span>With EyeD — complete history reviewed, multiple conditions</span><span style="color:var(--accent-green); font-weight:700;">99204 → $167</span></div>
+          <div class="cpt-row total"><span>Additional reimbursement per new patient</span><span>+$39 to +$109</span></div>
+        </div>
+
+        <div class="calc-row">
+          <span class="calc-label">New patients per month:</span>
+          <input type="number" class="calc-input" id="patientInput" value="200" min="10" max="2000" />
+          <input type="range" class="calc-slider" id="patientSlider" value="200" min="10" max="2000" step="10" />
+        </div>
+
+        <div class="roi-strip">
+          <div class="roi-cell">
+            <div class="roi-num cost">$499<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">What you pay us</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num revenue" id="roiRevenue">$7,800<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
+            <div class="roi-label">Additional billing from E/M uplift</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num roi" id="roiPercent">1,463%</div>
+            <div class="roi-label">Your ROI — initial visits alone</div>
+          </div>
+        </div>
+
+        <div class="roi-callout">Your cost is <strong>$499/month</strong>. With <strong id="calloutPatients">200</strong> new patients, the E/M uplift alone generates <strong id="calloutRevenue">$7,800</strong>/month in additional reimbursement. That's <strong id="calloutMultiple">$15</strong> earned for every $1 you pay us — <em>before</em> RPM billing even starts.</div>
       </div>
 
-      <div class="cpt-breakdown">
-        <div class="cpt-row"><span>CPT 99454 <span class="cpt-code">Device supply & data transmission</span></span><span>~$47.00/patient/mo</span></div>
-        <div class="cpt-row"><span>CPT 99457 <span class="cpt-code">RPM treatment mgmt, first 20 min</span></span><span>~$51.77/patient/mo</span></div>
-        <div class="cpt-row total"><span>Total RPM reimbursement</span><span>~$98.77/patient/mo</span></div>
-      </div>
+      <!-- TAB 2: RPM — Phase 2 -->
+      <div id="billing-rpm" class="billing-content">
+        <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1.5rem; line-height:1.7;">Once your patients are in the system, turn on <strong style="color:var(--text);">Signal</strong> — real-time monitoring that enables RPM billing. This is where the math gets serious.</p>
 
-      <div class="roi-callout" id="roiCallout">Your cost is <strong>$499/month</strong>. Your <strong id="calloutPatients">200</strong> patients generate <strong id="calloutRevenue">$19,754</strong>/month in RPM reimbursement. That's <strong id="calloutMultiple">$39</strong> earned for every $1 you pay us.</div>
+        <div class="roi-strip">
+          <div class="roi-cell">
+            <div class="roi-num cost">$499<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">What you pay us</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num revenue" id="rpmRevenue">$19,754<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
+            <div class="roi-label">RPM reimbursement</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num roi" id="rpmPercent">3,858%</div>
+            <div class="roi-label">Your ROI</div>
+          </div>
+        </div>
+
+        <div class="cpt-breakdown">
+          <div class="cpt-row"><span>CPT 99454 <span class="cpt-code">Device supply & data transmission</span></span><span>~$47.00/patient/mo</span></div>
+          <div class="cpt-row"><span>CPT 99457 <span class="cpt-code">RPM treatment mgmt, first 20 min</span></span><span>~$51.77/patient/mo</span></div>
+          <div class="cpt-row total"><span>Total RPM reimbursement per patient</span><span>~$98.77/patient/mo</span></div>
+        </div>
+
+        <div class="calc-row">
+          <span class="calc-label">RPM-enrolled patients:</span>
+          <input type="number" class="calc-input" id="rpmPatientInput" value="200" min="10" max="2000" />
+          <input type="range" class="calc-slider" id="rpmPatientSlider" value="200" min="10" max="2000" step="10" />
+        </div>
+
+        <div class="roi-callout">With <strong id="rpmCalloutPatients">200</strong> RPM-enrolled patients, your practice generates <strong id="rpmCalloutRevenue">$19,754</strong>/month in recurring reimbursement on a <strong>$499/month</strong> subscription. That's <strong id="rpmCalloutMultiple">$39</strong> earned for every $1 you pay us — every single month.</div>
+      </div>
     </div>
   </section>
 
-  <!-- ═══════════ SCREEN 5 — THE STACK ═══════════ -->
-  <section class="screen" id="s5" style="min-height: auto; padding-top: 4rem; padding-bottom: 4rem;">
+  <!-- ═══════════ SCREEN 5 — TWO PRODUCTS ═══════════ -->
+  <section class="screen" id="s5" style="min-height: auto; padding-top: 4rem; padding-bottom: 4rem; scroll-snap-align: start;">
     <div class="screen-inner">
-      <div class="label">What You Get</div>
-      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem);">Everything your practice needs. <span class="grad-text">One platform.</span></h1>
+      <div class="label">Two Ways to Get Started</div>
+      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem);">Choose the model that fits <span class="grad-text">your practice.</span></h1>
 
+      <div class="tier-grid">
+
+        <!-- Signal — Featured -->
+        <div class="tier-card tier-signal" style="border-color: rgba(167,139,250,0.4);">
+          <div class="tier-badge badge-signal">Recommended for Practices</div>
+          <div class="tier-title">EyeD Signal</div>
+          <div class="tier-price" style="color:#a78bfa;">$499<span class="price-sub">/month</span></div>
+          <div class="tier-desc">Built for medical practices with returning patients. Complete record retrieval on every visit, plus 24/7 real-time monitoring across the entire health network. Signal watches your patients and alerts you on admissions, discharges, and transfers — enabling Remote Patient Monitoring billing on top of your E/M uplift.</div>
+          <ul class="tier-features">
+            <li>Unlimited patient record lookups</li>
+            <li>Real-time monitoring (ADT alerts) for all enrolled patients</li>
+            <li>E/M upcoding support on every visit (99203 → 99204/99205)</li>
+            <li>Enables RPM billing: CPT 99454 + 99457 (~$98.77/patient/mo)</li>
+            <li>Up to 25 provider staff accounts</li>
+            <li>FHIR integration with Epic, Cerner, Athena, eCW</li>
+            <li>AI clinical summary on every patient</li>
+            <li>NFC wristbands for emergency patient ID ($2/band at cost)</li>
+            <li>Analytics dashboard — patient flow & access patterns</li>
+          </ul>
+          <div class="tier-revenue">
+            <div class="tier-rev-label">Combined revenue opportunity</div>
+            <div class="tier-rev-value">E/M uplift + RPM = $7,800 to $19,754+/month on a $499 subscription</div>
+          </div>
+        </div>
+
+        <!-- Workbench — Secondary -->
+        <div class="tier-card tier-workbench">
+          <div class="tier-badge badge-workbench">Urgent Care & Walk-Ins</div>
+          <div class="tier-title">EyeD Workbench</div>
+          <div class="tier-price" style="color:var(--accent-blue);">$99<span class="price-sub">/month</span></div>
+          <div class="tier-desc">On-demand patient record retrieval for clinics where patients don't return — urgent care, walk-in clinics, specialist referrals. Pull a complete history before any first visit.</div>
+          <ul class="tier-features">
+            <li>Up to 200 patient lookups/month</li>
+            <li>Full record from 160,000+ organizations</li>
+            <li>AI clinical summary on every query</li>
+            <li>Up to 3 provider staff accounts</li>
+            <li>Browser-based — no install required</li>
+            <li>E/M upcoding support (99203 → 99204/99205)</li>
+          </ul>
+          <div class="tier-revenue">
+            <div class="tier-rev-label">Revenue opportunity — initial visits</div>
+            <div class="tier-rev-value">+$39 to +$109 per new patient (E/M uplift)</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Value cards -->
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; margin-top:1rem;">Both plans include:</h3>
       <div class="value-grid">
         <div class="value-card">
           <div class="value-icon">📋</div>
           <div class="value-title">Complete records in seconds</div>
           <div class="value-desc">Full patient history from 160,000+ organizations. Allergies, medications, labs, encounters, procedures — all in one view before the patient sits down.</div>
-          <div class="value-audience">For: Clinicians</div>
         </div>
-
+        <div class="value-card">
+          <div class="value-icon">🛡️</div>
+          <div class="value-title">Malpractice risk reduction</div>
+          <div class="value-desc">Complete records = informed clinical decisions. Catch penicillin allergies before prescribing. Document your due diligence automatically.</div>
+        </div>
         <div class="value-card">
           <div class="value-icon">🔄</div>
           <div class="value-title">Auto-flows to your EMR</div>
           <div class="value-desc">Integrates with Epic, Cerner, Athena, eClinicalWorks, and more. Records flow directly into your existing system — no double entry.</div>
-          <div class="value-audience">For: Office Managers</div>
         </div>
-
-        <div class="value-card">
-          <div class="value-icon">💰</div>
-          <div class="value-title">RPM recurring revenue stream</div>
-          <div class="value-desc">Bill Medicare CPT 99454 + 99457 for every monitored patient. Turn a $499/mo subscription into $19,754/mo in reimbursement revenue.</div>
-          <div class="value-audience">For: Practice Owners</div>
-        </div>
-
-        <div class="value-card">
-          <div class="value-icon">🛡️</div>
-          <div class="value-title">Malpractice risk reduction</div>
-          <div class="value-desc">Complete records = informed clinical decisions. Reduce adverse drug events, catch allergies before prescribing, document due diligence automatically.</div>
-          <div class="value-audience">For: Clinicians + Owners</div>
-        </div>
-
-        <div class="value-card">
-          <div class="value-icon">📡</div>
-          <div class="value-title">Real-time monitoring 24/7</div>
-          <div class="value-desc">Signal alerts your team when a patient has an admission, discharge, transfer, or new encounter at any facility. Know immediately — not days later.</div>
-          <div class="value-audience">For: Care Teams</div>
-        </div>
-
         <div class="value-card">
           <div class="value-icon">⌚</div>
           <div class="value-title">NFC wristband for emergencies</div>
           <div class="value-desc">Patients carry their records on a wristband. Any ER can scan it. Critical allergies, medications, and conditions — available when it matters most.</div>
-          <div class="value-audience">For: Patient Safety</div>
         </div>
       </div>
     </div>
@@ -813,7 +1049,7 @@
     <div class="screen-inner cta-section">
       <div class="label">Get Started</div>
       <h1 class="hero-headline">Early access available for <span class="grad-text">qualifying practices.</span></h1>
-      <p class="hero-sub" style="margin: 0 auto;">Limited rollout. Priority given to practices with 100+ active patients ready for RPM enrollment.</p>
+      <p class="hero-sub" style="margin: 0 auto;">Start with Workbench at $99/month — see the records, bill the difference. Upgrade to Signal when you're ready for RPM revenue.</p>
 
       <div class="cta-buttons">
         <a href="mailto:brad@eyedlab.io?subject=EyeD%20Provider%20Demo%20Request" class="btn-primary" style="text-decoration:none;">Email Us →</a>
@@ -836,11 +1072,8 @@ function triggerReveal() {
     return;
   }
   revealed = true;
-
-  // Scroll to Screen 3
   document.getElementById('s3').scrollIntoView({ behavior: 'smooth' });
 
-  // Start loading animation
   const bar = document.getElementById('loadingBar');
   const counter = document.getElementById('loadingCounter');
   const loading = document.getElementById('loading');
@@ -848,54 +1081,78 @@ function triggerReveal() {
 
   requestAnimationFrame(() => { bar.classList.add('animate'); });
 
-  // Animate counter
   let count = 0;
   const target = 160000;
   const interval = setInterval(() => {
     count += Math.floor(Math.random() * 8000) + 3000;
-    if (count >= target) {
-      count = target;
-      clearInterval(interval);
-    }
+    if (count >= target) { count = target; clearInterval(interval); }
     counter.textContent = count.toLocaleString() + ' organizations searched';
   }, 200);
 
-  // Show data after loading
   setTimeout(() => {
     loading.style.display = 'none';
     panel.classList.add('visible');
   }, 2800);
 }
 
-// ROI Calculator
+// Billing tabs
+function showBilling(id) {
+  document.querySelectorAll('.billing-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.billing-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('billing-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Initial Visit E/M Calculator
 const patientInput = document.getElementById('patientInput');
 const patientSlider = document.getElementById('patientSlider');
-const roiRevenue = document.getElementById('roiRevenue');
-const roiPercent = document.getElementById('roiPercent');
-const calloutPatients = document.getElementById('calloutPatients');
-const calloutRevenue = document.getElementById('calloutRevenue');
-const calloutMultiple = document.getElementById('calloutMultiple');
 
-function updateROI(patients) {
+function updateInitialROI(patients) {
+  patients = Math.max(10, Math.min(2000, parseInt(patients) || 200));
+  const uplift = patients * 39; // conservative $39/patient uplift (99203→99204)
+  const roi = ((uplift / 499) * 100).toFixed(0);
+  const multiple = Math.floor(uplift / 499);
+
+  document.getElementById('roiRevenue').innerHTML = '$' + uplift.toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
+  document.getElementById('roiPercent').textContent = Number(roi).toLocaleString() + '%';
+  document.getElementById('calloutPatients').textContent = patients.toLocaleString();
+  document.getElementById('calloutRevenue').textContent = '$' + uplift.toLocaleString();
+  document.getElementById('calloutMultiple').textContent = '$' + multiple;
+}
+
+patientInput.addEventListener('input', (e) => {
+  patientSlider.value = e.target.value;
+  updateInitialROI(e.target.value);
+});
+patientSlider.addEventListener('input', (e) => {
+  patientInput.value = e.target.value;
+  updateInitialROI(e.target.value);
+});
+
+// RPM Calculator
+const rpmInput = document.getElementById('rpmPatientInput');
+const rpmSlider = document.getElementById('rpmPatientSlider');
+
+function updateRPM(patients) {
   patients = Math.max(10, Math.min(2000, parseInt(patients) || 200));
   const revenue = patients * 98.77;
   const roi = ((revenue / 499) * 100).toFixed(0);
   const multiple = Math.floor(revenue / 499);
 
-  roiRevenue.innerHTML = '$' + Math.round(revenue).toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
-  roiPercent.textContent = Number(roi).toLocaleString() + '%';
-  calloutPatients.textContent = patients.toLocaleString();
-  calloutRevenue.textContent = '$' + Math.round(revenue).toLocaleString();
-  calloutMultiple.textContent = '$' + multiple;
+  document.getElementById('rpmRevenue').innerHTML = '$' + Math.round(revenue).toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
+  document.getElementById('rpmPercent').textContent = Number(roi).toLocaleString() + '%';
+  document.getElementById('rpmCalloutPatients').textContent = patients.toLocaleString();
+  document.getElementById('rpmCalloutRevenue').textContent = '$' + Math.round(revenue).toLocaleString();
+  document.getElementById('rpmCalloutMultiple').textContent = '$' + multiple;
 }
 
-patientInput.addEventListener('input', (e) => {
-  patientSlider.value = e.target.value;
-  updateROI(e.target.value);
+rpmInput.addEventListener('input', (e) => {
+  rpmSlider.value = e.target.value;
+  updateRPM(e.target.value);
 });
-patientSlider.addEventListener('input', (e) => {
-  patientInput.value = e.target.value;
-  updateROI(e.target.value);
+rpmSlider.addEventListener('input', (e) => {
+  rpmInput.value = e.target.value;
+  updateRPM(e.target.value);
 });
 </script>
 
