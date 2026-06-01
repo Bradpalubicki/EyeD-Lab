@@ -912,20 +912,20 @@
 
         <div class="roi-strip">
           <div class="roi-cell">
-            <div class="roi-num cost">$499<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
-            <div class="roi-label">What you pay us</div>
+            <div class="roi-num cost" id="emCost">$699<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">Your cost<br/><span style="font-size:0.7em;">$499 base + $1.00/patient</span></div>
           </div>
           <div class="roi-cell">
             <div class="roi-num revenue" id="roiRevenue">$7,800<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
             <div class="roi-label">Additional billing from E/M uplift</div>
           </div>
           <div class="roi-cell">
-            <div class="roi-num roi" id="roiPercent">1,463%</div>
+            <div class="roi-num roi" id="roiPercent">1,016%</div>
             <div class="roi-label">Your ROI — initial visits alone</div>
           </div>
         </div>
 
-        <div class="roi-callout">Your cost is <strong>$499/month</strong>. With <strong id="calloutPatients">200</strong> new patients, the E/M uplift alone generates <strong id="calloutRevenue">$7,800</strong>/month in additional reimbursement. That's <strong id="calloutMultiple">$15</strong> earned for every $1 you pay us — <em>before</em> RPM billing even starts.</div>
+        <div class="roi-callout">Your cost is <strong id="emCostCallout">$699/month</strong> ($499 base + <strong id="calloutPatients">200</strong> patients × $1.00/patient). The E/M uplift alone generates <strong id="calloutRevenue">$7,800</strong>/month in additional reimbursement. That's <strong id="calloutMultiple">$11</strong> earned for every $1 you pay us — <em>before</em> RPM billing even starts.</div>
       </div>
 
       <!-- TAB 2: RPM — Phase 2 -->
@@ -934,15 +934,15 @@
 
         <div class="roi-strip">
           <div class="roi-cell">
-            <div class="roi-num cost">$499<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
-            <div class="roi-label">What you pay us</div>
+            <div class="roi-num cost" id="rpmCost">$699<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">Your cost<br/><span style="font-size:0.7em;">$499 base + $1.00/patient</span></div>
           </div>
           <div class="roi-cell">
             <div class="roi-num revenue" id="rpmRevenue">$19,754<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
             <div class="roi-label">RPM reimbursement</div>
           </div>
           <div class="roi-cell">
-            <div class="roi-num roi" id="rpmPercent">3,858%</div>
+            <div class="roi-num roi" id="rpmPercent">2,726%</div>
             <div class="roi-label">Your ROI</div>
           </div>
         </div>
@@ -959,7 +959,8 @@
           <input type="range" class="calc-slider" id="rpmPatientSlider" value="200" min="10" max="2000" step="10" />
         </div>
 
-        <div class="roi-callout">With <strong id="rpmCalloutPatients">200</strong> RPM-enrolled patients, your practice generates <strong id="rpmCalloutRevenue">$19,754</strong>/month in recurring reimbursement on a <strong>$499/month</strong> subscription. That's <strong id="rpmCalloutMultiple">$39</strong> earned for every $1 you pay us — every single month.</div>
+        <div class="roi-callout">Your cost is <strong id="rpmCostCallout">$699/month</strong> ($499 base + <strong id="rpmCalloutPatients">200</strong> patients × $1.00/patient). Your practice generates <strong id="rpmCalloutRevenue">$19,754</strong>/month in recurring RPM reimbursement. That's <strong id="rpmCalloutMultiple">$28</strong> earned for every $1 you pay us — every single month.</div>
+
       </div>
     </div>
   </section>
@@ -976,7 +977,7 @@
         <div class="tier-card tier-signal" style="border-color: rgba(167,139,250,0.4);">
           <div class="tier-badge badge-signal">Recommended for Practices</div>
           <div class="tier-title">EyeD Signal</div>
-          <div class="tier-price" style="color:#a78bfa;">$499<span class="price-sub">/month</span></div>
+          <div class="tier-price" style="color:#a78bfa;">$499<span class="price-sub">/mo + $1.00/patient</span></div>
           <div class="tier-desc">Built for medical practices with returning patients. Complete record retrieval on every visit, plus 24/7 real-time monitoring across the entire health network. Signal watches your patients and alerts you on admissions, discharges, and transfers — enabling Remote Patient Monitoring billing on top of your E/M uplift.</div>
           <ul class="tier-features">
             <li>Unlimited patient record lookups</li>
@@ -999,7 +1000,7 @@
         <div class="tier-card tier-workbench">
           <div class="tier-badge badge-workbench">Urgent Care & Walk-Ins</div>
           <div class="tier-title">EyeD Workbench</div>
-          <div class="tier-price" style="color:var(--accent-blue);">$99<span class="price-sub">/month</span></div>
+          <div class="tier-price" style="color:var(--accent-blue);">$99<span class="price-sub">/mo + $1.00/patient</span></div>
           <div class="tier-desc">On-demand patient record retrieval for clinics where patients don't return — urgent care, walk-in clinics, specialist referrals. Pull a complete history before any first visit.</div>
           <ul class="tier-features">
             <li>Up to 200 patient lookups/month</li>
@@ -1103,18 +1104,27 @@ function showBilling(id) {
   event.target.classList.add('active');
 }
 
+// Pricing: $499 base + $1.00/patient/month
+const BASE_FEE = 499;
+const PER_PATIENT = 1.00;
+
+function totalCost(patients) { return BASE_FEE + (patients * PER_PATIENT); }
+
 // Initial Visit E/M Calculator
 const patientInput = document.getElementById('patientInput');
 const patientSlider = document.getElementById('patientSlider');
 
 function updateInitialROI(patients) {
   patients = Math.max(10, Math.min(2000, parseInt(patients) || 200));
+  const cost = totalCost(patients);
   const uplift = patients * 39; // conservative $39/patient uplift (99203→99204)
-  const roi = ((uplift / 499) * 100).toFixed(0);
-  const multiple = Math.floor(uplift / 499);
+  const roi = ((uplift / cost) * 100).toFixed(0);
+  const multiple = Math.floor(uplift / cost);
 
+  document.getElementById('emCost').innerHTML = '$' + cost.toLocaleString() + '<span style="font-size:0.5em; opacity:0.6;">/mo</span>';
   document.getElementById('roiRevenue').innerHTML = '$' + uplift.toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
   document.getElementById('roiPercent').textContent = Number(roi).toLocaleString() + '%';
+  document.getElementById('emCostCallout').textContent = '$' + cost.toLocaleString() + '/month';
   document.getElementById('calloutPatients').textContent = patients.toLocaleString();
   document.getElementById('calloutRevenue').textContent = '$' + uplift.toLocaleString();
   document.getElementById('calloutMultiple').textContent = '$' + multiple;
@@ -1135,12 +1145,15 @@ const rpmSlider = document.getElementById('rpmPatientSlider');
 
 function updateRPM(patients) {
   patients = Math.max(10, Math.min(2000, parseInt(patients) || 200));
+  const cost = totalCost(patients);
   const revenue = patients * 98.77;
-  const roi = ((revenue / 499) * 100).toFixed(0);
-  const multiple = Math.floor(revenue / 499);
+  const roi = ((revenue / cost) * 100).toFixed(0);
+  const multiple = Math.floor(revenue / cost);
 
+  document.getElementById('rpmCost').innerHTML = '$' + cost.toLocaleString() + '<span style="font-size:0.5em; opacity:0.6;">/mo</span>';
   document.getElementById('rpmRevenue').innerHTML = '$' + Math.round(revenue).toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
   document.getElementById('rpmPercent').textContent = Number(roi).toLocaleString() + '%';
+  document.getElementById('rpmCostCallout').textContent = '$' + cost.toLocaleString() + '/month';
   document.getElementById('rpmCalloutPatients').textContent = patients.toLocaleString();
   document.getElementById('rpmCalloutRevenue').textContent = '$' + Math.round(revenue).toLocaleString();
   document.getElementById('rpmCalloutMultiple').textContent = '$' + multiple;
