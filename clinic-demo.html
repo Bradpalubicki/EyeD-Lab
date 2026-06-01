@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EyeD ID Lab — See What's Possible</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050b18;
+      --bg-surface: #080f1e;
+      --bg-card: #0c1628;
+      --accent-teal: #0D6B6E;
+      --accent-teal-bright: #5de8c0;
+      --accent-purple: #7c3aed;
+      --accent-blue: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+      --text: #f0f4ff;
+      --text-2: #8b9cc8;
+      --text-3: #445580;
+      --border: rgba(59,90,163,0.2);
+      --border-bright: rgba(93,232,192,0.25);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLL SNAP ── */
+    .snap-container {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+    .screen {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+    }
+    .screen-inner {
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .hero-headline {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      color: var(--text-2);
+      line-height: 1.6;
+      max-width: 600px;
+    }
+    .grad-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── SCROLL ARROW ── */
+    .scroll-arrow {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+      color: var(--text-3);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* ── FORM ── */
+    .demo-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      max-width: 520px;
+    }
+    .demo-form .full-width { grid-column: 1 / -1; }
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.4rem;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: var(--accent-teal-bright); }
+
+    /* ── BUTTON ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--grad);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      margin-top: 1.5rem;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-3);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    /* ── LOADING ── */
+    .loading-container {
+      text-align: center;
+      padding: 4rem 0;
+    }
+    .loading-text {
+      font-size: 1.1rem;
+      color: var(--text-2);
+      margin-bottom: 1.5rem;
+    }
+    .loading-bar {
+      width: 280px;
+      height: 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--grad);
+      border-radius: 2px;
+      transition: width 2.5s ease-in-out;
+    }
+    .loading-bar-fill.animate { width: 100%; }
+
+    .loading-counter {
+      font-size: 0.8rem;
+      color: var(--text-3);
+      margin-top: 0.75rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── DATA PANEL ── */
+    .data-panel { display: none; }
+    .data-panel.visible { display: block; animation: fadeUp 0.6s ease-out; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .patient-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .patient-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--grad);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; font-weight: 800; color: white;
+    }
+    .patient-name { font-size: 1.25rem; font-weight: 700; }
+    .patient-meta { font-size: 0.85rem; color: var(--text-2); }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .category-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .category-card:hover { border-color: var(--border-bright); }
+    .cat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .cat-name {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-teal-bright);
+    }
+    .cat-count {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-3);
+      background: rgba(93,232,192,0.08);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .cat-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .cat-items li {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+    .cat-items .critical {
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    /* ── AI SUMMARY ── */
+    .ai-summary {
+      background: rgba(93,232,192,0.05);
+      border: 1px solid var(--border-bright);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .ai-summary-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-teal-bright);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .ai-summary-text {
+      font-size: 0.88rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+    .ai-summary-text strong { color: var(--accent-red); }
+
+    .trust-badge {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-3);
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── ROI SECTION ── */
+    .roi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(13,107,110,0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(93,232,192,0.15);
+      margin-bottom: 2rem;
+    }
+    .roi-cell {
+      background: rgba(5,11,24,0.85);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .roi-num {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .roi-num.cost { color: var(--text); }
+    .roi-num.revenue { color: var(--accent-green); }
+    .roi-num.roi { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .roi-label {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    .calc-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .calc-label {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      font-weight: 600;
+    }
+    .calc-input {
+      width: 120px;
+      padding: 0.6rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--accent-teal-bright);
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+    }
+    .calc-input:focus { border-color: var(--accent-teal-bright); }
+
+    .calc-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 200px;
+      height: 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      outline: none;
+    }
+    .calc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent-teal-bright);
+      cursor: pointer;
+    }
+    .calc-slider::-moz-range-thumb {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent-teal-bright);
+      cursor: pointer;
+      border: none;
+    }
+
+    .cpt-breakdown {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .cpt-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      font-size: 0.85rem;
+      color: var(--text-2);
+    }
+    .cpt-row.total {
+      border-top: 1px solid var(--border);
+      margin-top: 0.5rem;
+      padding-top: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-teal-bright);
+    }
+    .cpt-code { color: var(--text-3); font-size: 0.78rem; }
+
+    .roi-callout {
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      background: rgba(93,232,192,0.06);
+      border-left: 3px solid var(--accent-teal-bright);
+      font-size: 0.95rem;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+    .roi-callout strong { color: var(--text); }
+
+    /* ── VALUE STACK ── */
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+    .value-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .value-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+    .value-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .value-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .value-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.65; }
+    .value-audience {
+      margin-top: 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section { text-align: center; }
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .brand-footer {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.78rem;
+      color: var(--text-3);
+      text-align: center;
+    }
+    .brand-footer strong {
+      color: var(--text-2);
+    }
+
+    /* ── SECTION LABEL ── */
+    .label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; display: inline-block; margin-bottom: 1rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .screen { padding: 1.5rem; }
+      .demo-form { grid-template-columns: 1fr; }
+      .category-grid { grid-template-columns: 1fr 1fr; }
+      .roi-strip { grid-template-columns: 1fr; }
+      .value-grid { grid-template-columns: 1fr; }
+      .calc-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .calc-slider { width: 100%; }
+      .patient-header { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      .category-grid { grid-template-columns: 1fr; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="snap-container" id="container">
+
+  <!-- ═══════════ SCREEN 1 — THE PAIN ═══════════ -->
+  <section class="screen" id="s1">
+    <div class="screen-inner">
+      <div class="label">The Problem Every Clinic Faces</div>
+      <h1 class="hero-headline">Your front desk spends <span class="grad-text">20 minutes per patient</span> chasing records.</h1>
+      <p class="hero-sub">Faxes. Phone calls. 3-5 day waits. Sometimes they never arrive. Your clinicians are treating patients with incomplete information — and your practice eats the risk.</p>
+    </div>
+    <div class="scroll-arrow" onclick="document.getElementById('s2').scrollIntoView()">↓</div>
+  </section>
+
+  <!-- ═══════════ SCREEN 2 — THE HOOK ═══════════ -->
+  <section class="screen" id="s2">
+    <div class="screen-inner">
+      <div class="label">A Better Way</div>
+      <h1 class="hero-headline">What if you could see your patient's <span class="grad-text">complete history in 12 seconds?</span></h1>
+      <p class="hero-sub">Enter a patient. See what comes back.</p>
+      <div class="demo-form">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" value="Sarah" readonly />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" value="Mitchell" readonly />
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="text" value="03/15/1978" readonly />
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" value="Phoenix" readonly />
+        </div>
+        <div class="form-group full-width">
+          <label>State</label>
+          <input type="text" value="AZ" readonly />
+        </div>
+        <div class="full-width">
+          <button class="btn-primary" onclick="triggerReveal()">See What's Possible →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 3 — THE REVEAL ═══════════ -->
+  <section class="screen" id="s3" style="align-items: stretch; justify-content: flex-start; padding-top: 3rem; min-height: auto; scroll-snap-align: start;">
+    <div class="screen-inner" style="margin: 0 auto;">
+
+      <!-- Loading state -->
+      <div class="loading-container" id="loading">
+        <div class="loading-text">Searching <strong>160,000+</strong> healthcare organizations...</div>
+        <div class="loading-bar"><div class="loading-bar-fill" id="loadingBar"></div></div>
+        <div class="loading-counter" id="loadingCounter">0 organizations searched</div>
+      </div>
+
+      <!-- Data panel (hidden until loading completes) -->
+      <div class="data-panel" id="dataPanel">
+
+        <div class="patient-header">
+          <div class="patient-avatar">SM</div>
+          <div>
+            <div class="patient-name">Sarah Mitchell</div>
+            <div class="patient-meta">DOB: 03/15/1978 · Phoenix, AZ · 48 years old</div>
+          </div>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="ai-summary">
+          <div class="ai-summary-label">✦ AI Clinical Summary</div>
+          <div class="ai-summary-text">48-year-old female with controlled Type 2 Diabetes (HbA1c 6.8%), hypertension managed on lisinopril 20mg + amlodipine 5mg, hypothyroidism stable on levothyroxine. <strong>CRITICAL: Penicillin allergy — anaphylaxis risk.</strong> Former smoker, family history of cardiovascular disease. Active osteoarthritis. 14 encounters across 6 providers in past 24 months.</div>
+        </div>
+
+        <!-- Category grid -->
+        <div class="category-grid">
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Allergies</div>
+              <div class="cat-count">4</div>
+            </div>
+            <ul class="cat-items">
+              <li class="critical">Penicillin — Anaphylaxis (Severe)</li>
+              <li>Sulfa Drugs — Rash</li>
+              <li>Latex — Contact Dermatitis</li>
+              <li>Iodine Contrast — Hives</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Medications</div>
+              <div class="cat-count">11</div>
+            </div>
+            <ul class="cat-items">
+              <li>Lisinopril 20mg daily</li>
+              <li>Metformin 1000mg BID</li>
+              <li>Atorvastatin 40mg daily</li>
+              <li>Amlodipine 5mg daily</li>
+              <li>Levothyroxine 88mcg daily</li>
+              <li style="color:var(--text-3); font-style:italic;">+6 more</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Labs</div>
+              <div class="cat-count">23</div>
+            </div>
+            <ul class="cat-items">
+              <li>HbA1c — 6.8%</li>
+              <li>LDL — 112 mg/dL</li>
+              <li>eGFR — 78 mL/min</li>
+              <li>TSH — 2.4 mIU/L</li>
+              <li>BMP — Normal</li>
+              <li style="color:var(--text-3); font-style:italic;">+18 more results</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Problems</div>
+              <div class="cat-count">8</div>
+            </div>
+            <ul class="cat-items">
+              <li>Type 2 Diabetes — Active</li>
+              <li>Hypertension — Active</li>
+              <li>Hypothyroidism — Active</li>
+              <li>Osteoarthritis — Active</li>
+              <li>GERD — Resolved</li>
+              <li style="color:var(--text-3); font-style:italic;">+3 more</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Encounters</div>
+              <div class="cat-count">14</div>
+            </div>
+            <ul class="cat-items">
+              <li>PCP Visit — 04/12/2026</li>
+              <li>Endocrinology — 02/28/2026</li>
+              <li>ER Visit — 11/03/2025</li>
+              <li style="color:var(--text-3); font-style:italic;">+11 more visits</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Immunizations</div>
+              <div class="cat-count">6</div>
+            </div>
+            <ul class="cat-items">
+              <li>Influenza — 10/2025</li>
+              <li>COVID Booster — 09/2025</li>
+              <li>Tdap — 03/2023</li>
+              <li>Shingrix (2-dose) — 2024</li>
+              <li>Pneumovax — 01/2024</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Procedures</div>
+              <div class="cat-count">3</div>
+            </div>
+            <ul class="cat-items">
+              <li>Colonoscopy — 06/2024</li>
+              <li>Knee Arthroscopy — 03/2022</li>
+              <li>Thyroid Ultrasound — 01/2025</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Vital Signs</div>
+              <div class="cat-count">18</div>
+            </div>
+            <ul class="cat-items">
+              <li>BP — 138/82 mmHg</li>
+              <li>Heart Rate — 72 bpm</li>
+              <li>BMI — 31.2</li>
+              <li>Temp — 98.4°F</li>
+              <li style="color:var(--text-3); font-style:italic;">+14 more readings</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Social History</div>
+              <div class="cat-count">2</div>
+            </div>
+            <ul class="cat-items">
+              <li>Former smoker — quit 2019</li>
+              <li>Alcohol — social, 1-2/week</li>
+            </ul>
+          </div>
+
+          <div class="category-card">
+            <div class="cat-header">
+              <div class="cat-name">Family History</div>
+              <div class="cat-count">3</div>
+            </div>
+            <ul class="cat-items">
+              <li>Mother — Type 2 Diabetes</li>
+              <li>Father — MI at age 62</li>
+              <li>Sister — Breast Cancer</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="trust-badge">Powered by Particle Health — 320M+ patients · 160,000+ organizations</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 4 — THE MONEY ═══════════ -->
+  <section class="screen" id="s4">
+    <div class="screen-inner">
+      <div class="label">The Business Case</div>
+      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem); margin-bottom:2rem;">Now bill insurance for it.</h1>
+
+      <div class="roi-strip">
+        <div class="roi-cell">
+          <div class="roi-num cost">$499<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+          <div class="roi-label">What you pay us</div>
+        </div>
+        <div class="roi-cell">
+          <div class="roi-num revenue" id="roiRevenue">$19,754<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
+          <div class="roi-label">What you bill insurance</div>
+        </div>
+        <div class="roi-cell">
+          <div class="roi-num roi" id="roiPercent">3,858%</div>
+          <div class="roi-label">Your ROI</div>
+        </div>
+      </div>
+
+      <div class="calc-row">
+        <span class="calc-label">Your patient count:</span>
+        <input type="number" class="calc-input" id="patientInput" value="200" min="10" max="2000" />
+        <input type="range" class="calc-slider" id="patientSlider" value="200" min="10" max="2000" step="10" />
+      </div>
+
+      <div class="cpt-breakdown">
+        <div class="cpt-row"><span>CPT 99454 <span class="cpt-code">Device supply & data transmission</span></span><span>~$47.00/patient/mo</span></div>
+        <div class="cpt-row"><span>CPT 99457 <span class="cpt-code">RPM treatment mgmt, first 20 min</span></span><span>~$51.77/patient/mo</span></div>
+        <div class="cpt-row total"><span>Total RPM reimbursement</span><span>~$98.77/patient/mo</span></div>
+      </div>
+
+      <div class="roi-callout" id="roiCallout">Your cost is <strong>$499/month</strong>. Your <strong id="calloutPatients">200</strong> patients generate <strong id="calloutRevenue">$19,754</strong>/month in RPM reimbursement. That's <strong id="calloutMultiple">$39</strong> earned for every $1 you pay us.</div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 5 — THE STACK ═══════════ -->
+  <section class="screen" id="s5" style="min-height: auto; padding-top: 4rem; padding-bottom: 4rem;">
+    <div class="screen-inner">
+      <div class="label">What You Get</div>
+      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem);">Everything your practice needs. <span class="grad-text">One platform.</span></h1>
+
+      <div class="value-grid">
+        <div class="value-card">
+          <div class="value-icon">📋</div>
+          <div class="value-title">Complete records in seconds</div>
+          <div class="value-desc">Full patient history from 160,000+ organizations. Allergies, medications, labs, encounters, procedures — all in one view before the patient sits down.</div>
+          <div class="value-audience">For: Clinicians</div>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">🔄</div>
+          <div class="value-title">Auto-flows to your EMR</div>
+          <div class="value-desc">Integrates with Epic, Cerner, Athena, eClinicalWorks, and more. Records flow directly into your existing system — no double entry.</div>
+          <div class="value-audience">For: Office Managers</div>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">💰</div>
+          <div class="value-title">RPM recurring revenue stream</div>
+          <div class="value-desc">Bill Medicare CPT 99454 + 99457 for every monitored patient. Turn a $499/mo subscription into $19,754/mo in reimbursement revenue.</div>
+          <div class="value-audience">For: Practice Owners</div>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">🛡️</div>
+          <div class="value-title">Malpractice risk reduction</div>
+          <div class="value-desc">Complete records = informed clinical decisions. Reduce adverse drug events, catch allergies before prescribing, document due diligence automatically.</div>
+          <div class="value-audience">For: Clinicians + Owners</div>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">📡</div>
+          <div class="value-title">Real-time monitoring 24/7</div>
+          <div class="value-desc">Signal alerts your team when a patient has an admission, discharge, transfer, or new encounter at any facility. Know immediately — not days later.</div>
+          <div class="value-audience">For: Care Teams</div>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">⌚</div>
+          <div class="value-title">NFC wristband for emergencies</div>
+          <div class="value-desc">Patients carry their records on a wristband. Any ER can scan it. Critical allergies, medications, and conditions — available when it matters most.</div>
+          <div class="value-audience">For: Patient Safety</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 6 — THE CLOSE ═══════════ -->
+  <section class="screen" id="s6">
+    <div class="screen-inner cta-section">
+      <div class="label">Get Started</div>
+      <h1 class="hero-headline">Early access available for <span class="grad-text">qualifying practices.</span></h1>
+      <p class="hero-sub" style="margin: 0 auto;">Limited rollout. Priority given to practices with 100+ active patients ready for RPM enrollment.</p>
+
+      <div class="cta-buttons">
+        <a href="mailto:brad@eyedlab.io?subject=EyeD%20Provider%20Demo%20Request" class="btn-primary" style="text-decoration:none;">Email Us →</a>
+        <button class="btn-outline" disabled>Download the ROI Report (Coming Soon)</button>
+      </div>
+    </div>
+    <div class="brand-footer">
+      <strong>EyeD ID Lab</strong> · eyedlab.io · Confidential
+    </div>
+  </section>
+
+</div>
+
+<script>
+let revealed = false;
+
+function triggerReveal() {
+  if (revealed) {
+    document.getElementById('s3').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  revealed = true;
+
+  // Scroll to Screen 3
+  document.getElementById('s3').scrollIntoView({ behavior: 'smooth' });
+
+  // Start loading animation
+  const bar = document.getElementById('loadingBar');
+  const counter = document.getElementById('loadingCounter');
+  const loading = document.getElementById('loading');
+  const panel = document.getElementById('dataPanel');
+
+  requestAnimationFrame(() => { bar.classList.add('animate'); });
+
+  // Animate counter
+  let count = 0;
+  const target = 160000;
+  const interval = setInterval(() => {
+    count += Math.floor(Math.random() * 8000) + 3000;
+    if (count >= target) {
+      count = target;
+      clearInterval(interval);
+    }
+    counter.textContent = count.toLocaleString() + ' organizations searched';
+  }, 200);
+
+  // Show data after loading
+  setTimeout(() => {
+    loading.style.display = 'none';
+    panel.classList.add('visible');
+  }, 2800);
+}
+
+// ROI Calculator
+const patientInput = document.getElementById('patientInput');
+const patientSlider = document.getElementById('patientSlider');
+const roiRevenue = document.getElementById('roiRevenue');
+const roiPercent = document.getElementById('roiPercent');
+const calloutPatients = document.getElementById('calloutPatients');
+const calloutRevenue = document.getElementById('calloutRevenue');
+const calloutMultiple = document.getElementById('calloutMultiple');
+
+function updateROI(patients) {
+  patients = Math.max(10, Math.min(2000, parseInt(patients) || 200));
+  const revenue = patients * 98.77;
+  const roi = ((revenue / 499) * 100).toFixed(0);
+  const multiple = Math.floor(revenue / 499);
+
+  roiRevenue.innerHTML = '$' + Math.round(revenue).toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
+  roiPercent.textContent = Number(roi).toLocaleString() + '%';
+  calloutPatients.textContent = patients.toLocaleString();
+  calloutRevenue.textContent = '$' + Math.round(revenue).toLocaleString();
+  calloutMultiple.textContent = '$' + multiple;
+}
+
+patientInput.addEventListener('input', (e) => {
+  patientSlider.value = e.target.value;
+  updateROI(e.target.value);
+});
+patientSlider.addEventListener('input', (e) => {
+  patientInput.value = e.target.value;
+  updateROI(e.target.value);
+});
+</script>
+
+</body>
+</html>
