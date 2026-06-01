@@ -587,6 +587,87 @@
     .em-cell.em-highlight .em-rate { color: var(--accent-green); }
     .em-arrow { font-size: 0.72rem; color: var(--accent-teal-bright); margin-top: 0.4rem; font-weight: 700; }
 
+    /* ── NEXT BUTTON ── */
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: var(--grad);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.3s;
+      margin-top: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-next:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(93,232,192,0.2); }
+    .btn-next::after {
+      content: "";
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) rotate(25deg); }
+      100% { transform: translateX(100%) rotate(25deg); }
+    }
+    .btn-next.hidden { display: none; }
+
+    /* ── VOICEOVER CONTROLS ── */
+    .vo-controls {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 100;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .vo-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .vo-btn:hover { border-color: var(--accent-teal-bright); color: var(--accent-teal-bright); }
+    .vo-btn.active { border-color: var(--accent-teal-bright); color: var(--accent-teal-bright); }
+    .vo-speaking {
+      animation: pulse-ring 1.5s ease-out infinite;
+    }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(93,232,192,0.3); }
+      70% { box-shadow: 0 0 0 10px rgba(93,232,192,0); }
+      100% { box-shadow: 0 0 0 0 rgba(93,232,192,0); }
+    }
+
+    /* ── SCREEN LOCK (gated progression) ── */
+    .screen.locked {
+      opacity: 0.3;
+      pointer-events: none;
+      filter: blur(2px);
+      transition: opacity 0.5s, filter 0.5s;
+    }
+    .screen.unlocked {
+      opacity: 1;
+      pointer-events: auto;
+      filter: none;
+      transition: opacity 0.6s ease-out, filter 0.6s ease-out;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .screen { padding: 1.5rem; }
@@ -618,8 +699,8 @@
       <div class="label">The Problem Every Clinic Faces</div>
       <h1 class="hero-headline">Your front desk spends <span class="grad-text">20 minutes per patient</span> chasing records.</h1>
       <p class="hero-sub">Faxes. Phone calls. 3-5 day waits. Sometimes they never arrive. Your clinicians are treating patients with incomplete information — and your practice eats the risk.</p>
+      <button class="btn-next" onclick="goNext(2)">What if there was a better way? →</button>
     </div>
-    <div class="scroll-arrow" onclick="document.getElementById('s2').scrollIntoView()">↓</div>
   </section>
 
   <!-- ═══════════ SCREEN 2 — THE HOOK ═══════════ -->
@@ -850,6 +931,10 @@
         </div>
 
         <div class="trust-badge">Powered by Particle Health — 320M+ patients · 160,000+ healthcare organizations · CommonWell · Carequality · Surescripts</div>
+
+        <div style="text-align:center; margin-top:2rem;">
+          <button class="btn-next" onclick="goNext(4)">Now see what this is worth →</button>
+        </div>
       </div>
     </div>
   </section>
@@ -962,6 +1047,10 @@
         <div class="roi-callout">Your cost is <strong id="rpmCostCallout">$699/month</strong> ($499 base + <strong id="rpmCalloutPatients">200</strong> patients × $1.00/patient). Your practice generates <strong id="rpmCalloutRevenue">$19,754</strong>/month in recurring RPM reimbursement. That's <strong id="rpmCalloutMultiple">$28</strong> earned for every $1 you pay us — every single month.</div>
 
       </div>
+
+      <div style="text-align:center;">
+        <button class="btn-next" onclick="goNext(5)">See our plans →</button>
+      </div>
     </div>
   </section>
 
@@ -1042,6 +1131,10 @@
           <div class="value-desc">Patients carry their records on a wristband. Any ER can scan it. Critical allergies, medications, and conditions — available when it matters most.</div>
         </div>
       </div>
+
+      <div style="text-align:center; margin-top:2rem;">
+        <button class="btn-next" onclick="goNext(6)">Ready to get started? →</button>
+      </div>
     </div>
   </section>
 
@@ -1064,16 +1157,107 @@
 
 </div>
 
+<!-- Voiceover Controls -->
+<div class="vo-controls">
+  <button class="vo-btn active" id="voToggle" onclick="toggleVoiceover()" title="Toggle voiceover">🔊</button>
+</div>
+
 <script>
+// ═══════════ VOICEOVER ENGINE ═══════════
+const voiceoverLines = {
+  s1: "Your front desk spends twenty minutes per patient chasing records. Faxes. Phone calls. Three to five day waits. Sometimes they never arrive. Your clinicians are treating patients with incomplete information — and your practice eats the risk.",
+  s2: "What if you could see your patient's complete history in twelve seconds? Enter a patient's name, date of birth, and location — and watch what comes back from one hundred sixty thousand healthcare organizations.",
+  s3: "In seconds, you have the complete picture. Allergies, medications, lab results, diagnoses, encounters, procedures — all sourced from six providers across three health networks. And the AI clinical summary flags critical information like a penicillin allergy with anaphylaxis risk — before your provider ever walks in the room.",
+  s4: "Now here's the business case. Without records, most new patients bill at ninety-nine two oh three — about one hundred twenty-eight dollars. With complete records from EyeD, your provider can review a full history, manage multiple conditions, and legitimately bill ninety-nine two oh four or two oh five — up to two hundred thirty-seven dollars per visit. That's thirty-nine to one hundred nine dollars more per patient, just from the initial visit.",
+  s5: "We offer two plans. Signal, at four ninety-nine a month plus one dollar per patient, is built for practices with returning patients. It includes everything — record retrieval, real-time monitoring, E.M. upcoding support, and R.P.M. billing that can generate over nineteen thousand a month in reimbursement. Workbench, at ninety-nine a month, is designed for urgent care and walk-in clinics that need records on demand.",
+  s6: "Early access is available for qualifying practices. Start with the records. See the billing difference on day one. When you're ready, upgrade to Signal for R.P.M. revenue. Email us to get started."
+};
+
+let voEnabled = true;
+let currentUtterance = null;
+
+function speak(screenId) {
+  if (!voEnabled || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  const text = voiceoverLines[screenId];
+  if (!text) return;
+
+  currentUtterance = new SpeechSynthesisUtterance(text);
+  currentUtterance.rate = 0.95;
+  currentUtterance.pitch = 1.0;
+  currentUtterance.volume = 1.0;
+
+  // Try to pick a good English voice
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en')) ||
+                    voices.find(v => v.lang.startsWith('en-US')) ||
+                    voices.find(v => v.lang.startsWith('en'));
+  if (preferred) currentUtterance.voice = preferred;
+
+  const btn = document.getElementById('voToggle');
+  currentUtterance.onstart = () => btn && btn.classList.add('vo-speaking');
+  currentUtterance.onend = () => btn && btn.classList.remove('vo-speaking');
+
+  window.speechSynthesis.speak(currentUtterance);
+}
+
+function toggleVoiceover() {
+  voEnabled = !voEnabled;
+  const btn = document.getElementById('voToggle');
+  btn.classList.toggle('active', voEnabled);
+  btn.textContent = voEnabled ? '🔊' : '🔇';
+  if (!voEnabled) { window.speechSynthesis.cancel(); btn.classList.remove('vo-speaking'); }
+}
+
+// Load voices (some browsers load async)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+  window.speechSynthesis.getVoices();
+}
+
+// ═══════════ SCREEN GATING ═══════════
+let currentScreen = 1;
+const totalScreens = 6;
+
+function initScreens() {
+  for (let i = 2; i <= totalScreens; i++) {
+    const el = document.getElementById('s' + i);
+    if (el) el.classList.add('locked');
+  }
+  document.getElementById('s1').classList.add('unlocked');
+  // Auto-speak screen 1 after a short delay
+  setTimeout(() => speak('s1'), 800);
+}
+
+function goNext(targetScreen) {
+  if (targetScreen > totalScreens) return;
+  const el = document.getElementById('s' + targetScreen);
+  if (!el) return;
+
+  el.classList.remove('locked');
+  el.classList.add('unlocked');
+  currentScreen = targetScreen;
+
+  el.scrollIntoView({ behavior: 'smooth' });
+
+  // Speak after scroll settles
+  setTimeout(() => speak('s' + targetScreen), 600);
+
+  // If going to screen 3, trigger the reveal
+  if (targetScreen === 3) triggerRevealInternal();
+}
+
+// ═══════════ REVEAL ANIMATION ═══════════
 let revealed = false;
 
 function triggerReveal() {
-  if (revealed) {
-    document.getElementById('s3').scrollIntoView({ behavior: 'smooth' });
-    return;
-  }
+  goNext(3);
+}
+
+function triggerRevealInternal() {
+  if (revealed) return;
   revealed = true;
-  document.getElementById('s3').scrollIntoView({ behavior: 'smooth' });
 
   const bar = document.getElementById('loadingBar');
   const counter = document.getElementById('loadingCounter');
@@ -1103,6 +1287,9 @@ function showBilling(id) {
   document.getElementById('billing-' + id).classList.add('active');
   event.target.classList.add('active');
 }
+
+// Init on load
+window.addEventListener('DOMContentLoaded', initScreens);
 
 // Pricing: $499 base + $1.00/patient/month
 const BASE_FEE = 499;
