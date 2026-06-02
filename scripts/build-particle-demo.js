@@ -67,20 +67,8 @@ if (aiSummaryMatch) {
     '<div class="ai-summary-text">' + clinicalSummary + '</div>');
 }
 
-// 5. Tab counts
-const tabReplacements = [
-  ['Allergies <span class="tab-count">4</span>', 'Allergies <span class="tab-count">3</span>'],
-  ['Medications <span class="tab-count">11</span>', 'Medications <span class="tab-count">11</span>'],
-  ['Labs <span class="tab-count">23</span>', 'Labs <span class="tab-count">36</span>'],
-  ['Problems <span class="tab-count">8</span>', 'Problems <span class="tab-count">16</span>'],
-  ['Encounters <span class="tab-count">14</span>', 'Encounters <span class="tab-count">90</span>'],
-  ['Immunizations <span class="tab-count">6</span>', 'Immunizations <span class="tab-count">13</span>'],
-  ['Procedures <span class="tab-count">3</span>', 'Procedures <span class="tab-count">9</span>'],
-  ['Vitals <span class="tab-count">18</span>', 'Vitals <span class="tab-count">217</span>'],
-  ['Social History <span class="tab-count">4</span>', 'Social History <span class="tab-count">0</span>'],
-  ['Family History <span class="tab-count">4</span>', 'Family History <span class="tab-count">0</span>'],
-];
-tabReplacements.forEach(([old, rep]) => { html = html.replace(old, rep); });
+// 5. Tab counts — placeholder, will be replaced after data is computed
+// (moved to after data processing section below)
 
 // 6. Build data tables
 
@@ -122,7 +110,8 @@ d.medications.forEach(m => {
 const seenProbs = new Set();
 let probRows = '';
 d.problems.forEach(p => {
-  const name = p.condition_name.split(',')[0].trim();
+  // Normalize: take first comma segment, collapse whitespace
+  const name = p.condition_name.split(',')[0].replace(/\s+/g, ' ').trim();
   if (seenProbs.has(name.toLowerCase()) || name.length < 3) return;
   seenProbs.add(name.toLowerCase());
   const icd10 = (p.condition_code_icd10 || '').split(',')[0].trim();
@@ -184,19 +173,46 @@ d.labs.forEach(l => {
   const name = l.lab_name.split(',')[0].trim();
   if (!name || name.length < 2) return;
   const ts = l.lab_timestamp || '';
+  // Get actual value — skip placeholder strings like "{entry.value}"
+  let rawVal = l.lab_value || l.lab_value_quantity || l.lab_value_string || '';
+  if (typeof rawVal === 'string' && (rawVal.includes('{entry') || rawVal.trim() === '')) rawVal = '';
+  // Round long decimals
+  if (rawVal && !isNaN(Number(rawVal))) {
+    const num = Number(rawVal);
+    rawVal = num % 1 === 0 ? String(num) : num.toFixed(2);
+  }
   if (!labsByName[name] || ts > labsByName[name].ts) {
     labsByName[name] = {
-      name, value: l.lab_value || l.lab_value_quantity || l.lab_value_string || '\u2014',
-      unit: l.lab_unit || '', loinc: (l.lab_code_loinc || '').split(',')[0].trim(),
+      name, value: rawVal || '\u2014',
+      unit: rawVal ? (l.lab_unit || '') : '',
+      loinc: (l.lab_code_loinc || '').split(',')[0].trim(),
       ts, date: ts ? ts.split('T')[0] : '\u2014'
     };
   }
 });
-const labs = Object.values(labsByName).sort((a, b) => b.ts.localeCompare(a.ts));
+// Filter out labs with no value, then sort
+const labs = Object.values(labsByName)
+  .filter(l => l.value !== '\u2014')
+  .sort((a, b) => b.ts.localeCompare(a.ts));
 let labRows = '';
 labs.forEach(l => {
   labRows += `<tr><td class="val">${l.name}</td><td class="val">${l.value} ${l.unit}</td><td class="ref-range">\u2014</td><td>\u2014</td><td class="source-col">${l.loinc}</td><td class="source-col">${l.date}</td><td class="source-col">Particle</td></tr>\n`;
 });
+
+// 6b. Tab counts (now that data is computed)
+const tabReplacements = [
+  ['Allergies <span class="tab-count">4</span>', 'Allergies <span class="tab-count">' + allergenNames.length + '</span>'],
+  ['Medications <span class="tab-count">11</span>', 'Medications <span class="tab-count">' + seenMeds.size + '</span>'],
+  ['Labs <span class="tab-count">23</span>', 'Labs <span class="tab-count">' + labs.length + '</span>'],
+  ['Problems <span class="tab-count">8</span>', 'Problems <span class="tab-count">' + seenProbs.size + '</span>'],
+  ['Encounters <span class="tab-count">14</span>', 'Encounters <span class="tab-count">' + d.encounters.length + '</span>'],
+  ['Immunizations <span class="tab-count">6</span>', 'Immunizations <span class="tab-count">' + seenImms.size + '</span>'],
+  ['Procedures <span class="tab-count">3</span>', 'Procedures <span class="tab-count">' + d.procedures.length + '</span>'],
+  ['Vitals <span class="tab-count">18</span>', 'Vitals <span class="tab-count">' + d.vitalSigns.length + '</span>'],
+  ['Social History <span class="tab-count">4</span>', 'Social History <span class="tab-count">0</span>'],
+  ['Family History <span class="tab-count">4</span>', 'Family History <span class="tab-count">0</span>'],
+];
+tabReplacements.forEach(([old, rep]) => { html = html.replace(old, rep); });
 
 // 7. Replace all table sections using regex
 function replaceSection(html, tabId, panelContent) {
