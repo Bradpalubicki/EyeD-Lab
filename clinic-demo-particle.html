@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyPulseScan [Particle Sandbox] — See What's Possible</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050b18;
+      --bg-surface: #080f1e;
+      --bg-card: #0c1628;
+      --accent-teal: #0D6B6E;
+      --accent-teal-bright: #5de8c0;
+      --accent-purple: #7c3aed;
+      --accent-blue: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+      --text: #f0f4ff;
+      --text-2: #8b9cc8;
+      --text-3: #445580;
+      --border: rgba(59,90,163,0.2);
+      --border-bright: rgba(93,232,192,0.25);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLL SNAP ── */
+    .snap-container {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+    .screen {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+    }
+    .screen-inner {
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .hero-headline {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      color: var(--text-2);
+      line-height: 1.6;
+      max-width: 600px;
+    }
+    .grad-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── SCROLL ARROW ── */
+    .scroll-arrow {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+      color: var(--text-3);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* ── FORM ── */
+    .demo-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      max-width: 520px;
+    }
+    .demo-form .full-width { grid-column: 1 / -1; }
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.4rem;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: var(--accent-teal-bright); }
+
+    /* ── BUTTON ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--grad);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      margin-top: 1.5rem;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-3);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: default;
+    }
+
+    /* ── LOADING ── */
+    .loading-container {
+      text-align: center;
+      padding: 4rem 0;
+    }
+    .loading-text {
+      font-size: 1.1rem;
+      color: var(--text-2);
+      margin-bottom: 1.5rem;
+    }
+    .loading-bar {
+      width: 280px;
+      height: 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--grad);
+      border-radius: 2px;
+      transition: width 2.5s ease-in-out;
+    }
+    .loading-bar-fill.animate { width: 100%; }
+
+    .loading-counter {
+      font-size: 0.8rem;
+      color: var(--text-3);
+      margin-top: 0.75rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── DATA PANEL ── */
+    .data-panel { display: none; }
+    .data-panel.visible { display: block; animation: fadeUp 0.6s ease-out; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .patient-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .patient-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--grad);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; font-weight: 800; color: white;
+    }
+    .patient-name { font-size: 1.25rem; font-weight: 700; }
+    .patient-meta { font-size: 0.85rem; color: var(--text-2); }
+
+    /* ── SNAPSHOT TABS (Particle-style) ── */
+    .snapshot-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .snapshot-tabs::-webkit-scrollbar { display: none; }
+    .snapshot-tab {
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-3);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+      background: none;
+      border-top: none; border-left: none; border-right: none;
+      font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+      position: relative;
+    }
+    .snapshot-tab:hover { color: var(--text-2); }
+    .snapshot-tab.active { color: var(--accent-teal-bright); border-bottom-color: var(--accent-teal-bright); }
+    .snapshot-tab .tab-count {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      background: rgba(93,232,192,0.12);
+      color: var(--accent-teal-bright);
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+    .snapshot-panel { display: none; }
+    .snapshot-panel.active { display: block; animation: fadeUp 0.3s ease-out; }
+
+    /* ── DATA TABLE ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+    .data-table thead th {
+      text-align: left;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      padding: 0.75rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-surface);
+      position: sticky;
+      top: 0;
+    }
+    .data-table tbody td {
+      font-size: 0.82rem;
+      color: var(--text-2);
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid rgba(59,90,163,0.08);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .data-table tbody tr:hover { background: rgba(93,232,192,0.03); }
+    .data-table .val { color: var(--text); font-weight: 600; }
+    .data-table .critical-val { color: var(--accent-red); font-weight: 700; }
+    .data-table .active-badge {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      background: rgba(245,158,11,0.12);
+      color: var(--accent-gold);
+    }
+    .data-table .resolved-badge {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      background: rgba(16,185,129,0.12);
+      color: var(--accent-green);
+    }
+    .data-table .source-col {
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+    .data-table .ref-range {
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+    .data-table .flag-high {
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+    .data-table .flag-critical {
+      color: var(--accent-red);
+      font-weight: 700;
+    }
+    .table-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      overflow-x: auto;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    .table-wrapper::-webkit-scrollbar { width: 4px; }
+    .table-wrapper::-webkit-scrollbar-track { background: var(--bg-card); }
+    .table-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .table-footer {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      text-align: right;
+      border-top: 1px solid var(--border);
+      background: var(--bg-surface);
+    }
+
+    /* ── AI SUMMARY ── */
+    .ai-summary {
+      background: rgba(93,232,192,0.05);
+      border: 1px solid var(--border-bright);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .ai-summary-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-teal-bright);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .ai-summary-text {
+      font-size: 0.88rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+    .ai-summary-text strong { color: var(--accent-red); }
+
+    .trust-badge {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-3);
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── ROI SECTION ── */
+    .roi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(13,107,110,0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(93,232,192,0.15);
+      margin-bottom: 2rem;
+    }
+    .roi-cell {
+      background: rgba(5,11,24,0.85);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .roi-num {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .roi-num.cost { color: var(--text); }
+    .roi-num.revenue { color: var(--accent-green); }
+    .roi-num.roi { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .roi-label {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    .calc-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .calc-label {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      font-weight: 600;
+    }
+    .calc-input {
+      width: 120px;
+      padding: 0.6rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--accent-teal-bright);
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+    }
+    .calc-input:focus { border-color: var(--accent-teal-bright); }
+
+    .calc-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 200px;
+      height: 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      outline: none;
+    }
+    .calc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent-teal-bright);
+      cursor: pointer;
+    }
+    .calc-slider::-moz-range-thumb {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent-teal-bright);
+      cursor: pointer;
+      border: none;
+    }
+
+    .cpt-breakdown {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .cpt-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      font-size: 0.85rem;
+      color: var(--text-2);
+    }
+    .cpt-row.total {
+      border-top: 1px solid var(--border);
+      margin-top: 0.5rem;
+      padding-top: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-teal-bright);
+    }
+    .cpt-code { color: var(--text-3); font-size: 0.78rem; }
+
+    .roi-callout {
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      background: rgba(93,232,192,0.06);
+      border-left: 3px solid var(--accent-teal-bright);
+      font-size: 0.95rem;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+    .roi-callout strong { color: var(--text); }
+
+    /* ── VALUE STACK ── */
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+    .value-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .value-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+    .value-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .value-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .value-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.65; }
+    .value-audience {
+      margin-top: 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section { text-align: center; }
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .brand-footer {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.78rem;
+      color: var(--text-3);
+      text-align: center;
+    }
+    .brand-footer strong {
+      color: var(--text-2);
+    }
+
+    /* ── SECTION LABEL ── */
+    .label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; display: inline-block; margin-bottom: 1rem;
+    }
+
+    /* ── PRODUCT TIERS ── */
+    .tier-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .tier-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .tier-card:hover { border-color: var(--border-bright); }
+    .tier-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .tier-card.tier-workbench::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal-bright)); }
+    .tier-card.tier-signal::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold)); }
+    .tier-badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .badge-workbench { background: rgba(59,130,246,0.15); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
+    .badge-signal { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+    .tier-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .tier-price { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .tier-price .price-sub { font-size: 0.75rem; font-weight: 500; color: var(--text-2); }
+    .tier-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.65; margin-bottom: 1.25rem; }
+    .tier-features { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .tier-features li {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--text-2); line-height: 1.5;
+    }
+    .tier-features li::before { content: "→"; color: var(--accent-teal-bright); flex-shrink: 0; }
+    .tier-revenue {
+      margin-top: 1.25rem;
+      padding: 0.75rem 1rem;
+      background: rgba(93,232,192,0.06);
+      border: 1px solid rgba(93,232,192,0.15);
+      border-radius: 8px;
+    }
+    .tier-rev-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.25rem; }
+    .tier-rev-value { font-size: 0.95rem; font-weight: 700; color: var(--accent-teal-bright); }
+
+    /* ── TABS for billing ── */
+    .billing-tabs {
+      display: flex; gap: 0; margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .billing-tab {
+      padding: 0.75rem 1.5rem; cursor: pointer;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--text-3); border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all 0.2s;
+      background: none; border-top: none; border-left: none; border-right: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .billing-tab:hover { color: var(--text-2); }
+    .billing-tab.active { color: var(--accent-teal-bright); border-bottom-color: var(--accent-teal-bright); }
+    .billing-content { display: none; }
+    .billing-content.active { display: block; }
+
+    /* ── E/M COMPARISON ── */
+    .em-compare {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: rgba(13,107,110,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .em-cell {
+      background: rgba(5,11,24,0.85);
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+    .em-code { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 0.4rem; }
+    .em-rate { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.25rem; }
+    .em-desc { font-size: 0.72rem; color: var(--text-3); line-height: 1.4; }
+    .em-cell.em-highlight { border: 2px solid var(--accent-teal-bright); }
+    .em-cell.em-highlight .em-rate { color: var(--accent-green); }
+    .em-arrow { font-size: 0.72rem; color: var(--accent-teal-bright); margin-top: 0.4rem; font-weight: 700; }
+
+    /* ── NEXT BUTTON ── */
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: var(--grad);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.3s;
+      margin-top: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-next:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(93,232,192,0.2); }
+    .btn-next::after {
+      content: "";
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) rotate(25deg); }
+      100% { transform: translateX(100%) rotate(25deg); }
+    }
+    .btn-next.hidden { display: none; }
+
+    /* ── VOICEOVER CONTROLS ── */
+    .vo-controls {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 100;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .vo-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .vo-btn:hover { border-color: var(--accent-teal-bright); color: var(--accent-teal-bright); }
+    .vo-btn.active { border-color: var(--accent-teal-bright); color: var(--accent-teal-bright); }
+    .vo-speaking {
+      animation: pulse-ring 1.5s ease-out infinite;
+    }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(93,232,192,0.3); }
+      70% { box-shadow: 0 0 0 10px rgba(93,232,192,0); }
+      100% { box-shadow: 0 0 0 0 rgba(93,232,192,0); }
+    }
+
+    /* ── SCREEN LOCK (gated progression) ── */
+    .screen.locked {
+      opacity: 0.3;
+      pointer-events: none;
+      filter: blur(2px);
+      transition: opacity 0.5s, filter 0.5s;
+    }
+    .screen.unlocked {
+      opacity: 1;
+      pointer-events: auto;
+      filter: none;
+      transition: opacity 0.6s ease-out, filter 0.6s ease-out;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .screen { padding: 1.5rem; }
+      .demo-form { grid-template-columns: 1fr; }
+      .roi-strip { grid-template-columns: 1fr; }
+      .value-grid { grid-template-columns: 1fr; }
+      .tier-grid { grid-template-columns: 1fr; }
+      .em-compare { grid-template-columns: repeat(2, 1fr); }
+      .calc-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .calc-slider { width: 100%; }
+      .patient-header { flex-direction: column; align-items: flex-start; }
+      .billing-tabs { overflow-x: auto; }
+      .snapshot-tabs { padding-bottom: 2px; }
+      .data-table { font-size: 0.75rem; }
+      .data-table thead th { font-size: 0.6rem; padding: 0.5rem; }
+      .data-table tbody td { padding: 0.45rem 0.5rem; font-size: 0.75rem; }
+    }
+    @media (max-width: 480px) {
+      .cta-buttons { flex-direction: column; align-items: center; }
+      .em-compare { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="snap-container" id="container">
+
+  <!-- ═══════════ SCREEN 1 — THE PAIN ═══════════ -->
+  <section class="screen" id="s1">
+    <div class="screen-inner">
+      <div class="label">The Problem Every Clinic Faces</div>
+      <h1 class="hero-headline">Your front desk spends <span class="grad-text">20 minutes per patient</span> chasing records.</h1>
+      <p class="hero-sub">Faxes. Phone calls. 3-5 day waits. Sometimes they never arrive. Your clinicians are treating patients with incomplete information — and your practice eats the risk.</p>
+      <button class="btn-next" onclick="goNext(2)">What if there was a better way? →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 2 — THE HOOK ═══════════ -->
+  <section class="screen" id="s2">
+    <div class="screen-inner">
+      <div class="label">A Better Way</div>
+      <h1 class="hero-headline">What if you could see your patient's <span class="grad-text">complete history in 12 seconds?</span></h1>
+      <p class="hero-sub">Enter a patient. See what comes back.</p>
+      <div class="demo-form">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" value="Elvira" readonly />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" value="Valadez" readonly />
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="text" value="12/26/1970" readonly />
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" value="Boston" readonly />
+        </div>
+        <div class="form-group full-width">
+          <label>State</label>
+          <input type="text" value="MA" readonly />
+        </div>
+        <div class="full-width">
+          <button class="btn-primary" onclick="triggerReveal()">See What's Possible →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 3 — THE REVEAL ═══════════ -->
+  <section class="screen" id="s3" style="align-items: stretch; justify-content: flex-start; padding-top: 3rem; min-height: auto; scroll-snap-align: start;">
+    <div class="screen-inner" style="margin: 0 auto;">
+
+      <!-- Loading state -->
+      <div class="loading-container" id="loading">
+        <div class="loading-text">Searching <strong>160,000+</strong> healthcare organizations...</div>
+        <div class="loading-bar"><div class="loading-bar-fill" id="loadingBar"></div></div>
+        <div class="loading-counter" id="loadingCounter">0 organizations searched</div>
+      </div>
+
+      <!-- Data panel (hidden until loading completes) -->
+      <div class="data-panel" id="dataPanel">
+
+        <div class="patient-header">
+          <div class="patient-avatar">EV</div>
+          <div>
+            <div class="patient-name">Elvira Valadez</div>
+            <div class="patient-meta">DOB: 12/26/1970 · Boston, MA · Female · 55 years old · Particle Sandbox Patient</div>
+            <div class="patient-meta" style="margin-top:0.25rem;">Records from <strong style="color:var(--accent-teal-bright);">843 record sources</strong> across <strong style="color:var(--accent-teal-bright);">6 organizations</strong> · Real Particle Health Sandbox Data</div>
+          </div>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="ai-summary">
+          <div class="ai-summary-label">✦ AI Clinical Summary — Longitudinal Patient History</div>
+          <div class="ai-summary-text">Patient Demographics: Elvira Valadez, a 55-year-old female. Race: Non-hispanic black. Language: English. Problems: Hypertension. Hyperlipidemia. Obstructive sleep apnea. Congestive heart failure (ejection fraction 35-40%). Ischemic Stroke (07/02/2024). Anaphylaxis (11/01/2025), resolved. Coronary Artery Disease, Two-Vessel (03/22/2026). Hospitalizations &amp; Urgent Events: 02/09/2026 - 02/12/2026: Austin Memorial Hospital - Admission for Acute Decompensated Congestive Heart Failure. 11/01/2025: ED - for acute onset allergic reaction. 07/02/2024 - 07/05/2024: Rochester Hospital - Admission for Ischemic Stroke. Major Surgeries: Not documented Imaging: 02/09/2026 Chest X-ray PA and Lateral: demonstrating cardiomegaly, bilateral pleural effusions, and pulmonary edema consistent with acute CHF exacerbation. 08/16/2025 Transthoracic Echocardiogram: Not documented. 03/20/2025 Pharmacologic Cardiac Stress Test with Nuclear Imaging: Not documented. Other Procedures: 03/22/2026 Left Ventriculography. 03/22/2026 Left Heart Catheterization. 03/22/2026 Selective Coronary Angiography. 12/03/2025 12-Lead Electrocardiogram. Labs: 03/10/2026 Lipid Panel: VLDL Cholesterol</div>
+        </div>
+
+        <!-- ══ TABBED SNAPSHOT (Particle-style) ══ -->
+        <div class="snapshot-tabs" id="snapshotTabs">
+          <button class="snapshot-tab active" onclick="showSnapshotTab('allergies')">Allergies <span class="tab-count">3</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('medications')">Medications <span class="tab-count">11</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('labs')">Labs <span class="tab-count">36</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('problems')">Problems <span class="tab-count">16</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('encounters')">Encounters <span class="tab-count">90</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('immunizations')">Immunizations <span class="tab-count">13</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('procedures')">Procedures <span class="tab-count">9</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('vitals')">Vitals <span class="tab-count">217</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('social')">Social History <span class="tab-count">0</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('family')">Family History <span class="tab-count">0</span></button>
+        </div>
+
+        <!-- TAB: Allergies -->
+        <div class="snapshot-panel active" id="panel-allergies">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Allergen</th><th>Reaction</th><th>Severity</th><th>Source</th><th>Reported</th></tr></thead>
+              <tbody><tr><td class="val">Product containing sulfonamide (product)</td><td>—</td><td><span class="active-badge">Moderate</span></td><td class="source-col">Particle</td><td class="source-col">—</td></tr>
+<tr><td class="critical-val">Substance with penicillin structure</td><td>—</td><td><span class="critical-val">SEVERE</span></td><td class="source-col">Particle</td><td class="source-col">—</td></tr>
+<tr><td class="val">Bee venom</td><td>—</td><td><span class="active-badge">Moderate</span></td><td class="source-col">Particle</td><td class="source-col">—</td></tr>
+</tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Medications -->
+        <div class="snapshot-panel" id="panel-medications">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Medication</th><th>Dose</th><th>Status</th><th>Start</th><th>End</th><th>Source</th></tr></thead>
+              <tbody><tr><td class="val">humalog 100 unt/ml injectable solution</td><td>1 </td><td><span class="resolved-badge">Completed</span></td><td class="source-col">2018-02-24</td><td class="source-col">2018-08-18</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">insulin isophane</td><td>1 </td><td><span class="resolved-badge">Completed</span></td><td class="source-col">2011-09-03</td><td class="source-col">2012-09-08</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">10 ml epinephrine 0.1 mg/ml prefilled syringe</td><td>0.3 mg</td><td><span class="active-badge">Active</span></td><td class="source-col">2025-11-01</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">atorvastatin 80 mg oral tablet</td><td>— </td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">furosemide 20 mg oral tablet</td><td>— </td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">clopidogrel 75 mg (as clopidogrel bisulfate 97.875 mg) oral tablet</td><td>— </td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">epinephrine (generic for epipen jr) 0.15 mg per 0.3 ml auto-injector</td><td>— </td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">asa 81 mg oral tablet</td><td>— </td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Diphenhydramine 50 MG Injection</td><td>50 mg</td><td><span class="resolved-badge">Completed</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">prednisone 5 mg oral tablet 48 count pack</td><td>60 mg</td><td><span class="active-badge">Active</span></td><td class="source-col">2025-11-01</td><td class="source-col">2025-11-04</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">lisinopril 10 mg oral tablet</td><td>— </td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+</tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Labs -->
+        <div class="snapshot-panel" id="panel-labs">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Test</th><th>Result</th><th>Ref Range</th><th>Flag</th><th>LOINC</th><th>Date</th><th>Source</th></tr></thead>
+              <tbody><tr><td class="val">HDL Cholesterol</td><td class="val">50 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">2085-9</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Triglycerides</td><td class="val">123 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">2571-8</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">VLDL Cholesterol</td><td class="val">32 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">2091-7</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">LDL Cholesterol</td><td class="val">133 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">2089-1</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Total Cholesterol</td><td class="val">200 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">2093-3</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Sputum Culture</td><td class="val">Normal upper respiratory flora </td><td class="ref-range">—</td><td>—</td><td class="source-col">624-7</td><td class="source-col">2026-02-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">hs-Troponin I</td><td class="val">6 ng/L</td><td class="ref-range">—</td><td>—</td><td class="source-col">89579-7</td><td class="source-col">2026-02-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">NT-proBNP</td><td class="val">132 pg/mL</td><td class="ref-range">—</td><td>—</td><td class="source-col">33762-6</td><td class="source-col">2026-02-09</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">C-Reactive Protein</td><td class="val">12.4 mg/L</td><td class="ref-range">—</td><td>—</td><td class="source-col">1988-5</td><td class="source-col">2026-02-09</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Hemoglobin A1C</td><td class="val">5.3 %</td><td class="ref-range">—</td><td>—</td><td class="source-col">4548-4</td><td class="source-col">2022-01-03</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Glucose</td><td class="val">102.69 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">2339-0</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Potassium</td><td class="val">4.51 mmol/L</td><td class="ref-range">—</td><td>—</td><td class="source-col">6298-4</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Bilirubin.total [Presence] in Urine by Test strip</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">5770-3</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Protein [Presence] in Urine by Test strip</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">20454-5</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">pH of Urine by Test strip</td><td class="val">6.261709447979454 pH</td><td class="ref-range">—</td><td>—</td><td class="source-col">5803-2</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Specific gravity of Urine by Test strip</td><td class="val">1.0231557889986553 {nominal}</td><td class="ref-range">—</td><td>—</td><td class="source-col">5811-5</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Leukocyte esterase [Presence] in Urine by Test strip</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">5799-2</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Bilirubin.total [Mass/volume] in Urine by Test strip</td><td class="val">1.2390376596424209 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">20505-4</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Nitrite [Presence] in Urine by Test strip</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">5802-4</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Glucose [Mass/volume] in Urine by Test strip</td><td class="val">1.310141257520279 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">5792-7</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Creatinine</td><td class="val">1.5660433695840796 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">38483-4</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Appearance of Urine</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">5767-9</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Chloride</td><td class="val">108.44 mmol/L</td><td class="ref-range">—</td><td>—</td><td class="source-col">2069-3</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Ketones [Presence] in Urine by Test strip</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">2514-8</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Protein [Mass/volume] in Urine by Test strip</td><td class="val">66.47914801328626 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">5804-0</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Color of Urine</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">5778-6</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Glomerular filtration rate/1.73 sq M.predicted</td><td class="val">90.55666733098003 mL/min</td><td class="ref-range">—</td><td>—</td><td class="source-col">33914-3</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Carbon Dioxide</td><td class="val">23.41 mmol/L</td><td class="ref-range">—</td><td>—</td><td class="source-col">20565-8</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Clarity of Urine</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">32167-9</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Hemoglobin [Presence] in Urine by Test strip</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">5794-3</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Glucose [Presence] in Urine by Test strip</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">25428-4</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Sodium</td><td class="val">136.36 mmol/L</td><td class="ref-range">—</td><td>—</td><td class="source-col">2947-0</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Calcium</td><td class="val">9.59 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">49765-1</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Ketones [Mass/volume] in Urine by Test strip</td><td class="val">10.916035726604825 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">5797-6</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Urea Nitrogen</td><td class="val">13.46 mg/dL</td><td class="ref-range">—</td><td>—</td><td class="source-col">6299-2</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Odor of Urine</td><td class="val">{entry.value} </td><td class="ref-range">—</td><td>—</td><td class="source-col">5767-9</td><td class="source-col">2012-11-17</td><td class="source-col">Particle</td></tr>
+</tbody>
+            </table>
+            <div class="table-footer">36 unique lab results (deduplicated, most recent per test) · Particle Sandbox</div>
+          </div>
+        </div>
+
+        <!-- TAB: Problems -->
+        <div class="snapshot-panel" id="panel-problems">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Diagnosis</th><th>ICD-10</th><th>Status</th><th>Onset</th><th>Resolved</th><th>Source</th></tr></thead>
+              <tbody><tr><td class="val">Anaphylaxis</td><td>T78.2XXA</td><td><span class="resolved-badge">Resolved</span></td><td class="source-col">2025-11-01</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Chronic kidney disease stage 1 (disorder)</td><td>N18.1</td><td><span class="active-badge">Active</span></td><td class="source-col">2011-06-04</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Hypertriglyceridemia (disorder)</td><td>E78.1</td><td><span class="active-badge">Active</span></td><td class="source-col">2009-06-20</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Diabetic renal disease (disorder)</td><td>E11.21</td><td><span class="active-badge">Active</span></td><td class="source-col">2011-08-27</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Obstructive Sleep Apnea</td><td>G47.33</td><td><span class="active-badge">Active</span></td><td class="source-col">2024-03-14</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Congestive Heart Failure</td><td>I50.9</td><td><span class="active-badge">Active</span></td><td class="source-col">2023-05-15</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Hypertensive heart and chronic skin
+                                                    disease with heart failure and stage 1 through
+                                                    stage 4 chronic kidney disease</td><td>I13.10</td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Coronary Artery Disease</td><td>I25.10</td><td><span class="active-badge">Active</span></td><td class="source-col">2026-03-22</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Cerebral Infarction (Ischemic Stroke)</td><td>I63.9</td><td><span class="active-badge">Active</span></td><td class="source-col">2022-08-03</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Metabolic syndrome X (disorder)</td><td>E88.810</td><td><span class="active-badge">Active</span></td><td class="source-col">2009-06-20</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Essential Hypertension</td><td>I10</td><td><span class="active-badge">Active</span></td><td class="source-col">2018-03-01</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Hyperlipidemia</td><td>E78.5</td><td><span class="active-badge">Active</span></td><td class="source-col">2019-06-10</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Heart failure</td><td>I50.9</td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Anemia (disorder)</td><td>D64.9</td><td><span class="active-badge">Active</span></td><td class="source-col">2011-05-28</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Diabetes</td><td>E11.9</td><td><span class="active-badge">Active</span></td><td class="source-col">2006-06-17</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Hypertensive heart and chronic skin
+        disease with heart failure and stage 1 through
+        stage 4 chronic kidney disease</td><td>I13.10</td><td><span class="active-badge">Active</span></td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+</tbody>
+            </table>
+            <div class="table-footer">16 unique conditions (deduplicated from 26 records) · Particle Sandbox</div>
+          </div>
+        </div>
+
+        <!-- TAB: Encounters -->
+        <div class="snapshot-panel" id="panel-encounters">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Date</th><th>Type</th><th>End Date</th><th>Provider</th><th>Notes</th><th>Source</th></tr></thead>
+              <tbody><tr><td class="val">2026-03-22</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2026-03-22</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2026-03-10</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2026-03-10</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2026-02-09</td><td>—</td><td class="source-col">2026-02-12</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2026-02-09</td><td>—</td><td class="source-col">2026-02-12</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2025-12-02</td><td>—</td><td class="source-col">2025-12-02</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2025-12-02</td><td>—</td><td class="source-col">2025-12-02</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2025-11-01</td><td>Emergency</td><td class="source-col">2025-11-01</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2025-11-01</td><td>Emergency</td><td class="source-col">2025-11-01</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2025-08-19</td><td>—</td><td class="source-col">2025-08-19</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2025-08-19</td><td>—</td><td class="source-col">2025-08-19</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2025-04-08</td><td>—</td><td class="source-col">2025-04-08</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2025-04-08</td><td>—</td><td class="source-col">2025-04-08</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2024-10-15</td><td>—</td><td class="source-col">2024-10-15</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2024-10-15</td><td>—</td><td class="source-col">2024-10-15</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2024-07-08</td><td>—</td><td class="source-col">2024-07-10</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2024-07-03</td><td>—</td><td class="source-col">2024-07-06</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2024-07-03</td><td>—</td><td class="source-col">2024-07-06</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">2024-07-02</td><td>, Inpatient Encounter, , Emergency</td><td class="source-col">2024-07-04</td><td class="source-col">—</td><td class="source-col">—</td><td class="source-col">Particle</td></tr>
+</tbody>
+            </table>
+            <div class="table-footer">Showing 20 of 90 encounters · Ordered by date descending · Particle Sandbox</div>
+          </div>
+        </div>
+
+        <!-- TAB: Immunizations -->
+        <div class="snapshot-panel" id="panel-immunizations">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Vaccine</th><th>Product</th><th>Lot</th><th>Date</th><th>Site</th><th>Source</th></tr></thead>
+              <tbody><tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2018-08-18</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2016-07-30</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Hep A, adult</td><td>hepatitis a vaccine, inactivated, hepatitis a vaccine, inactivated</td><td>—</td><td class="source-col">2011-08-27</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2014-12-27</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2011-06-04</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2012-09-08</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2011-05-28</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2011-08-27</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2017-07-01</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Td (adult) preservative free</td><td>clostridium tetani toxoid antigen (formaldehyde inactivated) and corynebacterium diphtheriae toxoid antigen (formaldehyde inactivated), </td><td>—</td><td class="source-col">2012-09-08</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2013-11-30</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Influenza, seasonal, injectable, preservative free</td><td>influenza virus vaccine, </td><td>—</td><td class="source-col">2016-01-23</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Hep A, adult</td><td>hepatitis a vaccine, inactivated, hepatitis a vaccine, inactivated</td><td>—</td><td class="source-col">2011-05-28</td><td>—</td><td class="source-col">Particle</td></tr>
+</tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Procedures -->
+        <div class="snapshot-panel" id="panel-procedures">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Procedure</th><th>CPT</th><th>Date</th><th>Description</th><th>Provider</th><th>Source</th></tr></thead>
+              <tbody><tr><td class="val">Transthoracic Echocardiogram</td><td>93306</td><td class="source-col">2025-08-16</td><td>Transthoracic echocardiography</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Pharmacologic Cardiac Stress Test with Nuclear Imaging</td><td>78452</td><td class="source-col">2025-03-20</td><td>Radionuclide myocardial perfusion study</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Left Ventriculography</td><td>93452</td><td class="source-col">2026-03-22</td><td>Left ventriculography</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Left Heart Catheterization</td><td>93452</td><td class="source-col">2026-03-22</td><td>Catheterization of left heart</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Chest X-ray PA and Lateral</td><td>71046</td><td class="source-col">2026-02-09</td><td>Plain X-ray of chest</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Selective Coronary Angiography</td><td>93454</td><td class="source-col">2026-03-22</td><td>Angiography of coronary artery</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">12-Lead Electrocardiogram</td><td>—</td><td class="source-col">2025-06-09</td><td>Electrocardiographic procedure</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Polysomnography (Sleep Study)</td><td>95810</td><td class="source-col">2024-03-14</td><td>Polysomnography</td><td>—</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">12-Lead Electrocardiogram</td><td>—</td><td class="source-col">2025-12-03</td><td>Electrocardiographic procedure</td><td>—</td><td class="source-col">Particle</td></tr>
+</tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Vitals -->
+        <div class="snapshot-panel" id="panel-vitals">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Vital Sign</th><th>Value</th><th>Ref Range</th><th>Flag</th><th>Date</th><th>Source</th></tr></thead>
+              <tbody><tr><td class="val">Heart Rate</td><td class="val">74 /min</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Weight</td><td class="val">167 [lb_av]</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Systolic BP</td><td class="val">132 mmHg</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Diastolic BP</td><td class="val">78 mmHg</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Oxygen Saturation, Oxygen saturation by Pulse oximetry</td><td class="val">97 %</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Temperature</td><td class="val">98.2 [degF]</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Respiratory Rate</td><td class="val">16 /min</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-22</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Temperature</td><td class="val">98.2 [degF]</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Heart Rate</td><td class="val">72 /min</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Respiratory Rate</td><td class="val">16 /min</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Systolic BP</td><td class="val">128 mmHg</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Weight</td><td class="val">168 [lb_av]</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Diastolic BP</td><td class="val">80 mmHg</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Oxygen Saturation, Oxygen saturation by Pulse oximetry</td><td class="val">97 %</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-03-10</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Weight</td><td class="val">170 [lb_av]</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-02-12</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Respiratory Rate</td><td class="val">18 /min</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-02-12</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Temperature</td><td class="val">98.4 [degF]</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-02-12</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Diastolic BP</td><td class="val">82 mmHg</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-02-12</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Systolic BP</td><td class="val">130 mmHg</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-02-12</td><td class="source-col">Particle</td></tr>
+<tr><td class="val">Heart Rate</td><td class="val">76 /min</td><td class="ref-range">—</td><td>—</td><td class="source-col">2026-02-12</td><td class="source-col">Particle</td></tr>
+</tbody>
+            </table>
+            <div class="table-footer">Showing 20 of 217 vital sign readings · Particle Sandbox</div>
+          </div>
+        </div>
+
+        <!-- TAB: Social History -->
+        <div class="snapshot-panel" id="panel-social">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Category</th><th>Detail</th><th>Additional Info</th><th>Last Screened</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--text-3);">No social history records in sandbox data — AI summary includes social history from clinical notes</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Family History -->
+        <div class="snapshot-panel" id="panel-family">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Relation</th><th>Condition</th><th>ICD-10</th><th>Age at Dx</th><th>Outcome</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-3);">No family history records in sandbox data</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="trust-badge" style="margin-top:1.5rem;">Real data from Particle Health Sandbox — 843 record sources · 294 documents · 101 AI citations · Queried via API v2</div>
+
+        <div style="text-align:center; margin-top:2rem;">
+          <button class="btn-next" onclick="goNext(4)">Now see what this is worth →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 4 — THE MONEY ═══════════ -->
+  <section class="screen" id="s4" style="min-height: auto; padding-top: 3rem; padding-bottom: 3rem; scroll-snap-align: start;">
+    <div class="screen-inner">
+      <div class="label">The Business Case</div>
+      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem); margin-bottom:1rem;">That visit you just saw? <span class="grad-text">It's billable.</span></h1>
+      <p class="hero-sub" style="margin-bottom:2rem;">Complete records don't just improve care — they increase reimbursement. When your provider reviews a full patient history before the visit, you bill a higher E/M code. Legitimately.</p>
+
+      <!-- Billing Tabs -->
+      <div class="billing-tabs">
+        <button class="billing-tab active" onclick="showBilling('initial')">Initial Visit Billing</button>
+        <button class="billing-tab" onclick="showBilling('rpm')">RPM — Phase 2</button>
+      </div>
+
+      <!-- TAB 1: Initial Visit E/M Upcoding -->
+      <div id="billing-initial" class="billing-content active">
+
+        <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1.5rem; line-height:1.7;">Without records, most new patients are billed at <strong style="color:var(--text);">99203</strong> — low complexity. With complete records from MyPulseScan, your provider can document a thorough history review and manage multiple conditions, supporting <strong style="color:var(--accent-green);">99204 or 99205</strong>.</p>
+
+        <div class="em-compare">
+          <div class="em-cell">
+            <div class="em-code">99202</div>
+            <div class="em-rate" style="color:var(--text-3);">$76</div>
+            <div class="em-desc">Straightforward<br/>15-29 min</div>
+          </div>
+          <div class="em-cell">
+            <div class="em-code">99203</div>
+            <div class="em-rate" style="color:var(--text-2);">$128</div>
+            <div class="em-desc">Low complexity<br/>30-44 min</div>
+            <div class="em-arrow">← Without records</div>
+          </div>
+          <div class="em-cell em-highlight">
+            <div class="em-code">99204</div>
+            <div class="em-rate">$167</div>
+            <div class="em-desc">Moderate complexity<br/>45-59 min</div>
+            <div class="em-arrow">← With MyPulseScan</div>
+          </div>
+          <div class="em-cell em-highlight">
+            <div class="em-code">99205</div>
+            <div class="em-rate">$237</div>
+            <div class="em-desc">High complexity<br/>60-74 min</div>
+            <div class="em-arrow">← Complex patients</div>
+          </div>
+        </div>
+
+        <div class="cpt-breakdown">
+          <div class="cpt-row"><span>Without MyPulseScan — typical new patient visit</span><span style="color:var(--text);">99203 → $128</span></div>
+          <div class="cpt-row"><span>With MyPulseScan — complete history reviewed, multiple conditions</span><span style="color:var(--accent-green); font-weight:700;">99204 → $167</span></div>
+          <div class="cpt-row total"><span>Additional reimbursement per new patient</span><span>+$39 to +$109</span></div>
+        </div>
+
+        <div class="calc-row">
+          <span class="calc-label">New patients per month:</span>
+          <input type="number" class="calc-input" id="patientInput" value="200" min="10" max="2000" />
+          <input type="range" class="calc-slider" id="patientSlider" value="200" min="10" max="2000" step="10" />
+        </div>
+
+        <div class="roi-strip">
+          <div class="roi-cell">
+            <div class="roi-num cost" id="emCost">$699<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">Your cost<br/><span style="font-size:0.7em;">$499 base + $1.00/patient</span></div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num revenue" id="roiRevenue">$7,800<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
+            <div class="roi-label">Additional billing from E/M uplift</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num roi" id="roiPercent">1,016%</div>
+            <div class="roi-label">Your ROI — initial visits alone</div>
+          </div>
+        </div>
+
+        <div class="roi-callout">Your cost is <strong id="emCostCallout">$699/month</strong> ($499 base + <strong id="calloutPatients">200</strong> patients × $1.00/patient). The E/M uplift alone generates <strong id="calloutRevenue">$7,800</strong>/month in additional reimbursement. That's <strong id="calloutMultiple">$11</strong> earned for every $1 you pay us — <em>before</em> RPM billing even starts.</div>
+      </div>
+
+      <!-- TAB 2: RPM — Phase 2 -->
+      <div id="billing-rpm" class="billing-content">
+        <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1.5rem; line-height:1.7;">Once your patients are in the system, turn on <strong style="color:var(--text);">Signal</strong> — real-time monitoring that enables RPM billing. This is where the math gets serious.</p>
+
+        <div class="roi-strip">
+          <div class="roi-cell">
+            <div class="roi-num cost" id="rpmCost">$699<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">Your cost<br/><span style="font-size:0.7em;">$499 base + $1.00/patient</span></div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num revenue" id="rpmRevenue">$19,754<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
+            <div class="roi-label">RPM reimbursement</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num roi" id="rpmPercent">2,726%</div>
+            <div class="roi-label">Your ROI</div>
+          </div>
+        </div>
+
+        <div class="cpt-breakdown">
+          <div class="cpt-row"><span>CPT 99454 <span class="cpt-code">Device supply & data transmission</span></span><span>~$47.00/patient/mo</span></div>
+          <div class="cpt-row"><span>CPT 99457 <span class="cpt-code">RPM treatment mgmt, first 20 min</span></span><span>~$51.77/patient/mo</span></div>
+          <div class="cpt-row total"><span>Total RPM reimbursement per patient</span><span>~$98.77/patient/mo</span></div>
+        </div>
+
+        <div class="calc-row">
+          <span class="calc-label">RPM-enrolled patients:</span>
+          <input type="number" class="calc-input" id="rpmPatientInput" value="200" min="10" max="2000" />
+          <input type="range" class="calc-slider" id="rpmPatientSlider" value="200" min="10" max="2000" step="10" />
+        </div>
+
+        <div class="roi-callout">Your cost is <strong id="rpmCostCallout">$699/month</strong> ($499 base + <strong id="rpmCalloutPatients">200</strong> patients × $1.00/patient). Your practice generates <strong id="rpmCalloutRevenue">$19,754</strong>/month in recurring RPM reimbursement. That's <strong id="rpmCalloutMultiple">$28</strong> earned for every $1 you pay us — every single month.</div>
+
+      </div>
+
+      <div style="text-align:center;">
+        <button class="btn-next" onclick="goNext(5)">See our plans →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 5 — TWO PRODUCTS ═══════════ -->
+  <section class="screen" id="s5" style="min-height: auto; padding-top: 4rem; padding-bottom: 4rem; scroll-snap-align: start;">
+    <div class="screen-inner">
+      <div class="label">Two Ways to Get Started</div>
+      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem);">Choose the model that fits <span class="grad-text">your practice.</span></h1>
+
+      <div class="tier-grid">
+
+        <!-- Signal — Featured -->
+        <div class="tier-card tier-signal" style="border-color: rgba(167,139,250,0.4);">
+          <div class="tier-badge badge-signal">Recommended for Practices</div>
+          <div class="tier-title">MyPulseScan Signal</div>
+          <div class="tier-price" style="color:#a78bfa;">$499<span class="price-sub">/mo + $1.00/patient</span></div>
+          <div class="tier-desc">Built for medical practices with returning patients. Complete record retrieval on every visit, plus 24/7 real-time monitoring across the entire health network. Signal watches your patients and alerts you on admissions, discharges, and transfers — enabling Remote Patient Monitoring billing on top of your E/M uplift.</div>
+          <ul class="tier-features">
+            <li>Unlimited patient record lookups</li>
+            <li>Real-time monitoring (ADT alerts) for all enrolled patients</li>
+            <li>E/M upcoding support on every visit (99203 → 99204/99205)</li>
+            <li>Enables RPM billing: CPT 99454 + 99457 (~$98.77/patient/mo)</li>
+            <li>Up to 25 provider staff accounts</li>
+            <li>FHIR integration with Epic, Cerner, Athena, eCW</li>
+            <li>AI clinical summary on every patient</li>
+            <li>NFC wristbands for emergency patient ID ($2/band at cost)</li>
+            <li>Analytics dashboard — patient flow & access patterns</li>
+          </ul>
+          <div class="tier-revenue">
+            <div class="tier-rev-label">Combined revenue opportunity</div>
+            <div class="tier-rev-value">E/M uplift + RPM = $7,800 to $19,754+/month on a $499 subscription</div>
+          </div>
+        </div>
+
+        <!-- Workbench — Secondary -->
+        <div class="tier-card tier-workbench">
+          <div class="tier-badge badge-workbench">Urgent Care & Walk-Ins</div>
+          <div class="tier-title">MyPulseScan Workbench</div>
+          <div class="tier-price" style="color:var(--accent-blue);">$399<span class="price-sub">/mo + $1.00/patient</span></div>
+          <div class="tier-desc">On-demand patient record retrieval for clinics where patients don't return — urgent care, walk-in clinics, specialist referrals. Pull a complete history before any first visit.</div>
+
+          <div class="cpt-breakdown" style="margin-bottom:1rem;">
+            <div class="cpt-row"><span>1 location</span><span style="color:var(--accent-blue); font-weight:700;">$399/mo</span></div>
+            <div class="cpt-row"><span>2-5 locations</span><span style="color:var(--accent-blue); font-weight:700;">$349/mo per location</span></div>
+            <div class="cpt-row total"><span>5+ locations</span><span>Contact us for custom pricing</span></div>
+          </div>
+
+          <ul class="tier-features">
+            <li>Up to 200 patient lookups/month per location</li>
+            <li>Full record from 160,000+ organizations</li>
+            <li>AI clinical summary on every query</li>
+            <li>Up to 3 provider staff accounts per location</li>
+            <li>Browser-based — no install required</li>
+            <li>E/M upcoding support (99203 → 99204/99205)</li>
+          </ul>
+          <div class="tier-revenue">
+            <div class="tier-rev-label">Revenue opportunity — initial visits</div>
+            <div class="tier-rev-value">+$39 to +$109 per new patient (E/M uplift)</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Value cards -->
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; margin-top:1rem;">Both plans include:</h3>
+      <div class="value-grid">
+        <div class="value-card">
+          <div class="value-icon">📋</div>
+          <div class="value-title">Complete records in seconds</div>
+          <div class="value-desc">Full patient history from 160,000+ organizations. Allergies, medications, labs, encounters, procedures — all in one view before the patient sits down.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🛡️</div>
+          <div class="value-title">Malpractice risk reduction</div>
+          <div class="value-desc">Complete records = informed clinical decisions. Catch penicillin allergies before prescribing. Document your due diligence automatically.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔄</div>
+          <div class="value-title">Auto-flows to your EMR</div>
+          <div class="value-desc">Integrates with Epic, Cerner, Athena, eClinicalWorks, and more. Records flow directly into your existing system — no double entry.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">⌚</div>
+          <div class="value-title">NFC wristband for emergencies</div>
+          <div class="value-desc">Patients carry their records on a wristband. Any ER can scan it. Critical allergies, medications, and conditions — available when it matters most.</div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:2rem;">
+        <button class="btn-next" onclick="goNext(6)">Ready to get started? →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 6 — THE CLOSE ═══════════ -->
+  <section class="screen" id="s6">
+    <div class="screen-inner cta-section">
+      <div class="label">Get Started</div>
+      <h1 class="hero-headline">Early access available for <span class="grad-text">qualifying practices.</span></h1>
+      <p class="hero-sub" style="margin: 0 auto;">Start with Workbench at $399/month — see the records, bill the difference. Upgrade to Signal when you're ready for RPM revenue.</p>
+
+      <div class="cta-buttons">
+        <a href="mailto:hello@mypulsescan.com?subject=MyPulseScan%20Provider%20Demo%20Request" class="btn-primary" style="text-decoration:none;">Email Us →</a>
+        <button class="btn-outline" disabled>Download the ROI Report (Coming Soon)</button>
+      </div>
+    </div>
+    <div class="brand-footer">
+      <strong>MyPulseScan</strong> · mypulsescan.com · Confidential
+    </div>
+  </section>
+
+</div>
+
+<!-- Voiceover Controls -->
+<div class="vo-controls">
+  <button class="vo-btn active" id="voToggle" onclick="toggleVoiceover()" title="Toggle voiceover">🔊</button>
+</div>
+
+<script>
+// ═══════════ VOICEOVER ENGINE ═══════════
+const voiceoverLines = {
+  s1: "Your front desk spends twenty minutes per patient chasing records. Faxes. Phone calls. Three to five day waits. Sometimes they never arrive. Your clinicians are treating patients with incomplete information — and your practice eats the risk.",
+  s2: "What if you could see your patient's complete history in twelve seconds? Enter a patient's name, date of birth, and location — and watch what comes back from one hundred sixty thousand healthcare organizations.",
+  s3: "This is real data from the Particle Health sandbox. Elvira Valadez, a fifty-five year old female with sixteen unique conditions including congestive heart failure, coronary artery disease, hypertension, and diabetes. Eleven medications. Thirty-six unique lab results. Ninety encounters across eight hundred forty-three record sources. And the AI clinical summary synthesizes it all, flagging critical information like her anaphylaxis history and reduced ejection fraction.",
+  s4: "Now here's the business case. Without records, most new patients bill at ninety-nine two oh three — about one hundred twenty-eight dollars. With complete records from MyPulseScan, your provider can review a full history, manage multiple conditions, and legitimately bill ninety-nine two oh four or two oh five — up to two hundred thirty-seven dollars per visit. That's thirty-nine to one hundred nine dollars more per patient, just from the initial visit.",
+  s5: "We offer two plans. MyPulseScan Signal, at four ninety-nine a month plus one dollar per patient, is built for practices with returning patients. It includes everything — record retrieval, real-time monitoring, E.M. upcoding support, and R.P.M. billing that can generate over nineteen thousand a month in reimbursement. MyPulseScan Workbench, at three ninety-nine a month plus one dollar per patient, is designed for urgent care and walk-in clinics that need records on demand. Multi-location discounts start at two locations.",
+  s6: "Early access is available for qualifying practices. Start with the records. See the billing difference on day one. When you're ready, upgrade to Signal for R.P.M. revenue. Email us to get started."
+};
+
+let voEnabled = true;
+let currentUtterance = null;
+
+function speak(screenId) {
+  if (!voEnabled || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  const text = voiceoverLines[screenId];
+  if (!text) return;
+
+  currentUtterance = new SpeechSynthesisUtterance(text);
+  currentUtterance.rate = 0.95;
+  currentUtterance.pitch = 1.0;
+  currentUtterance.volume = 1.0;
+
+  // Try to pick a good English voice
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en')) ||
+                    voices.find(v => v.lang.startsWith('en-US')) ||
+                    voices.find(v => v.lang.startsWith('en'));
+  if (preferred) currentUtterance.voice = preferred;
+
+  const btn = document.getElementById('voToggle');
+  currentUtterance.onstart = () => btn && btn.classList.add('vo-speaking');
+  currentUtterance.onend = () => btn && btn.classList.remove('vo-speaking');
+
+  window.speechSynthesis.speak(currentUtterance);
+}
+
+function toggleVoiceover() {
+  voEnabled = !voEnabled;
+  const btn = document.getElementById('voToggle');
+  btn.classList.toggle('active', voEnabled);
+  btn.textContent = voEnabled ? '🔊' : '🔇';
+  if (!voEnabled) { window.speechSynthesis.cancel(); btn.classList.remove('vo-speaking'); }
+}
+
+// Load voices (some browsers load async)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+  window.speechSynthesis.getVoices();
+}
+
+// ═══════════ SCREEN GATING ═══════════
+let currentScreen = 1;
+const totalScreens = 6;
+
+function initScreens() {
+  for (let i = 2; i <= totalScreens; i++) {
+    const el = document.getElementById('s' + i);
+    if (el) el.classList.add('locked');
+  }
+  document.getElementById('s1').classList.add('unlocked');
+  // Auto-speak screen 1 after a short delay
+  setTimeout(() => speak('s1'), 800);
+}
+
+function goNext(targetScreen) {
+  if (targetScreen > totalScreens) return;
+  const el = document.getElementById('s' + targetScreen);
+  if (!el) return;
+
+  el.classList.remove('locked');
+  el.classList.add('unlocked');
+  currentScreen = targetScreen;
+
+  el.scrollIntoView({ behavior: 'smooth' });
+
+  // Speak after scroll settles
+  setTimeout(() => speak('s' + targetScreen), 600);
+
+  // If going to screen 3, trigger the reveal
+  if (targetScreen === 3) triggerRevealInternal();
+}
+
+// ═══════════ REVEAL ANIMATION ═══════════
+let revealed = false;
+
+function triggerReveal() {
+  goNext(3);
+}
+
+function triggerRevealInternal() {
+  if (revealed) return;
+  revealed = true;
+
+  const bar = document.getElementById('loadingBar');
+  const counter = document.getElementById('loadingCounter');
+  const loading = document.getElementById('loading');
+  const panel = document.getElementById('dataPanel');
+
+  requestAnimationFrame(() => { bar.classList.add('animate'); });
+
+  let count = 0;
+  const target = 160000;
+  const interval = setInterval(() => {
+    count += Math.floor(Math.random() * 8000) + 3000;
+    if (count >= target) { count = target; clearInterval(interval); }
+    counter.textContent = count.toLocaleString() + ' organizations searched';
+  }, 200);
+
+  setTimeout(() => {
+    loading.style.display = 'none';
+    panel.classList.add('visible');
+  }, 2800);
+}
+
+// Snapshot tabs (Particle-style)
+function showSnapshotTab(id) {
+  document.querySelectorAll('.snapshot-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.snapshot-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.closest('.snapshot-tab').classList.add('active');
+}
+
+// Billing tabs
+function showBilling(id) {
+  document.querySelectorAll('.billing-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.billing-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('billing-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Init on load
+window.addEventListener('DOMContentLoaded', initScreens);
+
+// Pricing: $499 base + $1.00/patient/month
+const BASE_FEE = 499;
+const PER_PATIENT = 1.00;
+
+function totalCost(patients) { return BASE_FEE + (patients * PER_PATIENT); }
+
+// Initial Visit E/M Calculator
+const patientInput = document.getElementById('patientInput');
+const patientSlider = document.getElementById('patientSlider');
+
+function updateInitialROI(patients) {
+  patients = Math.max(10, Math.min(2000, parseInt(patients) || 200));
+  const cost = totalCost(patients);
+  const uplift = patients * 39; // conservative $39/patient uplift (99203→99204)
+  const roi = ((uplift / cost) * 100).toFixed(0);
+  const multiple = Math.floor(uplift / cost);
+
+  document.getElementById('emCost').innerHTML = '$' + cost.toLocaleString() + '<span style="font-size:0.5em; opacity:0.6;">/mo</span>';
+  document.getElementById('roiRevenue').innerHTML = '$' + uplift.toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
+  document.getElementById('roiPercent').textContent = Number(roi).toLocaleString() + '%';
+  document.getElementById('emCostCallout').textContent = '$' + cost.toLocaleString() + '/month';
+  document.getElementById('calloutPatients').textContent = patients.toLocaleString();
+  document.getElementById('calloutRevenue').textContent = '$' + uplift.toLocaleString();
+  document.getElementById('calloutMultiple').textContent = '$' + multiple;
+}
+
+patientInput.addEventListener('input', (e) => {
+  patientSlider.value = e.target.value;
+  updateInitialROI(e.target.value);
+});
+patientSlider.addEventListener('input', (e) => {
+  patientInput.value = e.target.value;
+  updateInitialROI(e.target.value);
+});
+
+// RPM Calculator
+const rpmInput = document.getElementById('rpmPatientInput');
+const rpmSlider = document.getElementById('rpmPatientSlider');
+
+function updateRPM(patients) {
+  patients = Math.max(10, Math.min(2000, parseInt(patients) || 200));
+  const cost = totalCost(patients);
+  const revenue = patients * 98.77;
+  const roi = ((revenue / cost) * 100).toFixed(0);
+  const multiple = Math.floor(revenue / cost);
+
+  document.getElementById('rpmCost').innerHTML = '$' + cost.toLocaleString() + '<span style="font-size:0.5em; opacity:0.6;">/mo</span>';
+  document.getElementById('rpmRevenue').innerHTML = '$' + Math.round(revenue).toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
+  document.getElementById('rpmPercent').textContent = Number(roi).toLocaleString() + '%';
+  document.getElementById('rpmCostCallout').textContent = '$' + cost.toLocaleString() + '/month';
+  document.getElementById('rpmCalloutPatients').textContent = patients.toLocaleString();
+  document.getElementById('rpmCalloutRevenue').textContent = '$' + Math.round(revenue).toLocaleString();
+  document.getElementById('rpmCalloutMultiple').textContent = '$' + multiple;
+}
+
+rpmInput.addEventListener('input', (e) => {
+  rpmSlider.value = e.target.value;
+  updateRPM(e.target.value);
+});
+rpmSlider.addEventListener('input', (e) => {
+  rpmInput.value = e.target.value;
+  updateRPM(e.target.value);
+});
+</script>
+
+</body>
+</html>
