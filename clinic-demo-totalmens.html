@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyPulseScan — Total Men's Primary Care</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050b18;
+      --bg-surface: #080f1e;
+      --bg-card: #0c1628;
+      --accent-teal: #0D6B6E;
+      --accent-teal-bright: #5de8c0;
+      --accent-purple: #7c3aed;
+      --accent-blue: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+      --text: #f0f4ff;
+      --text-2: #8b9cc8;
+      --text-3: #445580;
+      --border: rgba(59,90,163,0.2);
+      --border-bright: rgba(93,232,192,0.25);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLL SNAP ── */
+    .snap-container {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+    .screen {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+    }
+    .screen-inner {
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .hero-headline {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      color: var(--text-2);
+      line-height: 1.6;
+      max-width: 600px;
+    }
+    .grad-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── LABEL ── */
+    .label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; display: inline-block; margin-bottom: 1rem;
+    }
+
+    /* ── FORM ── */
+    .demo-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      max-width: 520px;
+    }
+    .demo-form .full-width { grid-column: 1 / -1; }
+    .form-group label {
+      display: block;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: 0.4rem;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: var(--accent-teal-bright); }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: var(--grad); border: none; border-radius: 8px;
+      color: white; font-family: 'Inter', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+      margin-top: 1.5rem;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-next {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: var(--grad); border: none; border-radius: 10px;
+      color: white; font-family: 'Inter', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s, transform 0.2s, box-shadow 0.3s;
+      margin-top: 2rem; position: relative; overflow: hidden;
+    }
+    .btn-next:hover { opacity: 0.95; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(93,232,192,0.2); }
+    .btn-next::after {
+      content: "";
+      position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) rotate(25deg); }
+      100% { transform: translateX(100%) rotate(25deg); }
+    }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-3);
+      font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
+      cursor: default;
+    }
+
+    /* ── LOADING ── */
+    .loading-container { text-align: center; padding: 4rem 0; }
+    .loading-text { font-size: 1.1rem; color: var(--text-2); margin-bottom: 1.5rem; }
+    .loading-bar {
+      width: 280px; height: 4px;
+      background: var(--bg-card); border-radius: 2px;
+      margin: 0 auto; overflow: hidden;
+    }
+    .loading-bar-fill {
+      height: 100%; width: 0%;
+      background: var(--grad); border-radius: 2px;
+      transition: width 2.5s ease-in-out;
+    }
+    .loading-bar-fill.animate { width: 100%; }
+    .loading-counter {
+      font-size: 0.8rem; color: var(--text-3);
+      margin-top: 0.75rem; font-variant-numeric: tabular-nums;
+    }
+
+    /* ── DATA PANEL ── */
+    .data-panel { display: none; }
+    .data-panel.visible { display: block; animation: fadeUp 0.6s ease-out; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .patient-header {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.5rem; padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .patient-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--grad);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; font-weight: 800; color: white;
+    }
+    .patient-name { font-size: 1.25rem; font-weight: 700; }
+    .patient-meta { font-size: 0.85rem; color: var(--text-2); }
+
+    /* ── SNAPSHOT TABS ── */
+    .snapshot-tabs {
+      display: flex; gap: 0;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 0; overflow-x: auto;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .snapshot-tabs::-webkit-scrollbar { display: none; }
+    .snapshot-tab {
+      padding: 0.65rem 1rem; cursor: pointer;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--text-3); border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all 0.2s;
+      background: none; border-top: none; border-left: none; border-right: none;
+      font-family: 'Inter', sans-serif; white-space: nowrap;
+    }
+    .snapshot-tab:hover { color: var(--text-2); }
+    .snapshot-tab.active { color: var(--accent-teal-bright); border-bottom-color: var(--accent-teal-bright); }
+    .snapshot-tab .tab-count {
+      display: inline-block; font-size: 0.6rem; font-weight: 700;
+      background: rgba(93,232,192,0.12); color: var(--accent-teal-bright);
+      padding: 0.1rem 0.35rem; border-radius: 3px;
+      margin-left: 0.35rem; vertical-align: middle;
+    }
+    .snapshot-panel { display: none; }
+    .snapshot-panel.active { display: block; animation: fadeUp 0.3s ease-out; }
+
+    /* ── DATA TABLE ── */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .data-table thead th {
+      text-align: left; font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-3); padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-surface); position: sticky; top: 0;
+    }
+    .data-table tbody td {
+      font-size: 0.82rem; color: var(--text-2);
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid rgba(59,90,163,0.08);
+      vertical-align: top; line-height: 1.5;
+    }
+    .data-table tbody tr:hover { background: rgba(93,232,192,0.03); }
+    .data-table .val { color: var(--text); font-weight: 600; }
+    .data-table .critical-val { color: var(--accent-red); font-weight: 700; }
+    .data-table .active-badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700;
+      padding: 0.1rem 0.45rem; border-radius: 3px;
+      background: rgba(245,158,11,0.12); color: var(--accent-gold);
+    }
+    .data-table .resolved-badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700;
+      padding: 0.1rem 0.45rem; border-radius: 3px;
+      background: rgba(16,185,129,0.12); color: var(--accent-green);
+    }
+    .data-table .source-col { font-size: 0.72rem; color: var(--text-3); }
+    .data-table .ref-range { font-size: 0.72rem; color: var(--text-3); }
+    .data-table .flag-high { color: var(--accent-gold); font-weight: 600; }
+    .data-table .flag-critical { color: var(--accent-red); font-weight: 700; }
+    .table-wrapper {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-top: none; border-radius: 0 0 10px 10px;
+      overflow-x: auto; max-height: 420px; overflow-y: auto;
+    }
+    .table-wrapper::-webkit-scrollbar { width: 4px; }
+    .table-wrapper::-webkit-scrollbar-track { background: var(--bg-card); }
+    .table-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .table-footer {
+      padding: 0.5rem 0.75rem; font-size: 0.72rem;
+      color: var(--text-3); text-align: right;
+      border-top: 1px solid var(--border); background: var(--bg-surface);
+    }
+
+    /* ── AI SUMMARY ── */
+    .ai-summary {
+      background: rgba(93,232,192,0.05);
+      border: 1px solid var(--border-bright);
+      border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;
+    }
+    .ai-summary-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent-teal-bright);
+      margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;
+    }
+    .ai-summary-text { font-size: 0.88rem; color: var(--text-2); line-height: 1.7; }
+    .ai-summary-text strong { color: var(--accent-red); }
+    .trust-badge {
+      text-align: center; font-size: 0.78rem; color: var(--text-3);
+      padding-top: 1rem; border-top: 1px solid var(--border);
+    }
+
+    /* ── ROI SECTION ── */
+    .roi-strip {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px; background: rgba(13,107,110,0.15);
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(93,232,192,0.15); margin-bottom: 2rem;
+    }
+    .roi-cell {
+      background: rgba(5,11,24,0.85);
+      padding: 2rem 1.5rem; text-align: center;
+    }
+    .roi-num {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 800; line-height: 1; margin-bottom: 0.4rem;
+    }
+    .roi-num.cost { color: var(--text); }
+    .roi-num.revenue { color: var(--accent-green); }
+    .roi-num.roi { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .roi-label { font-size: 0.78rem; color: var(--text-2); line-height: 1.4; }
+
+    .calc-row {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .calc-label { font-size: 0.85rem; color: var(--text-2); font-weight: 600; }
+    .calc-input {
+      width: 120px; padding: 0.6rem 1rem;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--accent-teal-bright);
+      font-family: 'Inter', sans-serif; font-size: 1.1rem;
+      font-weight: 700; text-align: center; outline: none;
+    }
+    .calc-input:focus { border-color: var(--accent-teal-bright); }
+    .calc-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 200px; height: 4px;
+      background: var(--bg-card); border-radius: 2px; outline: none;
+    }
+    .calc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--accent-teal-bright); cursor: pointer;
+    }
+    .calc-slider::-moz-range-thumb {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--accent-teal-bright); cursor: pointer; border: none;
+    }
+
+    .cpt-breakdown {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 2rem;
+    }
+    .cpt-row {
+      display: flex; justify-content: space-between;
+      padding: 0.4rem 0; font-size: 0.85rem; color: var(--text-2);
+    }
+    .cpt-row.total {
+      border-top: 1px solid var(--border); margin-top: 0.5rem;
+      padding-top: 0.75rem; font-weight: 700; color: var(--accent-teal-bright);
+    }
+    .cpt-code { color: var(--text-3); font-size: 0.78rem; }
+
+    .roi-callout {
+      padding: 1.5rem 2rem; border-radius: 12px;
+      background: rgba(93,232,192,0.06);
+      border-left: 3px solid var(--accent-teal-bright);
+      font-size: 0.95rem; color: var(--text-2); line-height: 1.65;
+    }
+    .roi-callout strong { color: var(--text); }
+
+    /* ── BILLING TABS ── */
+    .billing-tabs {
+      display: flex; gap: 0; margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .billing-tab {
+      padding: 0.75rem 1.5rem; cursor: pointer;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--text-3); border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all 0.2s;
+      background: none; border-top: none; border-left: none; border-right: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .billing-tab:hover { color: var(--text-2); }
+    .billing-tab.active { color: var(--accent-teal-bright); border-bottom-color: var(--accent-teal-bright); }
+    .billing-content { display: none; }
+    .billing-content.active { display: block; }
+
+    /* ── E/M COMPARE ── */
+    .em-compare {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px; background: rgba(13,107,110,0.1);
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border); margin-bottom: 1.5rem;
+    }
+    .em-cell {
+      background: rgba(5,11,24,0.85);
+      padding: 1.25rem 1rem; text-align: center;
+    }
+    .em-code { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 0.4rem; }
+    .em-rate { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.25rem; }
+    .em-desc { font-size: 0.72rem; color: var(--text-3); line-height: 1.4; }
+    .em-cell.em-highlight { border: 2px solid var(--accent-teal-bright); }
+    .em-cell.em-highlight .em-rate { color: var(--accent-green); }
+    .em-arrow { font-size: 0.72rem; color: var(--accent-teal-bright); margin-top: 0.4rem; font-weight: 700; }
+
+    /* ── VALUE CARDS ── */
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem; margin-top: 2rem;
+    }
+    .value-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .value-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+    .value-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .value-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .value-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.65; }
+    .value-audience {
+      margin-top: 0.75rem; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3);
+    }
+
+    /* ── TIER CARDS ── */
+    .tier-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem; margin: 2rem 0;
+    }
+    .tier-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem; position: relative;
+      overflow: hidden; transition: border-color 0.2s;
+    }
+    .tier-card:hover { border-color: var(--border-bright); }
+    .tier-card::before {
+      content: ""; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+    }
+    .tier-card.tier-standard::before { background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal-bright)); }
+    .tier-card.tier-growth::before { background: linear-gradient(90deg, var(--accent-purple), var(--accent-gold)); }
+    .tier-card.tier-enterprise::before { background: linear-gradient(90deg, var(--accent-teal-bright), var(--accent-green)); }
+    .tier-badge {
+      display: inline-block; padding: 0.2rem 0.7rem; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .badge-standard { background: rgba(59,130,246,0.15); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
+    .badge-growth { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+    .badge-enterprise { background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
+    .tier-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .tier-price { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .tier-price .price-sub { font-size: 0.75rem; font-weight: 500; color: var(--text-2); }
+    .tier-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.65; margin-bottom: 1.25rem; }
+    .tier-features { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .tier-features li {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--text-2); line-height: 1.5;
+    }
+    .tier-features li::before { content: "→"; color: var(--accent-teal-bright); flex-shrink: 0; }
+
+    /* ── STACKING TABLE ── */
+    .stack-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    .stack-table th {
+      text-align: left; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3);
+      padding: 0.75rem; border-bottom: 1px solid var(--border);
+      background: var(--bg-surface);
+    }
+    .stack-table td {
+      padding: 0.65rem 0.75rem; color: var(--text-2);
+      border-bottom: 1px solid rgba(59,90,163,0.08);
+    }
+    .stack-table tr:hover { background: rgba(93,232,192,0.03); }
+    .stack-table .stack-total td {
+      font-weight: 700; color: var(--accent-teal-bright);
+      border-top: 2px solid var(--border); font-size: 0.95rem;
+    }
+
+    /* ── CTA ── */
+    .cta-section { text-align: center; }
+    .cta-buttons {
+      display: flex; gap: 1rem; justify-content: center;
+      margin-top: 2rem; flex-wrap: wrap;
+    }
+    .brand-footer {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.78rem; color: var(--text-3); text-align: center;
+    }
+    .brand-footer strong { color: var(--text-2); }
+
+    /* ── SCREEN LOCK ── */
+    .screen.locked {
+      opacity: 0.3; pointer-events: none; filter: blur(2px);
+      transition: opacity 0.5s, filter 0.5s;
+    }
+    .screen.unlocked {
+      opacity: 1; pointer-events: auto; filter: none;
+      transition: opacity 0.6s ease-out, filter 0.6s ease-out;
+    }
+
+    /* ── VOICEOVER ── */
+    .vo-controls {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100;
+      display: flex; gap: 0.5rem;
+    }
+    .vo-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-2); font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .vo-btn:hover { border-color: var(--accent-teal-bright); color: var(--accent-teal-bright); }
+    .vo-btn.active { border-color: var(--accent-teal-bright); color: var(--accent-teal-bright); }
+    .vo-speaking { animation: pulse-ring 1.5s ease-out infinite; }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(93,232,192,0.3); }
+      70% { box-shadow: 0 0 0 10px rgba(93,232,192,0); }
+      100% { box-shadow: 0 0 0 0 rgba(93,232,192,0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .screen { padding: 1.5rem; }
+      .demo-form { grid-template-columns: 1fr; }
+      .roi-strip { grid-template-columns: 1fr; }
+      .value-grid { grid-template-columns: 1fr; }
+      .tier-grid { grid-template-columns: 1fr; }
+      .em-compare { grid-template-columns: repeat(2, 1fr); }
+      .calc-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .calc-slider { width: 100%; }
+      .patient-header { flex-direction: column; align-items: flex-start; }
+      .billing-tabs { overflow-x: auto; }
+      .snapshot-tabs { padding-bottom: 2px; }
+      .data-table { font-size: 0.75rem; }
+      .data-table thead th { font-size: 0.6rem; padding: 0.5rem; }
+      .data-table tbody td { padding: 0.45rem 0.5rem; font-size: 0.75rem; }
+    }
+    @media (max-width: 480px) {
+      .cta-buttons { flex-direction: column; align-items: center; }
+      .em-compare { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="snap-container" id="container">
+
+  <!-- ═══════════ SCREEN 1 — THE PAIN ═══════════ -->
+  <section class="screen" id="s1">
+    <div class="screen-inner">
+      <div class="label">Prepared for Total Men's Primary Care</div>
+      <h1 class="hero-headline">48 locations. 100,000+ patients. <span class="grad-text">Millions left on the table.</span></h1>
+      <p class="hero-sub">Your clinicians treat patients with incomplete records every day. Your billing team codes visits at 99203 when complete data would support 99204 or 99205. Your chronic patients generate zero RPM revenue. Your behavioral health expansion has no visibility into outside medication history.</p>
+      <p class="hero-sub" style="margin-top:1rem; color:var(--text-3);">What if you could change all of that in 12 seconds?</p>
+      <button class="btn-next" onclick="goNext(2)">See how →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 2 — THE HOOK ═══════════ -->
+  <section class="screen" id="s2">
+    <div class="screen-inner">
+      <div class="label">The 12-Second Patient Lookup</div>
+      <h1 class="hero-headline">Enter a patient. See <span class="grad-text">everything.</span></h1>
+      <p class="hero-sub">Name, date of birth, location. That's it. Complete medical history from 160,000+ healthcare organizations — in seconds.</p>
+      <div class="demo-form">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" value="Marcus" readonly />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" value="Torres" readonly />
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="text" value="08/22/1979" readonly />
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" value="Dallas" readonly />
+        </div>
+        <div class="form-group full-width">
+          <label>State</label>
+          <input type="text" value="TX" readonly />
+        </div>
+        <div class="full-width">
+          <button class="btn-primary" onclick="triggerReveal()">See What's Possible →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 3 — THE REVEAL ═══════════ -->
+  <section class="screen" id="s3" style="align-items: stretch; justify-content: flex-start; padding-top: 3rem; min-height: auto; scroll-snap-align: start;">
+    <div class="screen-inner" style="margin: 0 auto;">
+
+      <div class="loading-container" id="loading">
+        <div class="loading-text">Searching <strong>160,000+</strong> healthcare organizations...</div>
+        <div class="loading-bar"><div class="loading-bar-fill" id="loadingBar"></div></div>
+        <div class="loading-counter" id="loadingCounter">0 organizations searched</div>
+      </div>
+
+      <div class="data-panel" id="dataPanel">
+
+        <div class="patient-header">
+          <div class="patient-avatar">MT</div>
+          <div>
+            <div class="patient-name">Marcus Torres</div>
+            <div class="patient-meta">DOB: 08/22/1979 · Dallas, TX · Male · 46 years old · MRN: TMH-2026-04817</div>
+            <div class="patient-meta" style="margin-top:0.25rem;">Records from <strong style="color:var(--accent-teal-bright);">5 providers</strong> across <strong style="color:var(--accent-teal-bright);">3 health networks</strong> · Last updated: 05/28/2026</div>
+          </div>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="ai-summary">
+          <div class="ai-summary-label">✦ AI Clinical Summary — Longitudinal Patient History</div>
+          <div class="ai-summary-text">46-year-old male presenting for men's health management. Primary diagnoses: Testosterone Deficiency Syndrome (E29.1, on TRT — testosterone cypionate 200mg/mL IM biweekly, last total T: 685 ng/dL), Essential Hypertension (I10, managed on lisinopril 20mg, last BP 142/88), Adult ADHD (F90.0, on Adderall XR 20mg daily), and Generalized Anxiety Disorder (F41.1, on sertraline 100mg daily). <strong>ALERT: Concurrent stimulant (Adderall) + hypertension — requires coordinated cardiovascular monitoring. BP trending upward over 6 months.</strong> Additional: BMI 29.8 (overweight, approaching Class I obesity), elevated LDL 128 mg/dL, pre-diabetic fasting glucose 108 mg/dL. Former tobacco user (quit 2020). Currently managed across 3 separate provider systems with no coordinated care plan.</div>
+        </div>
+
+        <!-- TABS -->
+        <div class="snapshot-tabs" id="snapshotTabs">
+          <button class="snapshot-tab active" onclick="showSnapshotTab('allergies')">Allergies <span class="tab-count">2</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('medications')">Medications <span class="tab-count">8</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('labs')">Labs <span class="tab-count">18</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('problems')">Problems <span class="tab-count">7</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('encounters')">Encounters <span class="tab-count">12</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('vitals')">Vitals <span class="tab-count">14</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('behavioral')">Behavioral <span class="tab-count">3</span></button>
+        </div>
+
+        <!-- TAB: Allergies -->
+        <div class="snapshot-panel active" id="panel-allergies">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Allergen</th><th>Reaction</th><th>Severity</th><th>Source</th><th>Reported</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Sulfonamides (RxNorm 10180)</td><td>Diffuse urticaria, throat tightness</td><td><span class="active-badge">Moderate-Severe</span></td><td class="source-col">Baylor Scott & White</td><td class="source-col">03/12/2021</td></tr>
+                <tr><td class="val">Codeine (RxNorm 2670)</td><td>Nausea, emesis, severe constipation</td><td><span class="active-badge">Moderate</span></td><td class="source-col">UT Southwestern</td><td class="source-col">09/08/2019</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Medications -->
+        <div class="snapshot-panel" id="panel-medications">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Medication</th><th>Dose / Route / Frequency</th><th>Status</th><th>Prescriber</th><th>Last Filled</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Testosterone Cypionate</td><td>200mg/mL IM every 2 weeks</td><td><span class="active-badge">Active</span></td><td>Dr. Chen (Men's Health)</td><td class="source-col">05/15/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Lisinopril</td><td>20mg PO once daily</td><td><span class="active-badge">Active</span></td><td>Dr. Ramirez (PCP)</td><td class="source-col">05/01/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="critical-val">Adderall XR (Amphetamine/Dextroamphetamine)</td><td>20mg PO every morning</td><td><span class="active-badge">Active</span></td><td>Dr. Park (Psychiatry)</td><td class="source-col">05/10/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Sertraline HCl</td><td>100mg PO once daily</td><td><span class="active-badge">Active</span></td><td>Dr. Park (Psychiatry)</td><td class="source-col">05/10/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Atorvastatin Calcium</td><td>20mg PO at bedtime</td><td><span class="active-badge">Active</span></td><td>Dr. Ramirez (PCP)</td><td class="source-col">04/28/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Anastrozole</td><td>0.5mg PO twice weekly</td><td><span class="active-badge">Active</span></td><td>Dr. Chen (Men's Health)</td><td class="source-col">05/15/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td>Fish Oil (OTC)</td><td>2400mg PO once daily</td><td><span class="active-badge">Active</span></td><td>Self / OTC</td><td class="source-col">—</td><td class="source-col">Patient reported</td></tr>
+                <tr><td>Vitamin D3 (OTC)</td><td>5000 IU PO once daily</td><td><span class="active-badge">Active</span></td><td>Self / OTC</td><td class="source-col">—</td><td class="source-col">Patient reported</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Labs -->
+        <div class="snapshot-panel" id="panel-labs">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Test</th><th>Result</th><th>Ref Range</th><th>Flag</th><th>Date</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Testosterone, Total</td><td class="val">685 ng/dL</td><td class="ref-range">300–1000 ng/dL</td><td><span class="resolved-badge">Normal (on TRT)</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Testosterone, Free</td><td class="val">18.2 pg/mL</td><td class="ref-range">8.7–25.1 pg/mL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Estradiol (E2)</td><td class="val">32 pg/mL</td><td class="ref-range">10–40 pg/mL</td><td><span class="resolved-badge">Normal (on AI)</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">PSA, Total</td><td class="val">1.8 ng/mL</td><td class="ref-range">&lt;4.0 ng/mL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Hematocrit</td><td class="flag-high">51.2%</td><td class="ref-range">38.3–48.6%</td><td><span class="active-badge">High (TRT effect)</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Hemoglobin</td><td class="flag-high">17.4 g/dL</td><td class="ref-range">13.2–16.6 g/dL</td><td><span class="active-badge">High</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Glucose, Fasting</td><td class="flag-high">108 mg/dL</td><td class="ref-range">70–100 mg/dL</td><td><span class="active-badge">Pre-diabetic</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Hemoglobin A1c</td><td class="flag-high">5.9%</td><td class="ref-range">&lt;5.7%</td><td><span class="active-badge">Pre-diabetic</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">LDL Cholesterol (calc)</td><td class="flag-high">128 mg/dL</td><td class="ref-range">&lt;100 mg/dL</td><td><span class="active-badge">High</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">HDL Cholesterol</td><td class="val">44 mg/dL</td><td class="ref-range">&gt;40 mg/dL</td><td><span class="resolved-badge">Borderline</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Triglycerides</td><td class="flag-high">188 mg/dL</td><td class="ref-range">&lt;150 mg/dL</td><td><span class="active-badge">High</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">eGFR (CKD-EPI)</td><td class="val">92 mL/min/1.73m²</td><td class="ref-range">&gt;90 mL/min</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">ALT (SGPT)</td><td class="val">42 U/L</td><td class="ref-range">7–56 U/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">AST (SGOT)</td><td class="val">38 U/L</td><td class="ref-range">10–40 U/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">TSH</td><td class="val">2.1 mIU/L</td><td class="ref-range">0.4–4.0 mIU/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Vitamin D, 25-Hydroxy</td><td class="val">48 ng/mL</td><td class="ref-range">30–100 ng/mL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">CBC — WBC</td><td class="val">7.2 x10³/µL</td><td class="ref-range">4.5–11.0</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">CBC — Platelets</td><td class="val">262 x10³/µL</td><td class="ref-range">150–400</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/01/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+              </tbody>
+            </table>
+            <div class="table-footer">18 of 18 lab results · Ordered by date descending</div>
+          </div>
+        </div>
+
+        <!-- TAB: Problems -->
+        <div class="snapshot-panel" id="panel-problems">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Diagnosis</th><th>ICD-10</th><th>Status</th><th>Onset</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Testosterone Deficiency Syndrome</td><td>E29.1</td><td><span class="active-badge">Active — On TRT</span></td><td class="source-col">2022</td><td class="source-col">Total Men's Dallas / CommonWell</td></tr>
+                <tr><td class="val">Essential (Primary) Hypertension</td><td>I10</td><td><span class="active-badge">Active</span></td><td class="source-col">2020</td><td class="source-col">Baylor Scott & White / Carequality</td></tr>
+                <tr><td class="val">Attention Deficit Disorder, predominantly inattentive</td><td>F90.0</td><td><span class="active-badge">Active</span></td><td class="source-col">2023</td><td class="source-col">UT Southwestern Psych / Carequality</td></tr>
+                <tr><td class="val">Generalized Anxiety Disorder</td><td>F41.1</td><td><span class="active-badge">Active — Managed</span></td><td class="source-col">2021</td><td class="source-col">UT Southwestern Psych / Carequality</td></tr>
+                <tr><td class="val">Overweight, BMI 29.8</td><td>E66.3</td><td><span class="active-badge">Active</span></td><td class="source-col">2024</td><td class="source-col">Total Men's Dallas / CommonWell</td></tr>
+                <tr><td class="val">Hyperlipidemia, mixed</td><td>E78.2</td><td><span class="active-badge">Active</span></td><td class="source-col">2023</td><td class="source-col">Baylor Scott & White / Carequality</td></tr>
+                <tr><td>Lumbar strain (resolved)</td><td>S39.012A</td><td><span class="resolved-badge">Resolved</span></td><td class="source-col">2024</td><td class="source-col">CareNow Urgent Care / CommonWell</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Encounters -->
+        <div class="snapshot-panel" id="panel-encounters">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Date</th><th>Type</th><th>Provider</th><th>Facility</th><th>Reason</th><th>Network</th></tr></thead>
+              <tbody>
+                <tr><td class="val">05/15/2026</td><td>Office Visit</td><td>Dr. Kevin Chen</td><td>Total Men's — Dallas Preston Hollow</td><td>TRT follow-up, testosterone/hematocrit review, injection administered</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">05/10/2026</td><td>Telehealth</td><td>Dr. Sarah Park (Psychiatry)</td><td>UT Southwestern — Telepsych</td><td>ADHD medication management, Adderall XR titration check, PHQ-9 score 8</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">05/01/2026</td><td>Lab Visit</td><td>Quest Diagnostics</td><td>Quest — Dallas Greenville Ave</td><td>Comprehensive panel: testosterone, CBC, lipids, metabolic, HbA1c, PSA</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">04/10/2026</td><td>Office Visit</td><td>Dr. Luis Ramirez (PCP)</td><td>Baylor Scott & White — Dallas</td><td>Annual physical, HTN management, pre-diabetic counseling, statin review</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">03/15/2026</td><td>Office Visit</td><td>Dr. Kevin Chen</td><td>Total Men's — Dallas Preston Hollow</td><td>TRT follow-up, anastrozole dose adjustment (E2 was 48 → added 0.5mg 2x/wk)</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">02/20/2026</td><td>Telehealth</td><td>Dr. Sarah Park (Psychiatry)</td><td>UT Southwestern — Telepsych</td><td>Anxiety follow-up, sertraline stable at 100mg, GAD-7 score 6</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">01/15/2026</td><td>Office Visit</td><td>Dr. Kevin Chen</td><td>Total Men's — Dallas Preston Hollow</td><td>TRT follow-up, labs ordered, weight counseling</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">11/12/2025</td><td>Urgent Care</td><td>CareNow Clinic</td><td>CareNow — Dallas Mockingbird</td><td>Acute lumbar strain from gym injury. NSAID Rx, PT referral.</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">10/08/2025</td><td>Telehealth</td><td>Dr. Sarah Park (Psychiatry)</td><td>UT Southwestern — Telepsych</td><td>Initial ADHD evaluation. Vanderbilt scales reviewed. Adderall XR 20mg started.</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">09/20/2025</td><td>Office Visit</td><td>Dr. Luis Ramirez (PCP)</td><td>Baylor Scott & White — Dallas</td><td>Follow-up HTN, added atorvastatin 20mg for lipids</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">06/15/2025</td><td>Lab Visit</td><td>Quest Diagnostics</td><td>Quest — Dallas Greenville Ave</td><td>Routine TRT monitoring + lipid panel</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">01/10/2025</td><td>Office Visit</td><td>Dr. Kevin Chen</td><td>Total Men's — Dallas Preston Hollow</td><td>Initial TRT consultation, baseline labs, testosterone cypionate 200mg started</td><td class="source-col">CommonWell</td></tr>
+              </tbody>
+            </table>
+            <div class="table-footer">12 of 12 encounters · 2025–2026 · 5 providers across 3 networks</div>
+          </div>
+        </div>
+
+        <!-- TAB: Vitals -->
+        <div class="snapshot-panel" id="panel-vitals">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Vital Sign</th><th>Value</th><th>Ref Range</th><th>Flag</th><th>Date</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Blood Pressure</td><td class="flag-high">142/88 mmHg</td><td class="ref-range">&lt;130/80 mmHg</td><td><span class="active-badge">Stage 1 HTN</span></td><td class="source-col">05/15/2026</td><td class="source-col">Total Men's</td></tr>
+                <tr><td class="val">Heart Rate</td><td class="val">78 bpm</td><td class="ref-range">60–100 bpm</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">05/15/2026</td><td class="source-col">Total Men's</td></tr>
+                <tr><td class="val">Weight</td><td class="val">214 lbs (97.1 kg)</td><td class="ref-range">—</td><td>↑4 lbs from 01/26</td><td class="source-col">05/15/2026</td><td class="source-col">Total Men's</td></tr>
+                <tr><td class="val">Height</td><td class="val">5'11" (180.3 cm)</td><td class="ref-range">—</td><td>—</td><td class="source-col">05/15/2026</td><td class="source-col">Total Men's</td></tr>
+                <tr><td class="val">BMI</td><td class="flag-high">29.8 kg/m²</td><td class="ref-range">18.5–24.9</td><td><span class="active-badge">Overweight</span></td><td class="source-col">05/15/2026</td><td class="source-col">Total Men's</td></tr>
+                <tr><td class="val">Blood Pressure</td><td class="flag-high">138/86 mmHg</td><td class="ref-range">&lt;130/80</td><td><span class="active-badge">Elevated</span></td><td class="source-col">04/10/2026</td><td class="source-col">Baylor S&W</td></tr>
+                <tr><td class="val">Heart Rate</td><td class="val">82 bpm</td><td class="ref-range">60–100</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">04/10/2026</td><td class="source-col">Baylor S&W</td></tr>
+                <tr><td class="val">Weight</td><td class="val">212 lbs</td><td class="ref-range">—</td><td>—</td><td class="source-col">04/10/2026</td><td class="source-col">Baylor S&W</td></tr>
+                <tr><td class="val">Blood Pressure</td><td class="flag-high">136/84 mmHg</td><td class="ref-range">&lt;130/80</td><td><span class="active-badge">Elevated</span></td><td class="source-col">03/15/2026</td><td class="source-col">Total Men's</td></tr>
+                <tr><td class="val">Blood Pressure</td><td class="val">132/82 mmHg</td><td class="ref-range">&lt;130/80</td><td><span class="active-badge">Borderline</span></td><td class="source-col">01/15/2026</td><td class="source-col">Total Men's</td></tr>
+                <tr><td class="val">Weight</td><td class="val">210 lbs</td><td class="ref-range">—</td><td>—</td><td class="source-col">01/15/2026</td><td class="source-col">Total Men's</td></tr>
+                <tr><td class="val">Blood Pressure</td><td class="val">128/78 mmHg</td><td class="ref-range">&lt;130/80</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">09/20/2025</td><td class="source-col">Baylor S&W</td></tr>
+                <tr><td class="val">Heart Rate</td><td class="val">74 bpm</td><td class="ref-range">60–100</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">09/20/2025</td><td class="source-col">Baylor S&W</td></tr>
+                <tr><td class="val">Weight</td><td class="val">206 lbs</td><td class="ref-range">—</td><td>—</td><td class="source-col">09/20/2025</td><td class="source-col">Baylor S&W</td></tr>
+              </tbody>
+            </table>
+            <div class="table-footer">14 vitals · BP trending upward since 09/2025 · Weight +8 lbs in 8 months</div>
+          </div>
+        </div>
+
+        <!-- TAB: Behavioral Health -->
+        <div class="snapshot-panel" id="panel-behavioral">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Assessment</th><th>Score</th><th>Interpretation</th><th>Date</th><th>Provider</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">PHQ-9 (Depression)</td><td class="val">8</td><td>Mild depression — sertraline stable</td><td class="source-col">05/10/2026</td><td>Dr. Park (Psychiatry)</td><td class="source-col">UT Southwestern / Carequality</td></tr>
+                <tr><td class="val">GAD-7 (Anxiety)</td><td class="val">6</td><td>Mild anxiety — managed, improving</td><td class="source-col">02/20/2026</td><td>Dr. Park (Psychiatry)</td><td class="source-col">UT Southwestern / Carequality</td></tr>
+                <tr><td class="val">Vanderbilt ADHD Scale</td><td class="val">Positive</td><td>Predominantly inattentive — Adderall XR titrated</td><td class="source-col">10/08/2025</td><td>Dr. Park (Psychiatry)</td><td class="source-col">UT Southwestern / Carequality</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="trust-badge" style="margin-top:1.5rem;">Powered by Particle Health — 320M+ patients · 160,000+ organizations · CommonWell · Carequality · Surescripts</div>
+
+        <div style="text-align:center; margin-top:2rem;">
+          <button class="btn-next" onclick="goNext(4)">Now see what this is worth →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 4 — THE MONEY ═══════════ -->
+  <section class="screen" id="s4" style="min-height: auto; padding-top: 3rem; padding-bottom: 3rem; scroll-snap-align: start;">
+    <div class="screen-inner">
+      <div class="label">The Revenue Opportunity</div>
+      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem); margin-bottom:1rem;">Every patient type. <span class="grad-text">Every revenue stream.</span></h1>
+      <p class="hero-sub" style="margin-bottom:2rem;">Three billing programs. All stackable. All compliant. All enabled by having complete records.</p>
+
+      <div class="billing-tabs">
+        <button class="billing-tab active" onclick="showBilling('em')">Every Patient — E/M Uplift</button>
+        <button class="billing-tab" onclick="showBilling('rpm')">Chronic — RPM + CCM</button>
+        <button class="billing-tab" onclick="showBilling('bhi')">Behavioral — BHI / CoCM</button>
+        <button class="billing-tab" onclick="showBilling('stacked')">Stacked Revenue</button>
+      </div>
+
+      <!-- TAB: E/M Uplift -->
+      <div id="billing-em" class="billing-content active">
+        <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1.5rem; line-height:1.7;">Every patient who walks through your door — walk-in, chronic, behavioral — generates more revenue when your provider reviews complete external records. No devices. No enrollment. <strong style="color:var(--text);">Immediate revenue on day one.</strong></p>
+
+        <div class="em-compare">
+          <div class="em-cell">
+            <div class="em-code">99202</div>
+            <div class="em-rate" style="color:var(--text-3);">$76</div>
+            <div class="em-desc">Straightforward<br/>15-29 min</div>
+          </div>
+          <div class="em-cell">
+            <div class="em-code">99203</div>
+            <div class="em-rate" style="color:var(--text-2);">$128</div>
+            <div class="em-desc">Low complexity<br/>30-44 min</div>
+            <div class="em-arrow">← Without records</div>
+          </div>
+          <div class="em-cell em-highlight">
+            <div class="em-code">99204</div>
+            <div class="em-rate">$167</div>
+            <div class="em-desc">Moderate complexity<br/>45-59 min</div>
+            <div class="em-arrow">← With MyPulseScan</div>
+          </div>
+          <div class="em-cell em-highlight">
+            <div class="em-code">99205</div>
+            <div class="em-rate">$237</div>
+            <div class="em-desc">High complexity<br/>60-74 min</div>
+            <div class="em-arrow">← Complex patients</div>
+          </div>
+        </div>
+
+        <div class="calc-row">
+          <span class="calc-label">New patients per month (all 48 clinics):</span>
+          <input type="number" class="calc-input" id="emInput" value="1500" min="100" max="10000" />
+          <input type="range" class="calc-slider" id="emSlider" value="1500" min="100" max="10000" step="50" />
+        </div>
+
+        <div class="roi-strip">
+          <div class="roi-cell">
+            <div class="roi-num cost" id="emCost">$58,500<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">Additional billing<br/>at +$39/patient (99204)</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num revenue" id="emRevHigh">$163,500<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
+            <div class="roi-label">Additional billing<br/>at +$109/patient (99205)</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num roi" id="emAnnual">$702K–$1.96M</div>
+            <div class="roi-label">Annualized E/M uplift<br/><span style="font-size:0.85em;">No devices. No enrollment. Day one.</span></div>
+          </div>
+        </div>
+
+        <div class="roi-callout">Marcus Torres came in for a TRT follow-up. Without records, that's a 99213. With MyPulseScan, your provider documented review of external labs, psychiatric medications, and rising BP trend from another system — legitimately supporting <strong>99214 or 99215</strong>. That's <strong>+$35 to +$77 more</strong> on a visit that was going to happen anyway.</div>
+      </div>
+
+      <!-- TAB: RPM + CCM -->
+      <div id="billing-rpm" class="billing-content">
+        <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1.5rem; line-height:1.7;">Your TRT, hypertension, and metabolic patients are <strong style="color:var(--text);">chronic by definition</strong>. They come back monthly. They qualify for RPM + CCM. With a device at home and 40 min/month of staff time, each patient generates recurring revenue.</p>
+
+        <div class="cpt-breakdown">
+          <div class="cpt-row"><span>CPT 99454 <span class="cpt-code">Device supply & data transmission (16+ days/mo)</span></span><span style="color:var(--accent-blue);">$58/mo (commercial)</span></div>
+          <div class="cpt-row"><span>CPT 99457 <span class="cpt-code">RPM management, first 20 min + patient call</span></span><span style="color:var(--accent-blue);">$69/mo (commercial)</span></div>
+          <div class="cpt-row"><span>CPT 99490 <span class="cpt-code">CCM — 2+ chronic conditions, 20 min/mo</span></span><span style="color:var(--accent-blue);">$81/mo (commercial)</span></div>
+          <div class="cpt-row total"><span>RPM + CCM stacked per patient</span><span>$208/patient/month</span></div>
+        </div>
+
+        <div class="calc-row">
+          <span class="calc-label">Chronic patients enrolled in RPM+CCM:</span>
+          <input type="number" class="calc-input" id="rpmInput" value="5000" min="100" max="40000" />
+          <input type="range" class="calc-slider" id="rpmSlider" value="5000" min="100" max="40000" step="100" />
+        </div>
+
+        <div class="roi-strip">
+          <div class="roi-cell">
+            <div class="roi-num cost" id="rpmCost">$5,000<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">Your platform cost<br/><span style="font-size:0.85em;">at $1.00/patient (Enterprise)</span></div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num revenue" id="rpmRev">$1,040,000<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
+            <div class="roi-label">RPM + CCM reimbursement<br/>(commercial rates)</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num roi" id="rpmRoi">208:1</div>
+            <div class="roi-label">Revenue per dollar<br/>of platform cost</div>
+          </div>
+        </div>
+
+        <div class="roi-callout">Marcus has hypertension + pre-diabetes + hyperlipidemia — <strong>3 chronic conditions</strong>. He syncs his Apple Watch daily. Your care coordinator spends 20 min/month reviewing his BP trends and 20 min on his metabolic management. That's <strong>$208/month in recurring reimbursement</strong> from a patient who was generating $0 in RPM revenue yesterday.</div>
+      </div>
+
+      <!-- TAB: BHI / CoCM -->
+      <div id="billing-bhi" class="billing-content">
+        <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1.5rem; line-height:1.7;">Your behavioral health expansion (ADHD, depression, anxiety, PTSD) unlocks <strong style="color:var(--text);">entirely separate billing codes</strong> — no device required. Just documented clinical time and validated rating scales.</p>
+
+        <div class="cpt-breakdown">
+          <div class="cpt-row"><span>CPT 99484 <span class="cpt-code">General BHI — 20 min/mo, PHQ-9/GAD-7 tracking</span></span><span style="color:#a78bfa;">$63/mo (commercial)</span></div>
+          <div class="cpt-row"><span>CPT 99493 <span class="cpt-code">CoCM — 60 min/mo with consulting psychiatrist</span></span><span style="color:#a78bfa;">$131/mo (commercial)</span></div>
+          <div class="cpt-row"><span>CPT 99494 <span class="cpt-code">CoCM add-on — additional 30 min</span></span><span style="color:#a78bfa;">$67/mo (commercial)</span></div>
+          <div class="cpt-row total"><span>BHI or CoCM per patient</span><span>$63 – $198/patient/month</span></div>
+        </div>
+
+        <div class="calc-row">
+          <span class="calc-label">Behavioral health patients enrolled:</span>
+          <input type="number" class="calc-input" id="bhiInput" value="5000" min="100" max="25000" />
+          <input type="range" class="calc-slider" id="bhiSlider" value="5000" min="100" max="25000" step="100" />
+        </div>
+
+        <div class="roi-strip">
+          <div class="roi-cell">
+            <div class="roi-num cost" id="bhiCost">$5,000<span style="font-size:0.5em; opacity:0.6;">/mo</span></div>
+            <div class="roi-label">Your platform cost<br/><span style="font-size:0.85em;">at $1.00/patient</span></div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num revenue" id="bhiRev">$315,000<span style="font-size:0.5em; opacity:0.7;">/mo</span></div>
+            <div class="roi-label">BHI reimbursement<br/>(commercial rates)</div>
+          </div>
+          <div class="roi-cell">
+            <div class="roi-num roi" id="bhiRoi">63:1</div>
+            <div class="roi-label">Revenue per dollar<br/>of platform cost</div>
+          </div>
+        </div>
+
+        <div class="roi-callout">Marcus has ADHD and anxiety — managed by an outside psychiatrist your team didn't even know about until MyPulseScan pulled his records. Now your care coordinator tracks his PHQ-9 and GAD-7 scores monthly (20 min). That's <strong>$63/month in BHI revenue</strong> — <strong>on top of</strong> his RPM billing. No device needed. And the psychiatrist? <strong>Contract a remote 1099 consultant</strong> — CMS allows it. One psychiatrist covers 80 patients at 4 hours/week.</div>
+      </div>
+
+      <!-- TAB: Stacked Revenue -->
+      <div id="billing-stacked" class="billing-content">
+        <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1.5rem; line-height:1.7;"><strong style="color:var(--text);">All these codes stack.</strong> CMS explicitly permits RPM + CCM + BHI on the same patient in the same month. The only rule: 20 minutes of discrete, un-duplicated clinical time per program.</p>
+
+        <h3 style="font-size:1rem; font-weight:700; margin-bottom:0.75rem;">Marcus Torres — Monthly Revenue Stack</h3>
+        <table class="stack-table">
+          <thead><tr><th>Program</th><th>Code</th><th>Monthly (Commercial)</th><th>Staff Time Required</th></tr></thead>
+          <tbody>
+            <tr><td class="val">E/M Uplift (per visit)</td><td>99204</td><td style="color:var(--accent-green);">+$39/visit</td><td>0 min (during encounter)</td></tr>
+            <tr><td class="val">RPM — Device Monitoring</td><td>99454</td><td style="color:var(--accent-green);">$58/mo</td><td>0 min (device auto-transmits)</td></tr>
+            <tr><td class="val">RPM — Clinical Review</td><td>99457</td><td style="color:var(--accent-green);">$69/mo</td><td>20 min (BP/vitals review + call)</td></tr>
+            <tr><td class="val">CCM — Chronic Care</td><td>99490</td><td style="color:var(--accent-green);">$81/mo</td><td>20 min (chronic mgmt + coordination)</td></tr>
+            <tr><td class="val">BHI — Behavioral Health</td><td>99484</td><td style="color:var(--accent-green);">$63/mo</td><td>20 min (PHQ-9 tracking + outreach)</td></tr>
+          </tbody>
+          <tr class="stack-total"><td>Total Recurring Revenue</td><td></td><td>$271/patient/month</td><td>60 min total</td></tr>
+        </table>
+
+        <div class="roi-callout" style="margin-top:1.5rem;">
+          <strong>One patient. $271/month. Your cost: $1.00.</strong><br/><br/>
+          Marcus Torres represents your typical dual-diagnosis patient — TRT + hypertension + ADHD + anxiety. He was already in your system. He was already coming back monthly. The only thing that changed is <strong>you now have his complete records and a compliant billing workflow</strong>.<br/><br/>
+          At 30% enrollment across your 100,000 patients — a safe, OIG-compliant ceiling — your network generates <strong>$5.5 million per month</strong> in new recurring reimbursement.
+        </div>
+      </div>
+
+      <div style="text-align:center;">
+        <button class="btn-next" onclick="goNext(5)">See the full value →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 5 — VALUE + PRICING ═══════════ -->
+  <section class="screen" id="s5" style="min-height: auto; padding-top: 4rem; padding-bottom: 4rem; scroll-snap-align: start;">
+    <div class="screen-inner">
+      <div class="label">Beyond Billing — The Full Value Stack</div>
+      <h1 class="hero-headline" style="font-size:clamp(1.5rem,4vw,2.5rem);">Revenue is just <span class="grad-text">the beginning.</span></h1>
+
+      <div class="value-grid">
+        <div class="value-card">
+          <div class="value-icon">⚡</div>
+          <div class="value-title">12-Second Patient Onboarding</div>
+          <div class="value-desc">Complete history from 160,000+ organizations before the patient sits down. No faxes. No phone calls. No 3-day waits. Your front desk saves 20 minutes per patient.</div>
+          <div class="value-audience">EVERY LOCATION — DAY ONE</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🛡️</div>
+          <div class="value-title">Malpractice Risk Reduction</div>
+          <div class="value-desc">Marcus is on Adderall + has hypertension — a known cardiovascular risk. Without MyPulseScan, your provider at Total Men's didn't know about the stimulant prescribed by an outside psychiatrist. Complete records = informed decisions.</div>
+          <div class="value-audience">ALL CLINICIANS — LIABILITY PROTECTION</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔗</div>
+          <div class="value-title">Multi-Location Care Coordination</div>
+          <div class="value-desc">Patient sees Dr. Chen at Preston Hollow for TRT, Dr. Ramirez at Baylor for HTN, Dr. Park at UT Southwestern for ADHD. Three separate systems. MyPulseScan unifies the record across all 48 of your locations.</div>
+          <div class="value-audience">48 LOCATIONS — NETWORK-WIDE VISIBILITY</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">📱</div>
+          <div class="value-title">Apple Watch RPM Enrollment</div>
+          <div class="value-desc">Your patients already own the device. FDA-cleared ECG, heart rate, and blood oxygen on Apple Watch Series 9+. No shipping hardware. No device management. Sync via HealthKit and start billing.</div>
+          <div class="value-audience">CHRONIC PATIENTS — ZERO DEVICE COST</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🧠</div>
+          <div class="value-title">Behavioral Health Expansion Support</div>
+          <div class="value-desc">Your ADHD/depression/anxiety patients are managed by outside psychiatrists you can't see. MyPulseScan surfaces their medication history, rating scales, and treatment notes — enabling BHI and CoCM billing you're currently missing.</div>
+          <div class="value-audience">BEHAVIORAL HEALTH — NEW REVENUE LINE</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🏥</div>
+          <div class="value-title">Discharge Alerts (Signal ADT)</div>
+          <div class="value-desc">When Marcus hits the ER at Baylor, you know instantly. Your staff calls within 24 hours, books a follow-up. That walk-in visit becomes a $210-$285 TCM claim instead of a $128 standard visit.</div>
+          <div class="value-audience">TRANSITIONAL CARE — $201-$273/EVENT</div>
+        </div>
+      </div>
+
+      <h2 style="font-size:1.25rem; font-weight:700; margin-top:3rem; margin-bottom:0.5rem;">Network Pricing — Built for Scale</h2>
+      <p style="font-size:0.88rem; color:var(--text-2); margin-bottom:1.5rem;">Per-clinic pricing. No network fees. Each location is its own line item.</p>
+
+      <div class="tier-grid">
+        <div class="tier-card tier-standard">
+          <div class="tier-badge badge-standard">Pilot — 1 to 10 Clinics</div>
+          <div class="tier-title">Standard</div>
+          <div class="tier-price" style="color:var(--accent-blue);">$499<span class="price-sub">/clinic/mo + $1.50/patient</span></div>
+          <div class="tier-desc">Prove the ROI at one region. Full record retrieval, E/M uplift support, Signal ADT alerts, AI clinical summaries.</div>
+          <ul class="tier-features">
+            <li>Full Particle Health record retrieval</li>
+            <li>Signal real-time ADT alerts</li>
+            <li>AI clinical summary per patient</li>
+            <li>Up to 25 staff accounts per location</li>
+            <li>EMR integration (Epic, Cerner, Athena)</li>
+          </ul>
+        </div>
+        <div class="tier-card tier-growth">
+          <div class="tier-badge badge-growth">Regional — 11 to 20 Clinics</div>
+          <div class="tier-title">Growth</div>
+          <div class="tier-price" style="color:#a78bfa;">$399<span class="price-sub">/clinic/mo + $1.25/patient</span></div>
+          <div class="tier-desc">Regional rollout with volume pricing. All Standard features plus dedicated integration support.</div>
+          <ul class="tier-features">
+            <li>Everything in Standard</li>
+            <li>Volume pricing — $0.25 less per patient</li>
+            <li>Dedicated integration engineer</li>
+            <li>Quarterly compliance review</li>
+          </ul>
+        </div>
+        <div class="tier-card tier-enterprise" style="border-color: rgba(16,185,129,0.4);">
+          <div class="tier-badge badge-enterprise">Network — 21+ Clinics</div>
+          <div class="tier-title">Enterprise</div>
+          <div class="tier-price" style="color:var(--accent-green);">$299<span class="price-sub">/clinic/mo + $1.00/patient</span></div>
+          <div class="tier-desc">Full network deployment. Lowest per-patient cost. Priority support, custom analytics, white-label option.</div>
+          <ul class="tier-features">
+            <li>Everything in Growth</li>
+            <li>Lowest per-patient rate</li>
+            <li>Custom analytics dashboard</li>
+            <li>White-label option available</li>
+            <li>Priority technical support</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:2rem;">
+        <button class="btn-next" onclick="goNext(6)">Let's talk →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SCREEN 6 — THE CLOSE ═══════════ -->
+  <section class="screen" id="s6">
+    <div class="screen-inner cta-section">
+      <div class="label">Next Steps</div>
+      <h1 class="hero-headline">Your patients are already <span class="grad-text">generating this revenue.</span><br/>You're just not capturing it yet.</h1>
+      <p class="hero-sub" style="margin: 0 auto;">Start with 10 clinics. Prove the E/M uplift on day one. Add RPM and BHI as your Care Coordination Hub scales. We'll show you exactly how.</p>
+
+      <div class="cta-buttons">
+        <a href="mailto:brad@eyedlab.io?subject=Total%20Men%27s%20%E2%80%94%20MyPulseScan%20Enterprise%20Demo%20Request" class="btn-primary" style="text-decoration:none;">Schedule a Call →</a>
+        <button class="btn-outline" disabled>Download Executive Proposal (Coming Soon)</button>
+      </div>
+    </div>
+    <div class="brand-footer">
+      <strong>MyPulseScan</strong> by EyeD Lab · Confidential — Prepared for Total Men's Primary Care
+    </div>
+  </section>
+
+</div>
+
+<!-- Voiceover Controls -->
+<div class="vo-controls">
+  <button class="vo-btn active" id="voToggle" onclick="toggleVoiceover()" title="Toggle voiceover">🔊</button>
+</div>
+
+<script>
+// ═══════════ VOICEOVER ═══════════
+const voiceoverLines = {
+  s1: "Forty-eight locations. Over one hundred thousand patients. And millions in reimbursement left on the table every month. Your clinicians treat patients with incomplete records. Your billing team codes visits at ninety-nine two oh three when complete data would support ninety-nine two oh four or two oh five. Your chronic patients generate zero R.P.M. revenue. And your behavioral health expansion has no visibility into outside medication history. What if you could change all of that in twelve seconds?",
+  s2: "Enter a patient's name, date of birth, and location. That's all it takes. Complete medical history from one hundred sixty thousand healthcare organizations — in seconds. Let's look at Marcus Torres, a forty-six-year-old male in Dallas.",
+  s3: "In seconds, you have the complete picture. Marcus is on testosterone replacement therapy, managed by your clinic. But he also has hypertension managed by Baylor Scott and White, A.D.H.D. treated by a psychiatrist at U.T. Southwestern, and anxiety managed with sertraline. Three separate provider systems. No one was coordinating his care — until now. And notice the alert: he's on Adderall, a stimulant, while his blood pressure is trending upward. That's a cardiovascular risk your provider needs to see before walking into the room.",
+  s4: "Now here's the business case. Every patient who walks through your door generates more revenue with complete records — that's E.M. uplift, thirty-nine to one hundred nine dollars more per visit, day one, no devices needed. Your chronic patients — T.R.T., hypertension, metabolic syndrome — qualify for R.P.M. and C.C.M. stacking at two hundred eight dollars per month each. Your behavioral health patients unlock B.H.I. at sixty-three dollars per month or Collaborative Care at one thirty-one. And all these codes stack. Marcus Torres alone generates two hundred seventy-one dollars per month in recurring revenue. Your cost? One dollar.",
+  s5: "Beyond billing, MyPulseScan gives you twelve-second patient onboarding, malpractice risk reduction, multi-location care coordination across all forty-eight clinics, Apple Watch R.P.M. enrollment with zero device cost, behavioral health integration support, and real-time discharge alerts that turn standard visits into two-hundred-dollar T.C.M. claims. Pricing starts at four ninety-nine per clinic per month for a pilot, dropping to two ninety-nine at enterprise scale. Per-clinic pricing — no network fees.",
+  s6: "Your patients are already generating this revenue. You're just not capturing it yet. Start with ten clinics. Prove the E.M. uplift on day one. Add R.P.M. and B.H.I. as your Care Coordination Hub scales. We'll show you exactly how."
+};
+
+let voEnabled = true;
+let currentUtterance = null;
+
+function speak(screenId) {
+  if (!voEnabled || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const text = voiceoverLines[screenId];
+  if (!text) return;
+  currentUtterance = new SpeechSynthesisUtterance(text);
+  currentUtterance.rate = 0.95;
+  currentUtterance.pitch = 1.0;
+  currentUtterance.volume = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en')) ||
+                    voices.find(v => v.lang.startsWith('en-US')) ||
+                    voices.find(v => v.lang.startsWith('en'));
+  if (preferred) currentUtterance.voice = preferred;
+  const btn = document.getElementById('voToggle');
+  currentUtterance.onstart = () => btn && btn.classList.add('vo-speaking');
+  currentUtterance.onend = () => btn && btn.classList.remove('vo-speaking');
+  window.speechSynthesis.speak(currentUtterance);
+}
+
+function toggleVoiceover() {
+  voEnabled = !voEnabled;
+  const btn = document.getElementById('voToggle');
+  btn.classList.toggle('active', voEnabled);
+  btn.textContent = voEnabled ? '🔊' : '🔇';
+  if (!voEnabled) { window.speechSynthesis.cancel(); btn.classList.remove('vo-speaking'); }
+}
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+  window.speechSynthesis.getVoices();
+}
+
+// ═══════════ SCREEN GATING ═══════════
+let currentScreen = 1;
+const totalScreens = 6;
+
+function initScreens() {
+  for (let i = 2; i <= totalScreens; i++) {
+    const el = document.getElementById('s' + i);
+    if (el) el.classList.add('locked');
+  }
+  document.getElementById('s1').classList.add('unlocked');
+  setTimeout(() => speak('s1'), 800);
+}
+
+function goNext(targetScreen) {
+  if (targetScreen > totalScreens) return;
+  const el = document.getElementById('s' + targetScreen);
+  if (!el) return;
+  el.classList.remove('locked');
+  el.classList.add('unlocked');
+  currentScreen = targetScreen;
+  el.scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => speak('s' + targetScreen), 600);
+  if (targetScreen === 3) triggerRevealInternal();
+}
+
+// ═══════════ REVEAL ═══════════
+let revealed = false;
+
+function triggerReveal() { goNext(3); }
+
+function triggerRevealInternal() {
+  if (revealed) return;
+  revealed = true;
+  const bar = document.getElementById('loadingBar');
+  const counter = document.getElementById('loadingCounter');
+  const loading = document.getElementById('loading');
+  const panel = document.getElementById('dataPanel');
+  requestAnimationFrame(() => { bar.classList.add('animate'); });
+  let count = 0;
+  const target = 160000;
+  const interval = setInterval(() => {
+    count += Math.floor(Math.random() * 8000) + 3000;
+    if (count >= target) { count = target; clearInterval(interval); }
+    counter.textContent = count.toLocaleString() + ' organizations searched';
+  }, 200);
+  setTimeout(() => {
+    loading.style.display = 'none';
+    panel.classList.add('visible');
+  }, 2800);
+}
+
+// Snapshot tabs
+function showSnapshotTab(id) {
+  document.querySelectorAll('.snapshot-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.snapshot-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.closest('.snapshot-tab').classList.add('active');
+}
+
+// Billing tabs
+function showBilling(id) {
+  document.querySelectorAll('.billing-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.billing-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('billing-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+window.addEventListener('DOMContentLoaded', initScreens);
+
+// ═══════════ CALCULATORS ═══════════
+
+// E/M Calculator
+const emInput = document.getElementById('emInput');
+const emSlider = document.getElementById('emSlider');
+
+function updateEM(pts) {
+  pts = Math.max(100, Math.min(10000, parseInt(pts) || 1500));
+  const low = pts * 39;
+  const high = pts * 109;
+  document.getElementById('emCost').innerHTML = '$' + low.toLocaleString() + '<span style="font-size:0.5em; opacity:0.6;">/mo</span>';
+  document.getElementById('emRevHigh').innerHTML = '$' + high.toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
+  document.getElementById('emAnnual').textContent = '$' + (Math.round(low * 12 / 1000)).toLocaleString() + 'K–$' + (Math.round(high * 12 / 1000000 * 100) / 100).toLocaleString() + 'M';
+}
+
+emInput.addEventListener('input', (e) => { emSlider.value = e.target.value; updateEM(e.target.value); });
+emSlider.addEventListener('input', (e) => { emInput.value = e.target.value; updateEM(e.target.value); });
+
+// RPM Calculator
+const rpmInput = document.getElementById('rpmInput');
+const rpmSlider = document.getElementById('rpmSlider');
+
+function updateRPM(pts) {
+  pts = Math.max(100, Math.min(40000, parseInt(pts) || 5000));
+  const platformCost = pts * 1.00; // Enterprise rate
+  const revenue = pts * 208; // RPM + CCM stacked
+  const ratio = Math.floor(revenue / platformCost);
+  document.getElementById('rpmCost').innerHTML = '$' + platformCost.toLocaleString() + '<span style="font-size:0.5em; opacity:0.6;">/mo</span>';
+  document.getElementById('rpmRev').innerHTML = '$' + revenue.toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
+  document.getElementById('rpmRoi').textContent = ratio.toLocaleString() + ':1';
+}
+
+rpmInput.addEventListener('input', (e) => { rpmSlider.value = e.target.value; updateRPM(e.target.value); });
+rpmSlider.addEventListener('input', (e) => { rpmInput.value = e.target.value; updateRPM(e.target.value); });
+
+// BHI Calculator
+const bhiInput = document.getElementById('bhiInput');
+const bhiSlider = document.getElementById('bhiSlider');
+
+function updateBHI(pts) {
+  pts = Math.max(100, Math.min(25000, parseInt(pts) || 5000));
+  const platformCost = pts * 1.00;
+  const revenue = pts * 63; // BHI rate
+  const ratio = Math.floor(revenue / platformCost);
+  document.getElementById('bhiCost').innerHTML = '$' + platformCost.toLocaleString() + '<span style="font-size:0.5em; opacity:0.6;">/mo</span>';
+  document.getElementById('bhiRev').innerHTML = '$' + revenue.toLocaleString() + '<span style="font-size:0.5em; opacity:0.7;">/mo</span>';
+  document.getElementById('bhiRoi').textContent = ratio.toLocaleString() + ':1';
+}
+
+bhiInput.addEventListener('input', (e) => { bhiSlider.value = e.target.value; updateBHI(e.target.value); });
+bhiSlider.addEventListener('input', (e) => { bhiInput.value = e.target.value; updateBHI(e.target.value); });
+</script>
+
+</body>
+</html>

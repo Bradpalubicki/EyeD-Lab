@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Men's — Step-by-Step Operations Playbook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #050b18; --bg-surface: #080f1e; --bg-card: #0c1628;
+            --accent-teal: #0D6B6E; --accent-teal-bright: #5de8c0;
+            --accent-purple: #7c3aed; --accent-blue: #3b82f6;
+            --accent-gold: #f59e0b; --accent-green: #10b981; --accent-red: #ef4444;
+            --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+            --text: #f0f4ff; --text-2: #8b9cc8; --text-3: #445580;
+            --border: rgba(59,90,163,0.2); --border-bright: rgba(93,232,192,0.25);
+        }
+        html { font-size: 16px; scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.7; padding: 2rem; max-width: 900px; margin: 0 auto; }
+
+        .hero { background: linear-gradient(135deg, var(--bg-card) 0%, #0D6B6E22 100%); border: 1px solid var(--border-bright); padding: 2.5rem; border-radius: 12px; margin-bottom: 2.5rem; }
+        .hero h1 { font-size: 2rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+        .hero p { color: var(--text-2); font-size: 1.05rem; }
+
+        .toc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem 2rem; margin-bottom: 2.5rem; }
+        .toc h3 { color: var(--accent-teal-bright); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+        .toc a { display: block; color: var(--text-2); text-decoration: none; padding: 0.35rem 0; font-size: 0.95rem; transition: color 0.15s; }
+        .toc a:hover { color: var(--accent-teal-bright); }
+
+        h2 { font-size: 1.5rem; font-weight: 700; color: var(--accent-teal-bright); margin: 3rem 0 0.5rem; padding-top: 1rem; }
+        .section-intro { color: var(--text-2); font-size: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.15rem; color: var(--text); font-weight: 600; margin: 1.5rem 0 0.8rem; }
+        p { color: var(--text-2); margin-bottom: 0.8rem; font-size: 0.98rem; }
+
+        .phase-banner { display: inline-flex; align-items: center; gap: 0.5rem; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+        .pb-1 { background: rgba(59,130,246,0.2); color: var(--accent-blue); }
+        .pb-2 { background: rgba(124,58,237,0.2); color: var(--accent-purple); }
+        .pb-3 { background: rgba(16,185,129,0.2); color: var(--accent-green); }
+
+        .role-tag { display: inline-block; background: rgba(93,232,192,0.1); border: 1px solid var(--accent-teal-bright); border-radius: 5px; padding: 2px 8px; font-size: 0.8rem; font-weight: 600; color: var(--accent-teal-bright); margin-bottom: 0.5rem; }
+
+        .step-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.3rem 1.5rem; margin: 1rem 0; }
+        .step-card strong { color: var(--text); }
+        .step-card p { margin: 0.4rem 0; }
+
+        .callout { padding: 1rem 1.3rem; border-radius: 0 8px 8px 0; margin: 1rem 0; font-size: 0.95rem; }
+        .callout-gold { background: rgba(245,158,11,0.08); border-left: 3px solid var(--accent-gold); color: var(--text); }
+        .callout-red { background: rgba(239,68,68,0.08); border-left: 3px solid var(--accent-red); color: var(--text); }
+        .callout-green { background: rgba(16,185,129,0.08); border-left: 3px solid var(--accent-green); color: var(--text); }
+        .callout-blue { background: rgba(59,130,246,0.08); border-left: 3px solid var(--accent-blue); color: var(--text); }
+
+        .macro-text { display: inline-block; background: var(--bg-card); border: 1px solid var(--accent-teal-bright); border-radius: 5px; padding: 3px 10px; font-family: 'Courier New', monospace; color: var(--accent-teal-bright); font-size: 1rem; font-weight: 700; }
+
+        .flow-diagram { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; font-family: 'Courier New', monospace; color: var(--accent-teal-bright); font-size: 0.9rem; line-height: 1.8; text-align: center; }
+
+        .matrix { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+        .matrix th, .matrix td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        .matrix th { background: var(--bg-card); color: var(--accent-teal-bright); font-weight: 600; border-bottom: 1px solid var(--border-bright); }
+        .matrix td { color: var(--text-2); }
+        .matrix td strong { color: var(--text); }
+
+        .divider { height: 1px; background: var(--border); margin: 2rem 0; }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .hero { padding: 1.5rem; }
+            .hero h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>The Ultimate Playbook</h1>
+        <p>How Total Men's Uses Particle Health &amp; eCW &mdash; A plain-English, step-by-step operations guide for every role.</p>
+    </div>
+
+    <!-- The Big Picture -->
+    <div class="callout callout-gold">
+        <strong>The Big Picture:</strong> Right now, doctors are treating patients without their full medical histories. This means we are missing critical safety alerts and losing out on millions in rightful insurance payouts. This playbook fixes that using two tools: <strong>Particle Health</strong> (which looks up records in 12 seconds) and <strong>eClinicalWorks / eCW</strong> (our charting system).
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <a href="#rollout">The 3-Phase Rollout Plan</a>
+        <a href="#phase1">Phase 1: The Patient Flowmodel (Day 1 — All 48 Clinics)</a>
+        <a href="#phase2">Phase 2: Behavioral Health Expansion (3 Pilot Clinics)</a>
+        <a href="#phase3">Phase 3: Remote Patient Monitoring (500 Patients)</a>
+        <a href="#matrix">Summary Checklist — Audit-Proof Tracking Matrix</a>
+    </div>
+
+    <!-- ═══════════════ ROLLOUT PLAN ═══════════════ -->
+    <h2 id="rollout">The 3-Phase Rollout Plan</h2>
+    <p class="section-intro">We are not launching everything at once. We are following a strict three-phase timeline.</p>
+
+    <div class="flow-diagram">
+        [Phase 1: Flowmodel] &mdash;&mdash;&gt; Launch everywhere on Day 1 (All 48 clinics)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v<br>
+        [Phase 2: Behavioral Health] &mdash;&mdash;&gt; Test in 3 pilot clinics first<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v<br>
+        [Phase 3: RPM Monitoring] &mdash;&mdash;&gt; Scale up to 500 patients
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════════ PHASE 1 ═══════════════ -->
+    <h2 id="phase1">Phase 1: The Patient Flowmodel</h2>
+    <span class="phase-banner pb-1">Launch Everywhere &mdash; Day 1 &mdash; All 48 Clinics</span>
+    <p class="section-intro"><strong>What it is:</strong> A one-time data check that happens the exact minute a patient walks through the door. No long-term tracking. No devices. No new software.</p>
+
+    <h3><span class="role-tag">Front Desk</span> The Gatekeepers</h3>
+
+    <div class="step-card">
+        <p><strong>What you do:</strong> Check the patient in exactly like you do now. When the digital check-in tablet asks for permission to fetch their records, make sure the patient signs it.</p>
+    </div>
+
+    <div class="callout callout-blue">
+        <strong>What to say if they ask:</strong> <em>"This safely searches Texas medical networks for your allergies and past prescriptions so your doctor can treat you safely today &mdash; without making you fill out a massive paper packet."</em>
+    </div>
+
+    <div class="step-card">
+        <p><strong>The technology:</strong> Clicking "Arrived" in eCW automatically forces Particle Health to search <strong>160,000 hospitals and pharmacies</strong>. It dumps their entire history into their chart in under 12 seconds.</p>
+    </div>
+
+    <h3><span class="role-tag">Providers</span> MDs, NPs, PAs</h3>
+
+    <div class="step-card">
+        <p><strong>What you do:</strong> Open the eCW chart. Look at the new <strong>"External Documents" tab</strong> before you walk into the room. Use that history to make your treatment decisions.</p>
+    </div>
+
+    <div class="step-card">
+        <p><strong>The mandatory step:</strong> Before you close the chart, type <span class="macro-text">.ECW_DATA_REVIEW</span> into your progress note. This shortcut text legally proves to the insurance company that you reviewed outside files.</p>
+    </div>
+
+    <div class="callout callout-green">
+        <strong>The financial payoff:</strong> Typing that macro securely upgrades the visit level. Insurance automatically pays us <strong>$33 to $39 more per visit</strong> because we did the extra work of reviewing outside records.
+    </div>
+
+    <h3><span class="role-tag">Billing</span> Centralized Billing Team</h3>
+
+    <div class="step-card">
+        <p><strong>What you do:</strong> Run the electronic "Claim Scrubber" engine daily.</p>
+        <p><strong>The compliance check:</strong> If a biller tries to send a high-paying claim, the software checks for two things:</p>
+        <p style="padding-left:1rem;">1. Did the provider use the <span class="macro-text">.ECW_DATA_REVIEW</span> macro?</p>
+        <p style="padding-left:1rem;">2. Is there an actual data transaction timestamp from Particle Health?</p>
+        <p><strong>If yes</strong> to both &rarr; send it. <strong>If no</strong> to either &rarr; bounce it back. No exceptions.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════════ PHASE 2 ═══════════════ -->
+    <h2 id="phase2">Phase 2: Behavioral Health Expansion</h2>
+    <span class="phase-banner pb-2">3 Pilot Clinics First &mdash; ~1,000 Patients</span>
+    <p class="section-intro"><strong>What it is:</strong> Integrating mental health care (ADHD, Anxiety, Depression, PTSD) with physical care.</p>
+
+    <h3>The Safety Rule</h3>
+
+    <div class="callout callout-red">
+        <strong>The Risk:</strong> Many of our patients take testosterone or have high blood pressure, but they also get ADHD stimulants (like Adderall) from outside psychiatrists. Mixing these causes <strong>severe cardiovascular risks</strong>. Patients routinely forget &mdash; or deliberately omit &mdash; these prescriptions.
+    </div>
+
+    <div class="step-card">
+        <p><strong>The Action:</strong> Providers must check Particle's medication logs to spot hidden outside psychiatric prescriptions <strong>before ordering any new drugs</strong>.</p>
+    </div>
+
+    <h3>The Collaborative Care (CoCM) Workflow</h3>
+
+    <div class="step-card">
+        <p><strong>Step 1:</strong> The primary doctor refers a struggling patient to our internal Centralized Care Manager.</p>
+        <p><strong>Step 2:</strong> The Care Manager calls the patient monthly, runs mental health checks (like the PHQ-9 depression scale), and updates a master registry.</p>
+        <p><strong>Step 3:</strong> A 1099 Virtual Psychiatrist (hired remotely) logs in weekly, reviews that registry, and types care recommendations directly into eCW.</p>
+    </div>
+
+    <div class="callout callout-green">
+        <strong>The billing payoff:</strong> This team-based approach allows the centralized billing hub to compliantly bill <strong>$63 to $131 per month</strong> per patient under specialized care coordination codes (CoCM + BHI).
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════════ PHASE 3 ═══════════════ -->
+    <h2 id="phase3">Phase 3: Remote Patient Monitoring (RPM)</h2>
+    <span class="phase-banner pb-3">Scale to 500 Patients &mdash; 5 Pilot Clinics &mdash; Ramp 3-5%/Month</span>
+    <p class="section-intro"><strong>What it is:</strong> Tracking a patient's physical vital signs (heart rate, blood pressure, SpO2) from home using technology they already own.</p>
+
+    <h3>The Apple Watch Solution (No Hardware Investment)</h3>
+
+    <div class="step-card">
+        <p><strong>The old way:</strong> Ordering and shipping expensive medical hardware to a patient's house, which they frequently lose, break, or forget to charge.</p>
+        <p><strong>The new way:</strong> If the patient owns an Apple Watch (Series 9 or newer), the Care Manager pairs it directly to eCW via the Apple HealthKit API. The watch tracks heart rate, ECG, blood oxygen, and AFib detection &mdash; all streaming automatically.</p>
+    </div>
+
+    <h3>The 16-Day Data Rule (CPT 99454 &mdash; $58/month)</h3>
+
+    <div class="callout callout-red">
+        <strong>The strict law:</strong> We cannot collect the $58 monthly device fee from insurance unless the patient's watch automatically streams health data on <strong>at least 16 separate days</strong> out of a 30-day month.
+    </div>
+
+    <div class="step-card">
+        <p><strong>The staff action:</strong> The software dashboard tracks this automatically. If a patient drops off and hasn't synced their watch in 4 days, a Care Manager must text them to prompt a manual sync. If they hit 15 days or fewer, the billing hub will <strong>strip the code</strong> to prevent an audit.</p>
+    </div>
+
+    <h3>The 20-Minute Time Log (CPT 99457 &mdash; $69/month)</h3>
+
+    <div class="callout callout-red">
+        <strong>The law:</strong> Clinical staff must spend a minimum of <strong>20 distinct, un-duplicated minutes</strong> per month reviewing a patient's incoming device data and communicating with them about their progress.
+    </div>
+
+    <div class="step-card">
+        <p><strong>The rule:</strong> You <strong>must use the built-in eCW stopwatch timer</strong>. General office visits, standard phone tag, or manual time estimates do <strong>not</strong> count. The timer creates an electronic time log that serves as your audit evidence.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ═══════════════ AUDIT MATRIX ═══════════════ -->
+    <h2 id="matrix">Summary Checklist &mdash; Audit-Proof Tracking</h2>
+    <p class="section-intro">Cross-reference this matrix to keep 100% of the money we bill and protect our clinic from insurance audits.</p>
+
+    <table class="matrix">
+        <thead>
+            <tr>
+                <th>Action Required</th>
+                <th>Who Does It?</th>
+                <th>The Compliance Metric</th>
+                <th>Final Gatekeeper</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Record Aggregation</strong></td>
+                <td>Front Desk / API</td>
+                <td>Happens in under 12 seconds at check-in</td>
+                <td>EHR Transaction Log</td>
+            </tr>
+            <tr>
+                <td><strong>E/M Code Uplift</strong></td>
+                <td>Medical Provider</td>
+                <td>Must insert .ECW_DATA_REVIEW stamp</td>
+                <td>Centralized Billing Hub</td>
+            </tr>
+            <tr>
+                <td><strong>CoCM Mental Health</strong></td>
+                <td>Care Hub + 1099 Psych</td>
+                <td>Registry updated weekly; time tracked</td>
+                <td>Certified Coding Engine</td>
+            </tr>
+            <tr>
+                <td><strong>RPM Device Supply</strong></td>
+                <td>Enrolled Patient / Watch</td>
+                <td>Must transmit data on 16+ separate days</td>
+                <td>Automated Claim Scrubber</td>
+            </tr>
+            <tr>
+                <td><strong>RPM Care Minutes</strong></td>
+                <td>Central Care Manager</td>
+                <td>Must run stopwatch for 20+ min monthly</td>
+                <td>Electronic Time Log Audit</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center;">
+        <p style="color:var(--text-3); font-size:0.85rem;">Total Men's Primary Care &mdash; Operations Playbook &bull; MyPulseScan &times; Particle Health &bull; Questions? <a href="mailto:brad@eyedlab.io" style="color:var(--accent-teal-bright);">brad@eyedlab.io</a></p>
+    </div>
+
+</body>
+</html>

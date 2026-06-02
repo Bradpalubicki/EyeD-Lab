@@ -1,0 +1,564 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Connected Care Operational Playbook — 5 High-Risk Specialties</title>
+<style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 1.6; max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    h1 { color: #0f172a; font-size: 24pt; border-bottom: 2px solid #2563eb; padding-bottom: 6pt; margin-top: 24pt; }
+    h2 { color: #1e3a8a; font-size: 18pt; margin-top: 18pt; padding-bottom: 4pt; border-bottom: 1px solid #e2e8f0; }
+    h3 { color: #2563eb; font-size: 14pt; margin-top: 14pt; }
+    p { margin-bottom: 10pt; font-size: 11pt; text-align: justify; }
+    table { width: 100%; border-collapse: collapse; margin: 12pt 0; }
+    th, td { border: 1px solid #cbd5e1; padding: 8pt 10pt; font-size: 10pt; text-align: left; }
+    th { background-color: #0f172a; color: #ffffff; font-weight: bold; }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    .diagram { background-color: #0f172a; color: #e2e8f0; padding: 12pt; font-family: 'Consolas', monospace; font-size: 9.5pt; border-radius: 6px; margin: 10pt 0; white-space: pre; }
+    .macro-box { background-color: #f1f5f9; border-left: 4px solid #2563eb; padding: 10pt; font-style: italic; margin: 10pt 0; border-radius: 0 6px 6px 0; }
+    .badge-neph { border-top: 4px solid #0284c7; }
+    .badge-onc { border-top: 4px solid #8b5cf6; }
+    .badge-cardio { border-top: 4px solid #dc2626; }
+    .badge-endo { border-top: 4px solid #059669; }
+    .badge-snf { border-top: 4px solid #d97706; }
+    .section-break { border: 0; border-top: 2px solid #cbd5e1; margin: 20pt 0; }
+    @media print {
+        body { padding: 0.5in; }
+        .diagram { page-break-inside: avoid; }
+        table { page-break-inside: avoid; }
+    }
+</style>
+</head>
+<body>
+
+<h1>CONNECTED CARE ENTERPRISE PLAYBOOK</h1>
+<p><strong>Prepared for:</strong> Clinical Informatics Executives, Medical Directors, and Chief Financial Officers</p>
+<p><strong>System Scope:</strong> Cross-Specialty Integration of Particle Health (HIE/Signal) and eClinicalWorks (eCW)</p>
+<p><strong>Reimbursement Basis:</strong> 2026 National Commercial Payer Averages and MAC Jurisdictions</p>
+
+<p>This playbook establishes the technical, operational, and financial frameworks required to deploy real-time interoperability and automated care tracking across five high-risk specialties. By utilizing Particle Health's record exchange and real-time Admission, Discharge, and Transfer (ADT) <em>Signal</em> engine, practices can lower clinical liability, optimize resource utilization, and secure high-margin revenue loops without adding administrative burdens to clinic floor staff.</p>
+
+<hr class="section-break">
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- VOLUME 1: NEPHROLOGY                                                    -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<div class="badge-neph">
+    <h1>VOLUME 1: NEPHROLOGY (CHRONIC KIDNEY DISEASE &amp; ESRD)</h1>
+
+    <h2>1.1 Operational Workflow</h2>
+    <p>Nephrology operations prioritize fluid overload mitigation, electrolyte stability, and hospital readmission deflection for Stage 3-5 CKD and End-Stage Renal Disease (ESRD) patients.</p>
+
+    <div class="diagram">[Fragile CKD/ESRD Patient Presentation to Out-of-Network Emergency Room]
+                                │
+                                ▼
+ [Particle Signal Triggers Real-Time Inbound ADT Admission Notification]
+                                │
+                                ▼
+  [Centralized Care Hub Alerted: Pulls Longitudinal Chart via API]
+                                │
+                                ▼
+  [Hub Clinical Nurse Coordinates with ER Attending; Titrates Loop Diuretics]
+                                │
+                                ▼
+  [Patient Discharged to Home; Hub Books Face-to-Face Follow-Up within 48 Hrs]</div>
+
+    <h2>1.2 Financial Pro-Forma (200 Patients/Month Cohort)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>CPT Code</th>
+                <th>Program Component</th>
+                <th>Reimbursement Rate</th>
+                <th>Monthly Gross Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>99495 / 99496</strong></td>
+                <td>Transitional Care Management (TCM Post-ED)</td>
+                <td>$285.00</td>
+                <td>$57,000.00</td>
+            </tr>
+            <tr>
+                <td><strong>99454</strong></td>
+                <td>RPM Monthly Device Supply (Weight/BP)</td>
+                <td>$58.00</td>
+                <td>$11,600.00</td>
+            </tr>
+            <tr>
+                <td><strong>99457</strong></td>
+                <td>RPM Review &amp; Interaction (First 20 Mins)</td>
+                <td>$69.00</td>
+                <td>$13,800.00</td>
+            </tr>
+            <tr>
+                <td><strong>99490</strong></td>
+                <td>Chronic Care Management (CCM - 20 Mins)</td>
+                <td>$81.00</td>
+                <td>$16,200.00</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#e2e8f0;">
+                <td colspan="3">TOTAL MONTHLY COHORT GROSS REVENUE</td>
+                <td>$98,600.00</td>
+            </tr>
+            <tr style="color:#dc2626;">
+                <td colspan="3">LESS: Software Overhead ($250 Base + $5/pt) &amp; Loaded Labor Expenses</td>
+                <td>($16,840.00)</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#d1fae5; color:#065f46;">
+                <td colspan="3">NET MONTHLY PRACTICE GAIN (ROI: 485.5%)</td>
+                <td>$81,760.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>1.3 EHR SmartForm Documentation Template</h2>
+    <div class="macro-box">
+        <strong>eCW System Macro: .NEPH_DATA_REVIEW</strong><br><br>
+        "NEPHROLOGY INTEGRATED TRANSITION ENCOUNTER: Patient evaluated post-acute discharge. PROGRAMMATIC SIGNAL TRACKING: Programme-driven ADT alert received via Particle Health Network. Accessed, reviewed, and cross-analyzed extensive external unique longitudinal data streams within the eCW open hub interface. Verified external laboratory trend records (specifically serum creatinine, eGFR, and blood urea nitrogen metrics) along with historical loop diuretic dosing patterns from outside pharmacy networks. This extensive data review was utilized to stabilize fluid volume, titrate medication schedules, protect remaining nephron architecture, and prevent avoidable inpatient secondary readmission flags."
+    </div>
+</div>
+
+<hr class="section-break">
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- VOLUME 2: ONCOLOGY                                                      -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<div class="badge-onc">
+    <h1>VOLUME 2: ONCOLOGY (CANCER CARE NETWORKS)</h1>
+
+    <h2>2.1 Operational Workflow</h2>
+    <p>Oncology networks focus on tracking chemotherapy-induced toxicity, monitoring neutropenic spikes, and executing rapid interventions to defend fragile patients during active treatment cycles.</p>
+
+    <div class="diagram">[Active Chemo Patient Experiences Neutropenic/Dehydration Spike at Home]
+                                │
+                                ▼
+     [Patient Seeks Walk-In Treatment at Local Secondary Facility]
+                                │
+                                ▼
+ [Particle Health Interoperability Hub Flags Admitting Status via Signal]
+                                │
+                                ▼
+[Centralized Oncology Care Manager Intervenes to Guide Clinical Triage]
+                                │
+                                ▼
+[Chart Aggregated: Prevents Toxic Interactions; Redirects to Infusion Suite]</div>
+
+    <h2>2.2 Financial Pro-Forma (200 Patients/Month Cohort)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>CPT Code</th>
+                <th>Program Component</th>
+                <th>Reimbursement Rate</th>
+                <th>Monthly Gross Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>99204 / 99214</strong></td>
+                <td>E/M Data-Review Uplift (Complex Initial)</td>
+                <td>+$39.00 (Net Lift)</td>
+                <td>$7,800.00</td>
+            </tr>
+            <tr>
+                <td><strong>99424</strong></td>
+                <td>Principal Care Management (PCM &mdash; Oncologist 30 Mins)</td>
+                <td>$94.00</td>
+                <td>$18,800.00</td>
+            </tr>
+            <tr>
+                <td><strong>99425</strong></td>
+                <td>Principal Care Management (Additional 30 Mins)</td>
+                <td>$72.00</td>
+                <td>$14,400.00</td>
+            </tr>
+            <tr>
+                <td><strong>99457</strong></td>
+                <td>Physiological Review (Vitals Tracking)</td>
+                <td>$69.00</td>
+                <td>$13,800.00</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#e2e8f0;">
+                <td colspan="3">TOTAL MONTHLY COHORT GROSS REVENUE</td>
+                <td>$54,800.00</td>
+            </tr>
+            <tr style="color:#dc2626;">
+                <td colspan="3">LESS: Software Overhead &amp; Specialized Oncology Nurse Coordinators</td>
+                <td>($14,250.00)</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#d1fae5; color:#065f46;">
+                <td colspan="3">NET MONTHLY PRACTICE GAIN (ROI: 284.5%)</td>
+                <td>$40,550.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2.3 EHR SmartForm Documentation Template</h2>
+    <div class="macro-box">
+        <strong>eCW System Macro: .ONC_DATA_REVIEW</strong><br><br>
+        "ONCOLOGY PRINCIPAL ENCOUNTER: Patient currently undergoing active therapeutic antineoplastic regimens. CLINICAL COMPLEXITY DATA VERIFICATION: Programmatic HIE data retrieval initiated via Particle Health API networks at check-in. Personally accessed, analyzed, and reviewed the external data profile to establish medical necessity and therapy safety thresholds. Cross-referenced outside hospital imaging reports, historical bone marrow biopsy parameters, and pharmacy dispensation logs to screen for delayed toxicities or hidden cross-prescriptions. This data review was utilized to adjust oncology protocols and minimize toxicity-driven emergency department interventions."
+    </div>
+</div>
+
+<hr class="section-break">
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- VOLUME 3: CARDIOLOGY                                                    -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<div class="badge-cardio">
+    <h1>VOLUME 3: CARDIOLOGY (CONGESTIVE HEART FAILURE MANAGEMENT)</h1>
+
+    <h2>3.1 Operational Workflow</h2>
+    <p>Cardiology frameworks leverage a dual-monitoring structure, combining weight/blood pressure data with real-time ADT alerts to prevent 30-day hospital readmission penalties for CHF patients.</p>
+
+    <div class="diagram">[CHF Patient Home Scale Flags Sudden 3-Pound Fluid Retention Spike]
+                                │
+                                ▼
+    [EHR System Triggers Alert; Patient Visits Out-of-Network Urgent Care]
+                                │
+                                ▼
+[Particle Signal Immediately Captures Urgent Care ICD-10 Admission Code]
+                                │
+                                ▼
+[Centralized Hub Reviews Inbound Data, Contacts Patient for Titration]
+                                │
+                                ▼
+[Clinic Deflects Full Inpatient Admission; Preserves MIPS Quality Metric]</div>
+
+    <h2>3.2 Financial Pro-Forma (200 Patients/Month Cohort)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>CPT Code</th>
+                <th>Program Component</th>
+                <th>Reimbursement Rate</th>
+                <th>Monthly Gross Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>99454</strong></td>
+                <td>RPM Monthly Device Supply (Connected Scale/BP)</td>
+                <td>$58.00</td>
+                <td>$11,600.00</td>
+            </tr>
+            <tr>
+                <td><strong>99457</strong></td>
+                <td>RPM Clinical Review (First 20 Mins)</td>
+                <td>$69.00</td>
+                <td>$13,800.00</td>
+            </tr>
+            <tr>
+                <td><strong>99490</strong></td>
+                <td>Chronic Care Management (CCM - 20 Mins)</td>
+                <td>$81.00</td>
+                <td>$16,200.00</td>
+            </tr>
+            <tr>
+                <td><strong>HEDIS / MIPS</strong></td>
+                <td>Value-Based Readmission Avoidance Bonus (Amortized Pool)</td>
+                <td>Allocated Value</td>
+                <td>$22,500.00</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#e2e8f0;">
+                <td colspan="3">TOTAL MONTHLY COHORT GROSS REVENUE</td>
+                <td>$64,100.00</td>
+            </tr>
+            <tr style="color:#dc2626;">
+                <td colspan="3">LESS: Platform Software Overhead &amp; Centralized Hub Technical Staff</td>
+                <td>($12,180.00)</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#d1fae5; color:#065f46;">
+                <td colspan="3">NET MONTHLY PRACTICE GAIN (ROI: 426.2%)</td>
+                <td>$51,920.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>3.3 EHR SmartForm Documentation Template</h2>
+    <div class="macro-box">
+        <strong>eCW System Macro: .CARDIO_DATA_REVIEW</strong><br><br>
+        "CARDIOLOGY CHF MANAGEMENT COMPLIANCE: Patient tracking actively managed under continuous remote monitoring guidelines. CONTINUOUS METRIC ANALYSIS: Real-time HIE and biometric log data pulled via secure Particle Health integrations. Personally evaluated physiological data parameters alongside external cardiology logs, tracking changes in home vitals trends and evaluating documentation from outside clinical events. This data review was utilized to direct medical decision-making complexity levels, titrate beta-blocker/ACE inhibitor protocols, and maintain compliance under value-based hospital readmission avoidance frameworks."
+    </div>
+</div>
+
+<hr class="section-break">
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- VOLUME 4: ENDOCRINOLOGY                                                 -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<div class="badge-endo">
+    <h1>VOLUME 4: ENDOCRINOLOGY (ADVANCED DIABETES &amp; METABOLIC CARE)</h1>
+
+    <h2>4.1 Operational Workflow</h2>
+    <p>Endocrinology workflows coordinate CGM data streams with medication compliance logs to prevent emergency admissions for Diabetic Ketoacidosis (DKA) or severe hypoglycemia.</p>
+
+    <div class="diagram">[Brittle Diabetic Experiences Rapid Glycemic Variance and Hyperglycemia]
+                                │
+                                ▼
+   [User Presents to Local Community Health Center; Chart Fragmented]
+                                │
+                                ▼
+[Particle Open Interoperability Hub Reconstructs Record within 12 Secs]
+                                │
+                                ▼
+[Endocrinology Team Reviews Pump Settings and External Lab Data Streams]
+                                │
+                                ▼
+  [Staff Readjusts Insulin Metrics Remotely; Stabilizes Endocrine Panel]</div>
+
+    <h2>4.2 Financial Pro-Forma (200 Patients/Month Cohort)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>CPT Code</th>
+                <th>Program Component</th>
+                <th>Reimbursement Rate</th>
+                <th>Monthly Gross Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>95251</strong></td>
+                <td>Continuous Glucose Monitor (CGM) Professional Data Review</td>
+                <td>$52.00</td>
+                <td>$10,400.00</td>
+            </tr>
+            <tr>
+                <td><strong>99454</strong></td>
+                <td>RPM Monthly Device Data Stream Supply</td>
+                <td>$58.00</td>
+                <td>$11,600.00</td>
+            </tr>
+            <tr>
+                <td><strong>99457</strong></td>
+                <td>Remote Patient Management Review (20 Mins)</td>
+                <td>$69.00</td>
+                <td>$13,800.00</td>
+            </tr>
+            <tr>
+                <td><strong>99490</strong></td>
+                <td>Chronic Care Management (Co-Existing Comorbidities)</td>
+                <td>$81.00</td>
+                <td>$16,200.00</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#e2e8f0;">
+                <td colspan="3">TOTAL MONTHLY COHORT GROSS REVENUE</td>
+                <td>$52,000.00</td>
+            </tr>
+            <tr style="color:#dc2626;">
+                <td colspan="3">LESS: Platform Software Licensing Overhead &amp; Hub Staffing Labor</td>
+                <td>($11,400.00)</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#d1fae5; color:#065f46;">
+                <td colspan="3">NET MONTHLY PRACTICE GAIN (ROI: 356.1%)</td>
+                <td>$40,600.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>4.3 EHR SmartForm Documentation Template</h2>
+    <div class="macro-box">
+        <strong>eCW System Macro: .ENDO_DATA_REVIEW</strong><br><br>
+        "ENDOCRINOLOGY METABOLIC REGULATION REVIEW: Patient evaluated for advanced glycemic stabilization. DATA PROFILE EXAMINED: HIE query executed at point-of-care via native Particle Health data connectors. Personally accessed and evaluated outside provider notes, past HbA1c lab logs, and external pharmacy records to assess insulin adherence. Cross-referenced historical endocrine panels to address glycemic patterns and optimize sensor algorithms. This documentation satisfies data review complexity criteria under current E/M and remote care management guidelines."
+    </div>
+</div>
+
+<hr class="section-break">
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- VOLUME 5: POST-ACUTE / SNF                                              -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<div class="badge-snf">
+    <h1>VOLUME 5: POST-ACUTE &amp; SKILLED NURSING FACILITIES (SNF)</h1>
+
+    <h2>5.1 Operational Workflow</h2>
+    <p>Post-Acute medical groups focus on resolving care fragmentation during hospital-to-SNF handoffs by digitizing record transfer and executing immediate transitional care encounters.</p>
+
+    <div class="diagram">[Hospital Discharges Complex Post-Surgical Patient to Skilled Nursing Bed]
+                                │
+                                ▼
+[Particle Signal Fires Automated ADT Discharge Notification to SNF Group]
+                                │
+                                ▼
+  [EHR Pulls Hospital Discharge Summary, Op Note, and Medication Logs]
+                                │
+                                ▼
+[SNF Attending Reviews History in &lt;30 Secs; Avoids Transcription Errors]
+                                │
+                                ▼
+[Face-to-Face Post-Acute Care Visit Executed; Secures High-Value TCM Code]</div>
+
+    <h2>5.2 Financial Pro-Forma (200 Patients/Month Cohort)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>CPT Code</th>
+                <th>Program Component</th>
+                <th>Reimbursement Rate</th>
+                <th>Monthly Gross Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>99495 / 99496</strong></td>
+                <td>Transitional Care Management (SNF Facility Admission)</td>
+                <td>$285.00</td>
+                <td>$57,000.00</td>
+            </tr>
+            <tr>
+                <td><strong>99309 / 99310</strong></td>
+                <td>Subsequent Nursing Facility Visit (High-Complexity Management)</td>
+                <td>$145.00</td>
+                <td>$29,000.00</td>
+            </tr>
+            <tr>
+                <td><strong>99490</strong></td>
+                <td>Complex Facility Care Coordination Tracking</td>
+                <td>$81.00</td>
+                <td>$16,200.00</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#e2e8f0;">
+                <td colspan="3">TOTAL MONTHLY COHORT GROSS REVENUE</td>
+                <td>$102,200.00</td>
+            </tr>
+            <tr style="color:#dc2626;">
+                <td colspan="3">LESS: Software Enterprise Pricing Contracts &amp; Multi-Facility On-Site Staffing</td>
+                <td>($19,450.00)</td>
+            </tr>
+            <tr style="font-weight:bold; background-color:#d1fae5; color:#065f46;">
+                <td colspan="3">NET MONTHLY PRACTICE GAIN (ROI: 425.4%)</td>
+                <td>$82,750.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5.3 EHR SmartForm Documentation Template</h2>
+    <div class="macro-box">
+        <strong>eCW System Macro: .SNF_DATA_REVIEW</strong><br><br>
+        "POST-ACUTE FACILITY ADMISSION ENCOUNTER: Patient received for multi-disciplinary rehab management post-acute hospital discharge. TRANSITIONAL DATA VERIFICATION: Inbound ADT confirmation tracked via Particle Health Signal infrastructure. Personally accessed and evaluated the aggregated hospital discharge profile, acute operative summaries, and complete diagnostic records. Reconciled outside prescription fill logs against facility orders to eliminate medication transcription discrepancies. This review establishes medical necessity for high-complexity post-acute management and satisfies data tracking compliance requirements."
+    </div>
+</div>
+
+<hr class="section-break">
+
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<!-- CONSOLIDATED SUMMARY                                                    -->
+<!-- ════════════════════════════════════════════════════════════════════════ -->
+<h1>CONSOLIDATED FINANCIAL SUMMARY</h1>
+<p>All five specialty volumes combined at a standardized 200-patient monthly cohort per specialty (1,000 total patients across all specialties).</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Specialty</th>
+            <th>Monthly Gross Revenue</th>
+            <th>Monthly Costs</th>
+            <th>Monthly Net Profit</th>
+            <th>ROI</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="badge-neph">
+            <td><strong>Nephrology</strong></td>
+            <td>$98,600</td>
+            <td>($16,840)</td>
+            <td style="color:#065f46; font-weight:bold;">$81,760</td>
+            <td>485.5%</td>
+        </tr>
+        <tr class="badge-onc">
+            <td><strong>Oncology</strong></td>
+            <td>$54,800</td>
+            <td>($14,250)</td>
+            <td style="color:#065f46; font-weight:bold;">$40,550</td>
+            <td>284.5%</td>
+        </tr>
+        <tr class="badge-cardio">
+            <td><strong>Cardiology</strong></td>
+            <td>$64,100</td>
+            <td>($12,180)</td>
+            <td style="color:#065f46; font-weight:bold;">$51,920</td>
+            <td>426.2%</td>
+        </tr>
+        <tr class="badge-endo">
+            <td><strong>Endocrinology</strong></td>
+            <td>$52,000</td>
+            <td>($11,400)</td>
+            <td style="color:#065f46; font-weight:bold;">$40,600</td>
+            <td>356.1%</td>
+        </tr>
+        <tr class="badge-snf">
+            <td><strong>Post-Acute / SNF</strong></td>
+            <td>$102,200</td>
+            <td>($19,450)</td>
+            <td style="color:#065f46; font-weight:bold;">$82,750</td>
+            <td>425.4%</td>
+        </tr>
+        <tr style="font-weight:bold; background-color:#0f172a; color:#ffffff;">
+            <td>TOTAL (All 5 Specialties)</td>
+            <td>$371,700</td>
+            <td>($74,120)</td>
+            <td style="color:#5de8c0;">$297,580</td>
+            <td>401.5%</td>
+        </tr>
+        <tr style="font-weight:bold; background-color:#d1fae5; color:#065f46;">
+            <td colspan="2">ANNUALIZED PROJECTION (x12)</td>
+            <td></td>
+            <td>$3,570,960</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>EHR Macro Quick Reference</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Specialty</th>
+            <th>eCW Macro Name</th>
+            <th>Primary CPT Codes</th>
+            <th>Key Clinical Focus</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Nephrology</td>
+            <td><strong>.NEPH_DATA_REVIEW</strong></td>
+            <td>99495/99496, 99454, 99457, 99490</td>
+            <td>Fluid overload, eGFR tracking, readmission deflection</td>
+        </tr>
+        <tr>
+            <td>Oncology</td>
+            <td><strong>.ONC_DATA_REVIEW</strong></td>
+            <td>99204/99214, 99424, 99425, 99457</td>
+            <td>Neutropenic spikes, toxic interaction screening</td>
+        </tr>
+        <tr>
+            <td>Cardiology</td>
+            <td><strong>.CARDIO_DATA_REVIEW</strong></td>
+            <td>99454, 99457, 99490, HEDIS/MIPS</td>
+            <td>CHF fluid retention, readmission avoidance</td>
+        </tr>
+        <tr>
+            <td>Endocrinology</td>
+            <td><strong>.ENDO_DATA_REVIEW</strong></td>
+            <td>95251, 99454, 99457, 99490</td>
+            <td>Glycemic variance, CGM data review, DKA prevention</td>
+        </tr>
+        <tr>
+            <td>Post-Acute / SNF</td>
+            <td><strong>.SNF_DATA_REVIEW</strong></td>
+            <td>99495/99496, 99309/99310, 99490</td>
+            <td>Discharge handoff, medication reconciliation</td>
+        </tr>
+    </tbody>
+</table>
+
+<p style="text-align:center; color:#64748b; margin-top:24pt; font-size:9pt;">
+    MyPulseScan &times; Particle Health &mdash; Connected Care Enterprise Playbook<br>
+    All rates: 2026 National Commercial Payer Averages and MAC Jurisdictions<br>
+    Contact: <a href="mailto:brad@eyedlab.io" style="color:#2563eb;">brad@eyedlab.io</a>
+</p>
+
+</body>
+</html>

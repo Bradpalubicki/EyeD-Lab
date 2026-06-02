@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EyeD ID Lab — Travel Health Business Model</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050b18;
+      --bg-surface: #080f1e;
+      --bg-card: #0c1628;
+      --accent-teal: #0D6B6E;
+      --accent-teal-bright: #5de8c0;
+      --accent-purple: #7c3aed;
+      --accent-blue: #3b82f6;
+      --accent-gold: #f59e0b;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+      --text: #f0f4ff;
+      --text-2: #8b9cc8;
+      --text-3: #445580;
+      --border: rgba(59,90,163,0.2);
+      --border-bright: rgba(93,232,192,0.25);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      padding: 3rem 2rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .header-brand { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+    .header-brand span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .header-title { font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; }
+    .header-subtitle { font-size: 1rem; color: var(--text-2); margin-top: 0.5rem; max-width: 600px; line-height: 1.6; }
+    .header-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem; border-radius: 2rem;
+      background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3);
+      color: var(--accent-gold); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+    /* ── SECTION LABEL ── */
+    .label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; background: var(--grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; display: inline-block; margin-bottom: 1rem;
+    }
+    .section-title { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.75rem; line-height: 1.2; }
+    .section-sub { font-size: 0.95rem; color: var(--text-2); line-height: 1.7; max-width: 640px; margin-bottom: 2.5rem; }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow {
+      display: flex; align-items: stretch; gap: 0; margin-bottom: 4rem;
+      overflow-x: auto; padding-bottom: 0.5rem;
+    }
+    .flow-step {
+      flex: 1; min-width: 160px; background: var(--bg-card);
+      border: 1px solid var(--border); padding: 1.5rem 1.25rem;
+      position: relative; transition: border-color 0.2s;
+    }
+    .flow-step:first-child { border-radius: 12px 0 0 12px; }
+    .flow-step:last-child { border-radius: 0 12px 12px 0; }
+    .flow-step:not(:last-child)::after {
+      content: "→";
+      position: absolute; right: -14px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem; color: var(--accent-teal-bright);
+      z-index: 2; background: var(--bg);
+      width: 28px; text-align: center;
+    }
+    .flow-step:hover { border-color: var(--border-bright); }
+    .flow-num {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 0.5rem;
+    }
+    .flow-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+    .flow-desc { font-size: 0.78rem; color: var(--text-2); line-height: 1.5; }
+    .flow-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+
+    /* ── LAYERS GRID ── */
+    .layers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+    .layer-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem; position: relative; overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .layer-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+    .layer-card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .layer-card:hover::before { opacity: 1; }
+    .layer-1::before { background: linear-gradient(90deg, #5de8c0, #0D6B6E); }
+    .layer-2::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+    .layer-3::before { background: linear-gradient(90deg, #3b82f6, #7c3aed); }
+    .layer-4::before { background: linear-gradient(90deg, #10b981, #3b82f6); }
+
+    .layer-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 800; margin-bottom: 1rem;
+    }
+    .l1 { background: rgba(93,232,192,0.15); color: var(--accent-teal-bright); }
+    .l2 { background: rgba(245,158,11,0.15); color: var(--accent-gold); }
+    .l3 { background: rgba(124,58,237,0.15); color: #a78bfa; }
+    .l4 { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+
+    .layer-title { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+    .layer-audience { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 0.75rem; }
+    .layer-desc { font-size: 0.875rem; color: var(--text-2); line-height: 1.7; margin-bottom: 1.25rem; }
+    .layer-items { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .layer-items li {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--text-2); line-height: 1.5;
+    }
+    .layer-items li::before { content: "→"; color: var(--accent-teal-bright); flex-shrink: 0; margin-top: 0.05rem; }
+    .layer-rev {
+      margin-top: 1.25rem; padding: 0.75rem 1rem;
+      background: rgba(93,232,192,0.06); border: 1px solid rgba(93,232,192,0.15);
+      border-radius: 8px;
+    }
+    .layer-rev-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.25rem; }
+    .layer-rev-value { font-size: 0.95rem; font-weight: 700; color: var(--accent-teal-bright); }
+
+    /* ── DEAL STRUCTURE ── */
+    .deal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 4rem; }
+    .deal-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.75rem; transition: border-color 0.2s;
+    }
+    .deal-card:hover { border-color: var(--border-bright); }
+    .deal-option { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .deal-opt-a { color: var(--accent-teal-bright); }
+    .deal-opt-b { color: #a78bfa; }
+    .deal-opt-c { color: var(--accent-gold); }
+    .deal-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    .deal-desc { font-size: 0.83rem; color: var(--text-2); line-height: 1.65; margin-bottom: 1.25rem; }
+    .deal-math {
+      padding: 0.75rem 1rem; border-radius: 8px;
+      font-size: 0.82rem; line-height: 1.6;
+    }
+    .math-a { background: rgba(93,232,192,0.07); border: 1px solid rgba(93,232,192,0.15); }
+    .math-b { background: rgba(124,58,237,0.07); border: 1px solid rgba(124,58,237,0.2); }
+    .math-c { background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.2); }
+    .math-num { font-size: 1.2rem; font-weight: 800; display: block; margin-bottom: 0.15rem; }
+    .num-a { color: var(--accent-teal-bright); }
+    .num-b { color: #a78bfa; }
+    .num-c { color: var(--accent-gold); }
+    .deal-badge {
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .badge-rec { background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
+    .badge-pilot { background: rgba(59,130,246,0.15); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
+    .badge-premium { background: rgba(245,158,11,0.15); color: var(--accent-gold); border: 1px solid rgba(245,158,11,0.3); }
+
+    /* ── ROI STRIP ── */
+    .roi-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+      background: rgba(13,107,110,0.15); border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(93,232,192,0.15); margin-bottom: 4rem;
+    }
+    .roi-cell {
+      background: rgba(5,11,24,0.8); padding: 2rem 1.5rem; text-align: center;
+    }
+    .roi-num { font-size: 2.25rem; font-weight: 800; color: var(--accent-teal-bright); line-height: 1; }
+    .roi-label { font-size: 0.78rem; color: var(--text-2); margin-top: 0.5rem; line-height: 1.4; }
+
+    /* ── PILOT PLAN ── */
+    .pilot {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2.5rem; margin-bottom: 4rem;
+      position: relative; overflow: hidden;
+    }
+    .pilot::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--grad);
+    }
+    .pilot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2rem; }
+    .pilot-phase-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--grad); font-size: 0.75rem; font-weight: 800;
+      color: white; margin-bottom: 0.75rem;
+    }
+    .pilot-phase-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .pilot-phase-sub { font-size: 0.72rem; font-weight: 600; color: var(--accent-teal-bright); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+    .pilot-phase-desc { font-size: 0.83rem; color: var(--text-2); line-height: 1.65; }
+
+    /* ── APPROACH ── */
+    .approach { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 4rem; }
+    .step-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.75rem; transition: border-color 0.2s;
+    }
+    .step-card:hover { border-color: var(--border-bright); }
+    .step-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
+    .step-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+    .step-desc { font-size: 0.83rem; color: var(--text-2); line-height: 1.65; }
+    .step-action {
+      margin-top: 1rem; padding: 0.6rem 0.85rem; border-radius: 6px;
+      background: rgba(93,232,192,0.07); border: 1px solid rgba(93,232,192,0.15);
+      font-size: 0.78rem; color: var(--accent-teal-bright); font-weight: 600;
+    }
+
+    /* ── COMPETITIVE ── */
+    .comp-table { width: 100%; border-collapse: collapse; margin-bottom: 4rem; font-size: 0.85rem; }
+    .comp-table th {
+      text-align: left; padding: 0.75rem 1rem; font-size: 0.68rem;
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-3); border-bottom: 1px solid var(--border);
+    }
+    .comp-table td { padding: 1rem; border-bottom: 1px solid rgba(59,90,163,0.1); color: var(--text-2); vertical-align: top; }
+    .comp-table tr:hover td { background: rgba(12,22,40,0.5); }
+    .comp-table .highlight td { color: var(--text); }
+    .comp-name { font-weight: 700; color: var(--text); }
+    .tag {
+      display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .tag-you { background: rgba(93,232,192,0.15); color: var(--accent-teal-bright); }
+    .tag-weak { background: rgba(239,68,68,0.12); color: #fca5a5; }
+    .tag-strong { background: rgba(16,185,129,0.12); color: #6ee7b7; }
+    .tag-none { background: rgba(68,85,128,0.3); color: var(--text-3); }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+
+    /* ── FOOTER ── */
+    .doc-footer {
+      border-top: 1px solid var(--border); padding: 2rem;
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem; font-size: 0.8rem; color: var(--text-3);
+    }
+    .doc-footer strong { color: var(--text-2); }
+
+    /* ── CALLOUT ── */
+    .callout {
+      padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 2rem;
+      border-left: 3px solid;
+    }
+    .callout-gold { background: rgba(245,158,11,0.07); border-color: var(--accent-gold); }
+    .callout-teal { background: rgba(93,232,192,0.06); border-color: var(--accent-teal-bright); }
+    .callout-purple { background: rgba(124,58,237,0.07); border-color: #a78bfa; }
+    .callout-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .callout-gold .callout-title { color: var(--accent-gold); }
+    .callout-teal .callout-title { color: var(--accent-teal-bright); }
+    .callout-purple .callout-title { color: #a78bfa; }
+    .callout-body { font-size: 0.85rem; color: var(--text-2); line-height: 1.65; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .layers { grid-template-columns: 1fr; }
+      .deal-grid { grid-template-columns: 1fr; }
+      .pilot-grid { grid-template-columns: 1fr; }
+      .approach { grid-template-columns: 1fr; }
+      .roi-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .flow { flex-direction: column; }
+      .flow-step { border-radius: 0 !important; }
+      .flow-step::after { display: none; }
+      .roi-strip { grid-template-columns: 1fr; }
+      .header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-badge"><span class="dot"></span> Confidential — Business Model</div>
+    <div class="header-brand">EyeD <span>ID</span> Lab</div>
+    <h1 class="header-title">Travel Health Vertical</h1>
+    <p class="header-subtitle">A traveler collapses abroad. The clinic has no records. They treat them blind. EyeD ID solves it with one eye scan — patient records in any language, anywhere in the world.</p>
+  </div>
+  <div style="text-align:right; color: var(--text-3); font-size: 0.8rem;">
+    <div style="margin-bottom:0.25rem;">April 2026</div>
+    <div>Prepared for: John Noel / Travel Guard / Zurich</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- THE PROBLEM -->
+  <div class="label">The Problem</div>
+  <h2 class="section-title">32,000 Americans die abroad every year.<br/>Most from treatable conditions.</h2>
+  <p class="section-sub">The #1 cause of preventable death in medical emergencies abroad is unknown patient history — allergies, medications, prior conditions. Foreign clinicians are treating Americans blind. Travel Guard pays the evacuation bill. EyeD ID eliminates the reason for evacuation.</p>
+
+  <!-- FLOW -->
+  <div style="margin-bottom:0.75rem;" class="label">How It Works</div>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="flow-icon">✈️</div>
+      <div class="flow-num">Step 01</div>
+      <div class="flow-title">Patient Enrolls</div>
+      <div class="flow-desc">Before travel, patient registers eye scan through Travel Guard policy enrollment or MyPulseScan app. US records cached as "travel-ready."</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon">🚨</div>
+      <div class="flow-num">Step 02</div>
+      <div class="flow-title">Emergency Occurs</div>
+      <div class="flow-desc">Patient collapses at hotel, restaurant, resort, or foreign clinic. Staff or first responder has any smartphone.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon">👁️</div>
+      <div class="flow-num">Step 03</div>
+      <div class="flow-title">Eye Scan</div>
+      <div class="flow-desc">Staff opens EyeD ID on any smartphone. Patient's iris is scanned. Identity verified in seconds. No wallet, no phone, no language needed.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon">📋</div>
+      <div class="flow-num">Step 04</div>
+      <div class="flow-title">Records Surface</div>
+      <div class="flow-desc">Full clinical summary — allergies, medications, blood type, conditions, emergency contacts — displayed in local language.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-icon">💊</div>
+      <div class="flow-num">Step 05</div>
+      <div class="flow-title">Better Treatment</div>
+      <div class="flow-desc">Clinician treats with complete information. Fewer adverse events, fewer unnecessary evacuations. Patient survives. Insurer saves $50K–$300K.</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- MARKET LAYERS -->
+  <div class="label">Go-To-Market Layers</div>
+  <h2 class="section-title">Four layers. One infrastructure.</h2>
+  <p class="section-sub">Each layer builds on the previous. Start with patient enrollment (easiest, fastest revenue). End with medical tourism (highest value, longest sales cycle).</p>
+
+  <div class="layers">
+    <div class="layer-card layer-1">
+      <div class="layer-num l1">L1</div>
+      <div class="layer-title">Patient Enrollment — Pre-Travel</div>
+      <div class="layer-audience">Channel: Travel Insurance + Airlines + AAA</div>
+      <div class="layer-desc">Patient enrolls before leaving home. Records are pulled from the Particle Health network and flagged as travel-ready. Sold as an add-on to existing travel insurance policies — zero new distribution needed.</div>
+      <ul class="layer-items">
+        <li>Bundle with every Travel Guard policy — $5–8/enrollment</li>
+        <li>State Dept travel advisory integration</li>
+        <li>Airline app enrollment at booking (United, Delta)</li>
+        <li>AAA TripTik — 60M members, existing travel health mindset</li>
+      </ul>
+      <div class="layer-rev">
+        <div class="layer-rev-label">Revenue potential at 2M enrollments</div>
+        <div class="layer-rev-value">$10–16M ARR — single contract</div>
+      </div>
+    </div>
+
+    <div class="layer-card layer-2">
+      <div class="layer-num l2">L2</div>
+      <div class="layer-title">First Responder Access — Any Device</div>
+      <div class="layer-audience">Channel: Hotels · Resorts · Cruise Lines · Restaurants</div>
+      <div class="layer-desc">No clinic relationship needed. A hotel concierge, restaurant manager, or resort medic scans the patient's eye on any smartphone and gets an instant clinical summary — translated to their language. Zero hardware to ship.</div>
+      <ul class="layer-items">
+        <li>All-inclusive resort chains (Cancún, Punta Cana, Cabo) — millions of US guests/year</li>
+        <li>Cruise lines — Royal Caribbean, Carnival carry 30M+ passengers with onboard medical</li>
+        <li>Marriott, Hilton, Hyatt global properties — SaaS license per property</li>
+        <li>Fine dining / hospitality chains (high-liability settings)</li>
+      </ul>
+      <div class="layer-rev">
+        <div class="layer-rev-label">Revenue model</div>
+        <div class="layer-rev-value">$299–999/property/month SaaS</div>
+      </div>
+    </div>
+
+    <div class="layer-card layer-3">
+      <div class="layer-num l3">L3</div>
+      <div class="layer-title">Foreign Clinic Integration</div>
+      <div class="layer-audience">Channel: Medical Tourism Hubs — Mexico · Thailand · Costa Rica · Colombia</div>
+      <div class="layer-desc">Clinics in medical tourism hubs already treat Americans daily and fly blind. Approach them as a free tool that improves outcomes. Charge the patient or insurer, not the clinic. Travel Guard's existing vetted provider network in 180+ countries is the distribution shortcut.</div>
+      <ul class="layer-items">
+        <li>Start with Travel Guard's existing 180-country provider network</li>
+        <li>Target medical tourism hubs where US patients already go</li>
+        <li>Free to the clinic — charge insurer per query</li>
+        <li>Becomes the gateway to full EMR integration at scale</li>
+      </ul>
+      <div class="layer-rev">
+        <div class="layer-rev-label">Revenue model</div>
+        <div class="layer-rev-value">$15–25/query billed to insurer</div>
+      </div>
+    </div>
+
+    <div class="layer-card layer-4">
+      <div class="layer-num l4">L4</div>
+      <div class="layer-title">Medical Tourism — Elective Procedures</div>
+      <div class="layer-audience">Channel: Patients Beyond Borders · Medical Tourism Facilitators</div>
+      <div class="layer-desc">Patients flying to Mexico, Thailand, and Costa Rica for elective surgery need full record transfer to the foreign hospital. This is a $100B+ industry with zero good record transfer solution. EyeD ID is the infrastructure layer that makes international surgery safe.</div>
+      <ul class="layer-items">
+        <li>Partner with Patients Beyond Borders (largest medical tourism marketplace)</li>
+        <li>Full FHIR R4 record transfer to foreign hospital before procedure</li>
+        <li>Post-procedure: send foreign records back to US EMR</li>
+        <li>Premium pricing — $199/patient for full bidirectional record transfer</li>
+      </ul>
+      <div class="layer-rev">
+        <div class="layer-rev-label">Market size</div>
+        <div class="layer-rev-value">$100B+ medical tourism globally</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ROI FOR ZURICH/TRAVEL GUARD -->
+  <div class="label">The Zurich/Travel Guard ROI Case</div>
+  <h2 class="section-title">They save millions. We share the upside.</h2>
+  <p class="section-sub">Travel Guard's biggest cost is medical evacuation. EyeD ID reduces unnecessary evacuations by giving their 24/7 assistance team instant patient history. The math is simple.</p>
+
+  <div class="roi-strip">
+    <div class="roi-cell">
+      <div class="roi-num">$50K–300K</div>
+      <div class="roi-label">Average medical evacuation cost per incident</div>
+    </div>
+    <div class="roi-cell">
+      <div class="roi-num">~15%</div>
+      <div class="roi-label">Evacuations driven by unknown patient history (conservative)</div>
+    </div>
+    <div class="roi-cell">
+      <div class="roi-num">$10M ARR</div>
+      <div class="roi-label">EyeD ID revenue at $5/policy × 2M policies</div>
+    </div>
+    <div class="roi-cell">
+      <div class="roi-num">10–30x</div>
+      <div class="roi-label">Estimated ROI for Zurich on claims savings alone</div>
+    </div>
+  </div>
+
+  <!-- DEAL OPTIONS -->
+  <div class="label">Deal Structure Options</div>
+  <h2 class="section-title">Three ways to structure the contract.</h2>
+  <p class="section-sub">All three work. Option A starts the revenue fastest. Option C is the biggest prize. Recommend piloting with Option B to generate the data that closes Option A or C.</p>
+
+  <div class="deal-grid">
+    <div class="deal-card">
+      <div class="deal-option deal-opt-a">Option A</div>
+      <div class="deal-badge badge-rec">Recommended</div>
+      <div class="deal-title">Per-Policy License</div>
+      <div class="deal-desc">EyeD ID enrollment bundled into every Travel Guard policy. Zurich pays a per-policy fee. Positioned to policyholders as "medical record protection included." Zurich raises premiums $10–15 to cover — net positive for them.</div>
+      <div class="deal-math math-a">
+        <span class="math-num num-a">$10–16M ARR</span>
+        $5–8/policy × 2M policies/year<br/>
+        Zurich can charge $10–15 premium increase
+      </div>
+    </div>
+    <div class="deal-card">
+      <div class="deal-option deal-opt-b">Option B</div>
+      <div class="deal-badge badge-pilot">Start Here</div>
+      <div class="deal-title">Pilot — Claims Savings Share</div>
+      <div class="deal-desc">90-day pilot. 10,000 enrolled policyholders. Track documented claims savings vs control group. EyeD ID gets 10% of verified savings. Pilot fee: $50K. At end — data closes the real contract. This is the lowest-risk path for Zurich to say yes.</div>
+      <div class="deal-math math-b">
+        <span class="math-num num-b">$50K pilot fee</span>
+        10,000 enrollees × 90 days<br/>
+        10% of documented savings thereafter
+      </div>
+    </div>
+    <div class="deal-card">
+      <div class="deal-option deal-opt-c">Option C</div>
+      <div class="deal-badge badge-premium">Premium Play</div>
+      <div class="deal-title">White Label Partnership</div>
+      <div class="deal-desc">"Travel Guard MedID — powered by EyeD ID Lab." Zurich owns the customer relationship and branding. EyeD ID is the invisible infrastructure. Platform fee + per-activation fee. Zurich gets a genuine differentiator vs Allianz and AXA. Biggest TCV.</div>
+      <div class="deal-math math-c">
+        <span class="math-num num-c">$20–50M TCV</span>
+        Platform fee + per-activation<br/>
+        Global white-label across 180+ countries
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- THE JOHN NOEL ANGLE -->
+  <div class="label">The John Noel Strategy</div>
+  <h2 class="section-title">The founder knows every door.</h2>
+
+  <div class="callout callout-gold">
+    <div class="callout-title">Context: Zurich acquired Travel Guard from AIG in December 2024 for $600M</div>
+    <div class="callout-body">John Noel founded Travel Guard in 1985, sold it to AIG in 2006, and stepped down in 2009. He is no longer the owner — but he built the company, knows every key person in the current leadership, and has deep credibility in the travel insurance industry. His introduction to Zurich Travel Guard is worth more than any cold outreach.</div>
+  </div>
+
+  <div class="approach">
+    <div class="step-card">
+      <div class="step-icon">📞</div>
+      <div class="step-title">Step 1 — The John Noel Call</div>
+      <div class="step-desc">Reach out to John founder-to-founder. The ask is not money — it's a warm introduction to current Travel Guard leadership at Zurich and his perspective on the concept. He may also want to advise or invest.</div>
+      <div class="step-action">Ask: 20-min call + intro to Travel Guard/Zurich leadership</div>
+    </div>
+    <div class="step-card">
+      <div class="step-icon">🤝</div>
+      <div class="step-title">Step 2 — Zurich Pilot Proposal</div>
+      <div class="step-desc">90-day paid pilot. 10,000 policyholders. $50K pilot fee. Track: claims filed, evacuation decisions, documented savings vs control group. Data closes the enterprise deal.</div>
+      <div class="step-action">Deliverable: one-page pilot proposal + ROI model</div>
+    </div>
+    <div class="step-card">
+      <div class="step-icon">🌍</div>
+      <div class="step-title">Step 3 — Competitive Rollout</div>
+      <div class="step-desc">Once Travel Guard pilot data exists, approach Allianz Travel, AXA Travel, and World Nomads with the same deck. Travel Guard case study does the selling. Build a competitive market before any single partner locks exclusivity.</div>
+      <div class="step-action">Target: 3 enterprise insurance contracts by end of year</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- COMPETITIVE LANDSCAPE -->
+  <div class="label">Competitive Landscape</div>
+  <h2 class="section-title">Who else is trying to solve this.</h2>
+  <p class="section-sub" style="margin-bottom:1.5rem;">No one has the combination of biometric identity + US health record network + real-time translation. The closest competitors solve one piece. EyeD ID solves all three.</p>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Company</th>
+        <th>What They Do</th>
+        <th>Biometric ID</th>
+        <th>US Record Network</th>
+        <th>Translation</th>
+        <th>Insurance Integration</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td><span class="comp-name">EyeD ID Lab</span><br/><span class="tag tag-you">You</span></td>
+        <td>Eye scan → full US clinical record → translated to any language</td>
+        <td><span class="tag tag-strong">✓ Iris scan</span></td>
+        <td><span class="tag tag-strong">✓ 320M patients</span></td>
+        <td><span class="tag tag-strong">✓ Any language</span></td>
+        <td><span class="tag tag-strong">✓ Building now</span></td>
+      </tr>
+      <tr>
+        <td><span class="comp-name">MedjetAssist</span></td>
+        <td>Medical evacuation membership — moves patients home</td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-strong">✓ Core model</span></td>
+      </tr>
+      <tr>
+        <td><span class="comp-name">Apple Health / MedID</span></td>
+        <td>Manual health card on iPhone — user-entered data only</td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-weak">✗ Manual only</span></td>
+        <td><span class="tag tag-weak">✗ English only</span></td>
+        <td><span class="tag tag-none">None</span></td>
+      </tr>
+      <tr>
+        <td><span class="comp-name">CLEAR Health Pass</span></td>
+        <td>Biometric ID at airports — no clinical records</td>
+        <td><span class="tag tag-strong">✓ Iris + face</span></td>
+        <td><span class="tag tag-weak">✗ No records</span></td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-none">None</span></td>
+      </tr>
+      <tr>
+        <td><span class="comp-name">CommonPass / IATA Travel Pass</span></td>
+        <td>Vaccine/test verification for border crossing</td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-weak">✗ Vaccines only</span></td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-none">None</span></td>
+      </tr>
+      <tr>
+        <td><span class="comp-name">Patients Beyond Borders</span></td>
+        <td>Medical tourism marketplace — no record transfer</td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-none">None</span></td>
+        <td><span class="tag tag-none">None</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider" />
+
+  <!-- PILOT PLAN -->
+  <div class="label">90-Day Pilot Plan</div>
+  <div class="pilot">
+    <h2 class="section-title" style="margin-bottom:0.5rem;">How to get Zurich to yes.</h2>
+    <p style="font-size:0.9rem; color:var(--text-2); line-height:1.65; max-width:640px;">Don't ask for the enterprise deal on call one. Propose a 90-day paid pilot that lets the data close the contract. $50K pilot fee covers EyeD ID's costs and gives Zurich zero downside.</p>
+    <div class="pilot-grid">
+      <div>
+        <div class="pilot-phase-num">1</div>
+        <div class="pilot-phase-title">Month 1 — Setup</div>
+        <div class="pilot-phase-sub">$50K pilot fee</div>
+        <div class="pilot-phase-desc">10,000 Travel Guard policyholders enrolled. EyeD ID integrated into Travel Guard's 24/7 assistance team workflow. Control group of 10,000 non-enrolled policyholders for comparison. Staff trained — 30 minutes.</div>
+      </div>
+      <div>
+        <div class="pilot-phase-num">2</div>
+        <div class="pilot-phase-title">Months 2–3 — Live Data</div>
+        <div class="pilot-phase-sub">Track everything</div>
+        <div class="pilot-phase-desc">Every medical emergency in enrolled group vs control group tracked: evacuation rate, claims cost, adverse drug events, time-to-treatment. EyeD ID provides the assistance team with instant patient records on every call.</div>
+      </div>
+      <div>
+        <div class="pilot-phase-num">3</div>
+        <div class="pilot-phase-title">Day 90 — The Report</div>
+        <div class="pilot-phase-sub">Data closes the deal</div>
+        <div class="pilot-phase-desc">Full ROI report delivered to Zurich leadership. Documented savings vs control group. Projected annual savings at 2M policy scale. Enterprise contract negotiation begins. Pilot data becomes the sales tool for Allianz and AXA.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALLOUTS -->
+  <div class="callout callout-teal">
+    <div class="callout-title">The Cruise Line Opportunity (parallel track)</div>
+    <div class="callout-body">Royal Caribbean and Carnival together carry 30M+ passengers annually. Every ship has an onboard medical center treating Americans abroad every single day. One enterprise deal with Royal Caribbean = more enrollments than a year of retail insurance sales. This runs parallel to the Travel Guard pilot — different buyer, same product.</div>
+  </div>
+
+  <div class="callout callout-purple">
+    <div class="callout-title">Ken's Build Focus — The Demo That Closes the Room</div>
+    <div class="callout-body">Zurich will ask: "Walk me through exactly what the doctor sees when a patient collapses in a clinic in Bangkok." Ken should build that exact demo flow — eye scan → records surface in Thai → clinical summary with translation toggle. That 60-second demo is worth more than any deck slide. The provider portal (portal.eyedlab.io) is the foundation — add a language toggle and a "traveler mode" view.</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <div><strong>EyeD ID Lab</strong> — Travel Health Vertical · Confidential</div>
+  <div>partnerships@eyedlab.io · eyedlab.io · April 2026</div>
+</div>
+
+</body>
+</html>

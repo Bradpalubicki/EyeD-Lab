@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Flowmodel & Hub Scaling — MyPulseScan × Particle Health</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #050b18;
+            --bg-surface: #080f1e;
+            --bg-card: #0c1628;
+            --accent-teal: #0D6B6E;
+            --accent-teal-bright: #5de8c0;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-gold: #f59e0b;
+            --grad: linear-gradient(135deg, #3b82f6 0%, #0D6B6E 50%, #5de8c0 100%);
+            --text: #f0f4ff;
+            --text-2: #8b9cc8;
+            --text-3: #445580;
+            --border: rgba(59,90,163,0.2);
+            --border-bright: rgba(93,232,192,0.25);
+        }
+        html { font-size: 16px; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+
+        header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--text-2); font-size: 1rem; }
+        h2 { font-size: 1.5rem; font-weight: 700; color: var(--accent-teal-bright); margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text); }
+        p { line-height: 1.6; margin-bottom: 1rem; color: var(--text-2); }
+
+        .highlight-box { background: rgba(59,130,246,0.12); border-left: 3px solid var(--accent-blue); padding: 1.2rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; color: var(--text); font-weight: 500; }
+
+        .diagram { background: var(--bg-card); border: 1px solid var(--border); color: var(--accent-teal-bright); padding: 1.5rem; border-radius: 8px; font-family: 'Courier New', monospace; white-space: pre; overflow-x: auto; line-height: 1.5; margin: 1.5rem 0; font-size: 0.85rem; }
+
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+        .card h3 { margin-top: 0; color: var(--accent-blue); }
+
+        .phase-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+        .phase-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; text-align: center; }
+        .phase-card h4 { color: var(--accent-teal-bright); font-size: 1rem; margin-bottom: 0.5rem; }
+        .phase-card .num { font-size: 2rem; font-weight: 800; color: var(--text); }
+        .phase-card p { font-size: 0.85rem; margin: 0; }
+
+        /* Calculator */
+        .calc-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; background: var(--bg-surface); border: 1px solid var(--border-bright); border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+        .calc-inputs { display: flex; flex-direction: column; gap: 1.5rem; }
+        .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .input-group label { font-weight: 600; color: var(--text); display: flex; justify-content: space-between; font-size: 0.95rem; }
+        .input-group label span { color: var(--accent-teal-bright); font-size: 1.05rem; }
+        .input-group input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; outline: none; }
+        .input-group input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent-blue); border-radius: 50%; cursor: pointer; }
+        .calc-outputs { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; justify-content: center; }
+        .output-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.7rem; }
+        .output-row:last-child { border-bottom: none; }
+        .output-label { font-weight: 500; color: var(--text-2); font-size: 0.9rem; }
+        .output-val { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+        .output-val.profit { font-size: 1.6rem; color: var(--accent-green); }
+        .output-val.cost { color: var(--accent-red); }
+
+        .tier-badge { display: inline-block; background: rgba(93,232,192,0.15); border: 1px solid var(--accent-teal-bright); border-radius: 6px; padding: 2px 10px; font-size: 0.85rem; color: var(--accent-teal-bright); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .calc-container, .card-grid { grid-template-columns: 1fr; }
+            .phase-grid { grid-template-columns: 1fr; }
+            body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Patient Flowmodel & Hub Scaling</h1>
+        <p class="subtitle">MyPulseScan × Particle Health — Centralized Care Hub Operations & Network-Wide Scaling Model</p>
+    </header>
+
+    <div class="highlight-box">
+        <strong>Key Principle:</strong> All tracking, registry management, and compliance gatekeeping runs through a Centralized Virtual Care Hub. Zero additional labor burden on clinic floor nurses and MAs at any of the 48 physical locations. The Hub is the operating system — clinics just treat patients.
+    </div>
+
+    <h2>Centralized Care Loop</h2>
+    <div class="diagram">[Patient Arrives at Any Clinic]
+        │
+        ▼
+[Kiosk / Front Desk Check-In] ──→ [Particle API Auto-Query]
+        │                                    │
+        │                                    ▼
+        │                          [Records Populate in EHR < 30s]
+        │                                    │
+        ▼                                    ▼
+[Face-to-Face Encounter] ──→ [Provider Adds Data Review Macro]
+        │
+        ▼
+[Centralized Billing Scrubber] ──→ [E/M Uplift Validated]
+        │
+        ▼
+[Clean Claim → Commercial Payer] ──→ [Revenue Captured]
+
+── PARALLEL TRACK (for enrolled patients) ──
+[Centralized Care Hub] ──→ [RPM Monitoring | CCM Care Plans | BHI Outreach]
+        │
+        ▼
+[20 min/program/month logged] ──→ [Monthly Claims Released]</div>
+
+    <h2>Recommended Rollout Phases</h2>
+    <div class="phase-grid">
+        <div class="phase-card">
+            <h4>Phase 1 — E/M Uplift</h4>
+            <div class="num">48</div>
+            <p>All clinics, all patients. Immediate ROI from data-review upcoding. No enrollment needed.</p>
+        </div>
+        <div class="phase-card">
+            <h4>Phase 2 — BHI/CoCM</h4>
+            <div class="num">3→10</div>
+            <p>Start with 3 existing BH clinics (~1,000 pts). Expand as psychiatrist contracts scale.</p>
+        </div>
+        <div class="phase-card">
+            <h4>Phase 3 — RPM + CCM</h4>
+            <div class="num">5→48</div>
+            <p>Pilot 5 clinics, 500 patients. Ramp 3-5%/month. Apple Watch enrollment. Full stack at scale.</p>
+        </div>
+    </div>
+
+    <div class="card-grid">
+        <div class="card">
+            <h3>Operational Infrastructure</h3>
+            <p style="color:var(--text-2);">The Centralized Hub absorbs all tracking and compliance work. Volume spikes at individual clinics don't affect floor staff — the Hub scales by adding remote care coordinators, not on-site hires.</p>
+        </div>
+        <div class="card">
+            <h3>Enterprise Risk Management</h3>
+            <p style="color:var(--text-2);">Automated billing scrubber enforces API timestamp matching against provider documentation macros. No Particle payload match = claim held automatically. Zero risk of unbacked claims reaching clearinghouse.</p>
+        </div>
+    </div>
+
+    <h2>Network-Wide Scaling Calculator</h2>
+    <p>Model your phased rollout across the Total Men's network. Blended revenue per enrolled patient uses weighted program mix based on rollout phase. Includes full labor costs for the Centralized Care Hub.</p>
+
+    <div class="calc-container">
+        <div class="calc-inputs">
+            <div class="input-group">
+                <label>Active Clinics <span id="clinics-display">10</span></label>
+                <input type="range" id="active-clinics" min="1" max="48" step="1" value="10">
+            </div>
+            <div class="input-group">
+                <label>Monthly Patient Volume (all clinics) <span id="vol-display">3,000</span></label>
+                <input type="range" id="total-volume" min="500" max="50000" step="500" value="3000">
+            </div>
+            <div class="input-group">
+                <label>% Enrolled in Programs (RPM/CCM/BHI) <span id="enroll-display">15%</span></label>
+                <input type="range" id="enrollment" min="0" max="30" step="1" value="15">
+            </div>
+            <div class="input-group">
+                <label>Hub Care Manager Salary <span id="salary-display">$55,000/yr</span></label>
+                <input type="range" id="salary" min="40000" max="80000" step="2500" value="55000">
+            </div>
+        </div>
+
+        <div class="calc-outputs">
+            <div class="output-row">
+                <span class="output-label">Pricing Tier:</span>
+                <span class="output-val" id="out-tier"><span class="tier-badge">Standard</span></span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Platform Cost:</span>
+                <span class="output-val cost" id="out-platform">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">E/M Uplift Revenue (all patients):</span>
+                <span class="output-val" id="out-em">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Program Revenue (enrolled patients):</span>
+                <span class="output-val" id="out-program">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Hub Staff Required:</span>
+                <span class="output-val" id="out-fte">0 FTE</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Hub Labor Cost:</span>
+                <span class="output-val cost" id="out-labor">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Net Monthly Profit:</span>
+                <span class="output-val profit" id="out-net">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">ROI:</span>
+                <span class="output-val" id="out-roi" style="color:var(--accent-teal-bright);">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const clinicsInput = document.getElementById('active-clinics');
+        const volInput = document.getElementById('total-volume');
+        const enrollInput = document.getElementById('enrollment');
+        const salaryInput = document.getElementById('salary');
+
+        function calculate() {
+            const clinics = parseInt(clinicsInput.value);
+            const totalVol = parseInt(volInput.value);
+            const enrollRate = parseInt(enrollInput.value) / 100;
+            const salary = parseInt(salaryInput.value);
+
+            document.getElementById('clinics-display').innerText = clinics;
+            document.getElementById('vol-display').innerText = totalVol.toLocaleString();
+            document.getElementById('enroll-display').innerText = (enrollRate * 100) + '%';
+            document.getElementById('salary-display').innerText = '$' + salary.toLocaleString() + '/yr';
+
+            // Pricing tiers
+            let base = 499, perPt = 1.50, tierName = 'Standard';
+            if (clinics >= 21) { base = 299; perPt = 1.00; tierName = 'Enterprise'; }
+            else if (clinics >= 11) { base = 399; perPt = 1.25; tierName = 'Growth'; }
+
+            const platformCost = (base * clinics) + (perPt * totalVol);
+
+            // E/M Uplift — applies to ALL patients (blended $35 avg at 80% success)
+            const emRevenue = totalVol * 35 * 0.80;
+
+            // Program revenue — enrolled patients get blended monthly value
+            // Blended: avg of RPM+CCM ($208) and BHI ($63) weighted 60/40
+            const enrolledPts = totalVol * enrollRate;
+            const blendedProgramRate = (0.60 * 208) + (0.40 * 63); // $149.80/mo avg
+            const programRevenue = enrolledPts * blendedProgramRate;
+
+            const grossRevenue = emRevenue + programRevenue;
+
+            // Hub labor — enrolled patients need ~40 min/mo avg (blended across programs)
+            const enrolledMinutes = enrolledPts * 40;
+            const totalHours = enrolledMinutes / 60;
+            const fteNeeded = totalHours / 160;
+            const loadedAnnual = salary * 1.20;
+            const monthlyLabor = fteNeeded * (loadedAnnual / 12);
+
+            const totalCost = platformCost + monthlyLabor;
+            const netProfit = grossRevenue - totalCost;
+            const roi = totalCost > 0 ? (netProfit / totalCost) * 100 : 0;
+
+            document.getElementById('out-tier').innerHTML = '<span class="tier-badge">' + tierName + ' — $' + base + '/clinic + $' + perPt.toFixed(2) + '/pt</span>';
+            document.getElementById('out-platform').innerText = '$' + platformCost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-em').innerText = '$' + emRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-program').innerText = '$' + programRevenue.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' (' + enrolledPts.toLocaleString() + ' pts)';
+            document.getElementById('out-fte').innerText = fteNeeded.toFixed(1) + ' FTE (' + Math.ceil(fteNeeded) + ' staff)';
+            document.getElementById('out-labor').innerText = '$' + monthlyLabor.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-net').innerText = '$' + netProfit.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-roi').innerText = roi.toFixed(0) + '% ROI';
+        }
+
+        [clinicsInput, volInput, enrollInput, salaryInput].forEach(el => el.addEventListener('input', calculate));
+        calculate();
+    </script>
+
+    <div style="margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+        <p style="font-size:0.85rem; color:var(--text-3);">MyPulseScan × Particle Health — Network Flowmodel & Hub Scaling Calculator. E/M uplift: blended $35 avg (new + established) at 80% capture. Program revenue: blended $149.80/enrolled patient/mo (60% RPM+CCM, 40% BHI weighted). Hub staffing: 40 min/enrolled patient/mo average, 160 billable hrs/FTE, salary loaded +20% for benefits. All care coordination handled by Centralized Hub — zero burden on clinic floor staff.</p>
+    </div>
+
+</body>
+</html>

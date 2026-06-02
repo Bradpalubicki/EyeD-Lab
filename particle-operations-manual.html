@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Health — Plain English Operations Manual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #050b18;
+            --bg-surface: #080f1e;
+            --bg-card: #0c1628;
+            --accent-teal: #0D6B6E;
+            --accent-teal-bright: #5de8c0;
+            --accent-purple: #7c3aed;
+            --accent-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-orange: #f97316;
+            --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+            --text: #f0f4ff;
+            --text-2: #8b9cc8;
+            --text-3: #445580;
+            --border: rgba(59,90,163,0.2);
+            --border-bright: rgba(93,232,192,0.25);
+        }
+        html { font-size: 16px; scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.7; padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+
+        /* Navigation */
+        .toc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem 2rem; margin-bottom: 2.5rem; }
+        .toc h3 { color: var(--accent-teal-bright); margin-bottom: 0.8rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .toc ol { margin: 0; padding-left: 1.2rem; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { color: var(--text-2); text-decoration: none; font-size: 0.95rem; }
+        .toc a:hover { color: var(--accent-teal-bright); }
+
+        /* Header */
+        header { margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--text-2); font-size: 1.05rem; }
+
+        /* Sections */
+        .section { margin-bottom: 3rem; scroll-margin-top: 2rem; }
+        h2 { font-size: 1.6rem; font-weight: 700; color: var(--accent-teal-bright); margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.2rem; font-weight: 600; color: var(--text); margin: 1.5rem 0 0.5rem; }
+        p { color: var(--text-2); margin-bottom: 1rem; }
+        strong { color: var(--text); }
+
+        /* Callout boxes */
+        .plain-english { background: rgba(93,232,192,0.08); border: 1px solid var(--border-bright); border-radius: 8px; padding: 1.2rem 1.5rem; margin: 1rem 0 1.5rem; }
+        .plain-english::before { content: "In Plain English"; display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-teal-bright); margin-bottom: 0.5rem; }
+        .plain-english p { color: var(--text); margin-bottom: 0; font-size: 1.05rem; }
+
+        .warning { background: rgba(239,68,68,0.08); border-left: 3px solid var(--accent-red); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+        .warning p { color: var(--text); margin: 0; }
+
+        .tip { background: rgba(59,130,246,0.08); border-left: 3px solid var(--accent-blue); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+        .tip p { color: var(--text); margin: 0; }
+
+        /* Step lists */
+        .steps { counter-reset: step; list-style: none; padding: 0; margin: 1.5rem 0; }
+        .steps li { counter-increment: step; position: relative; padding: 1rem 1rem 1rem 3.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.8rem; }
+        .steps li::before { content: counter(step); position: absolute; left: 1rem; top: 1rem; width: 28px; height: 28px; background: var(--accent-teal); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+        .steps li strong { color: var(--accent-teal-bright); }
+        .steps li p { margin: 0.3rem 0 0; color: var(--text-2); font-size: 0.95rem; }
+
+        /* Product cards */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0; }
+        .product-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; }
+        .product-card h4 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+        .product-card .tag { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 4px; margin-bottom: 0.8rem; }
+        .product-card p { font-size: 0.92rem; margin-bottom: 0.5rem; }
+        .product-card .analogy { color: var(--accent-gold); font-style: italic; font-size: 0.9rem; }
+
+        /* Comparison table */
+        .compare-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .compare-table th, .compare-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.92rem; }
+        .compare-table th { color: var(--accent-teal-bright); font-weight: 600; background: var(--bg-card); }
+        .compare-table td { color: var(--text-2); }
+
+        /* Diagram */
+        .flow-diagram { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--accent-teal-bright); white-space: pre; overflow-x: auto; line-height: 1.6; }
+
+        /* FAQ */
+        .faq-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem 1.5rem; margin-bottom: 0.8rem; }
+        .faq-item h4 { color: var(--accent-gold); font-size: 1rem; margin-bottom: 0.5rem; }
+        .faq-item p { margin: 0; font-size: 0.95rem; }
+
+        @media (max-width: 768px) {
+            .product-grid { grid-template-columns: 1fr; }
+            body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Particle Health — Operations Manual</h1>
+        <p class="subtitle">Everything you need to know about Particle Health, explained so anyone can understand it. No medical degree or engineering background required.</p>
+    </header>
+
+    <nav class="toc">
+        <h3>What's in This Guide</h3>
+        <ol>
+            <li><a href="#what-is-it">What Is Particle Health?</a></li>
+            <li><a href="#why-care">Why Should Anyone Care?</a></li>
+            <li><a href="#products">The 4 Products (What You Can Buy)</a></li>
+            <li><a href="#how-query-works">How a Patient Lookup Actually Works</a></li>
+            <li><a href="#data-types">What Data Comes Back</a></li>
+            <li><a href="#legal-stuff">The Legal Stuff (Who Can Use It and Why)</a></li>
+            <li><a href="#networks">The Networks Behind It</a></li>
+            <li><a href="#getting-connected">Getting Connected (Setup)</a></li>
+            <li><a href="#data-quality">How They Clean Up the Data</a></li>
+            <li><a href="#our-use-case">How WE Use It (MyPulseScan / EyeD-Lab)</a></li>
+            <li><a href="#faq">Common Questions</a></li>
+        </ol>
+    </nav>
+
+    <!-- SECTION 1 -->
+    <div class="section" id="what-is-it">
+        <h2>1. What Is Particle Health?</h2>
+        <p>Particle Health is a company that built a single connection point to almost every medical record system in the United States. Instead of calling 50 different hospitals and faxing 50 different request forms, you make <strong>one API call</strong> (think of it like one search query) and Particle goes out and finds that patient's records across the entire country.</p>
+
+        <div class="plain-english">
+            <p>Imagine Google, but instead of searching websites, it searches <strong>every hospital, clinic, pharmacy, and lab in America</strong> for one specific patient's medical history. You type in a name and birthday, and 12 seconds later you have their complete health records.</p>
+        </div>
+
+        <p>They cover approximately <strong>320 million+ patients</strong> across <strong>160,000+ healthcare organizations</strong>. That's roughly 90% of all electronic health records in the US.</p>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="why-care">
+        <h2>2. Why Should Anyone Care?</h2>
+
+        <h3>The Problem Today</h3>
+        <p>When you walk into a new doctor's office, they have almost zero information about you. Your old doctor's records? Sitting in a different computer system that doesn't talk to this one. The ER visit you had last year in another state? Gone. Your medication list from your pharmacy? Not here.</p>
+        <p>So what happens? The front desk <strong>faxes</strong> (yes, in 2026, healthcare still runs on fax machines) a request to your previous providers. That takes <strong>3-5 business days</strong>. Sometimes the records never arrive at all. Meanwhile, the doctor is making decisions about your health with incomplete information.</p>
+
+        <h3>What Particle Fixes</h3>
+        <p>Particle connects to all the major health data networks in the country. When a clinic uses Particle, they can pull your complete medical history — every medication, every lab result, every diagnosis, every surgery — in seconds. Not days. <strong>Seconds.</strong></p>
+
+        <div class="plain-english">
+            <p>It's the difference between a detective spending 3 weeks interviewing witnesses one by one, vs. having access to every security camera in the city instantly. Same information, but the speed changes everything.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="products">
+        <h2>3. The 4 Products</h2>
+        <p>Particle sells four distinct tools. Think of them like different apps on a phone — each does something different, but they all run on the same data engine.</p>
+
+        <div class="product-grid">
+            <div class="product-card">
+                <h4 style="color:var(--accent-blue);">Workbench</h4>
+                <span class="tag" style="background:rgba(59,130,246,0.2); color:var(--accent-blue);">For Developers & Clinics</span>
+                <p><strong>What it does:</strong> Lets you search for any patient and pull their full medical history through an API. This is the core product — the raw data engine.</p>
+                <p><strong>Who uses it:</strong> Software developers building health apps, clinics wanting patient records at check-in, analytics teams.</p>
+                <p class="analogy">"The search engine itself — you ask a question, it gives you all the answers."</p>
+            </div>
+            <div class="product-card">
+                <h4 style="color:var(--accent-green);">Signal</h4>
+                <span class="tag" style="background:rgba(16,185,129,0.2); color:var(--accent-green);">For Care Teams & Payers</span>
+                <p><strong>What it does:</strong> Real-time alerts when something happens to your patients. Patient goes to the ER? You get pinged. Patient gets discharged from a hospital? Alert. New encounter at another provider? Notified.</p>
+                <p><strong>Who uses it:</strong> Insurance companies, care management teams, hospitals tracking patient movement.</p>
+                <p class="analogy">"Like getting a text notification every time one of your patients interacts with the healthcare system anywhere in the country."</p>
+            </div>
+            <div class="product-card">
+                <h4 style="color:var(--accent-purple);">Snapshot</h4>
+                <span class="tag" style="background:rgba(124,58,237,0.2); color:var(--accent-purple);">For Clinicians & Analysts</span>
+                <p><strong>What it does:</strong> AI-generated summary of a patient's entire clinical history. Instead of reading through 200 pages of lab results and visit notes, you get a concise briefing.</p>
+                <p><strong>Who uses it:</strong> Doctors who don't have 30 minutes to read through raw records, care coordinators doing outreach.</p>
+                <p class="analogy">"CliffsNotes for a patient's entire medical life. The AI reads everything so the doctor doesn't have to."</p>
+            </div>
+            <div class="product-card">
+                <h4 style="color:var(--accent-orange);">Navigator</h4>
+                <span class="tag" style="background:rgba(249,115,22,0.2); color:var(--accent-orange);">For Health Systems</span>
+                <p><strong>What it does:</strong> Shows where your patients are going when they leave your network. Are they seeing specialists outside your system? Going to competitors? Getting care at urgent cares instead of scheduling with you?</p>
+                <p><strong>Who uses it:</strong> Hospital system executives, network strategy teams.</p>
+                <p class="analogy">"A GPS tracker for patient loyalty — see exactly where patients go when they leave your front door."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section" id="how-query-works">
+        <h2>4. How a Patient Lookup Actually Works</h2>
+        <p>When you search for a patient in Particle, here's exactly what happens behind the scenes. The whole thing takes about <strong>12-30 seconds</strong>.</p>
+
+        <ol class="steps">
+            <li>
+                <strong>You Send the Search</strong>
+                <p>Your system sends Particle a patient's basic info: first name, last name, date of birth, city, and state. That's it — 5 fields.</p>
+            </li>
+            <li>
+                <strong>Particle Updates Its Index</strong>
+                <p>The system checks its master patient database (called an eMPI — electronic Master Patient Index) to make sure it has the latest info on this person.</p>
+            </li>
+            <li>
+                <strong>Location Analysis</strong>
+                <p>Based on where the patient lives (and any hints about where they've been treated), Particle's algorithm figures out which hospitals, clinics, and pharmacies to check.</p>
+            </li>
+            <li>
+                <strong>Hundreds of Mini-Searches Fire Off</strong>
+                <p>Your one search gets split into potentially <strong>hundreds of sub-queries</strong> — each one pinging a different healthcare organization. "Hey, do you have records for Jane Smith, born 3/15/1978?"</p>
+            </li>
+            <li>
+                <strong>Networks Respond</strong>
+                <p>Each organization that has a match sends back their records. This happens across Carequality, CommonWell, Surescripts, and regional networks simultaneously.</p>
+            </li>
+            <li>
+                <strong>Identity Verification</strong>
+                <p>Particle double-checks that the records coming back actually belong to the right person. Name, DOB, and demographics are cross-referenced to prevent mix-ups.</p>
+            </li>
+            <li>
+                <strong>Data Cleanup</strong>
+                <p>Raw records get parsed, deduplicated (removing copies), normalized (standardizing codes), and formatted. A 50% data gap rate gets reduced to about 17%.</p>
+            </li>
+            <li>
+                <strong>Packaging</strong>
+                <p>Everything gets bundled into your preferred format — could be a clinical document (C-CDA), modern web format (FHIR), or simple structured data (Flat JSON).</p>
+            </li>
+            <li>
+                <strong>Delivery</strong>
+                <p>Your system receives the complete patient record. Labs, meds, allergies, problems, encounters, vitals — everything, from everywhere, in one response.</p>
+            </li>
+        </ol>
+
+        <div class="flow-diagram">Your App                    Particle                     The Healthcare System
+   │                           │                              │
+   │── "Find Jane Smith" ────→ │                              │
+   │                           │── Query #1 ────────────────→ │ Hospital A
+   │                           │── Query #2 ────────────────→ │ Pharmacy B
+   │                           │── Query #3 ────────────────→ │ Lab Corp
+   │                           │── Query #4 ────────────────→ │ Urgent Care C
+   │                           │     ... (hundreds more)      │
+   │                           │                              │
+   │                           │←── Records ─────────────────│ Hospital A ✓
+   │                           │←── Records ─────────────────│ Pharmacy B ✓
+   │                           │←── Records ─────────────────│ Lab Corp ✓
+   │                           │←── Records ─────────────────│ Urgent Care C ✓
+   │                           │                              │
+   │                           │ [Verify → Clean → Dedupe     │
+   │                           │  → Normalize → Package]      │
+   │                           │                              │
+   │←── Complete Record ──────│                              │
+   │    (12-30 seconds)        │                              │</div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section" id="data-types">
+        <h2>5. What Data Comes Back</h2>
+        <p>When you pull a patient's records, here's what you can expect to see:</p>
+
+        <table class="compare-table">
+            <thead>
+                <tr><th>Category</th><th>What It Contains</th><th>Why It Matters</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Medications</strong></td><td>Every prescription filled — current and historical, from any pharmacy</td><td>Drug interactions, compliance, controlled substance patterns</td></tr>
+                <tr><td><strong>Allergies</strong></td><td>Drug allergies, food allergies, environmental allergies + severity</td><td>Safety — don't prescribe penicillin to someone who's anaphylactic</td></tr>
+                <tr><td><strong>Lab Results</strong></td><td>Blood work, imaging results, pathology — typically 2+ years</td><td>Trending (is their A1C getting better or worse?)</td></tr>
+                <tr><td><strong>Problems/Diagnoses</strong></td><td>Active and resolved conditions with ICD-10 codes</td><td>Complete picture — not just what the patient remembers to tell you</td></tr>
+                <tr><td><strong>Encounters</strong></td><td>Every visit to every provider — ER, specialist, PCP, urgent care</td><td>Know where they've been and what was done</td></tr>
+                <tr><td><strong>Vital Signs</strong></td><td>Blood pressure, weight, heart rate, temperature over time</td><td>Trends and baselines</td></tr>
+                <tr><td><strong>Immunizations</strong></td><td>Vaccine history including dates and lot numbers</td><td>Travel medicine, compliance, gap identification</td></tr>
+                <tr><td><strong>Procedures</strong></td><td>Surgeries, biopsies, implants</td><td>Surgical history the patient might forget to mention</td></tr>
+                <tr><td><strong>Social History</strong></td><td>Smoking status, alcohol use, living situation</td><td>Risk factors</td></tr>
+                <tr><td><strong>Family History</strong></td><td>Genetic risk factors — cancer, heart disease, diabetes in family</td><td>Screening decisions</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Data Format Options</h3>
+        <table class="compare-table">
+            <thead>
+                <tr><th>Format</th><th>What It Is</th><th>Best For</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>C-CDA</strong></td><td>XML clinical document — the "official" healthcare format</td><td>Feeding into EHR systems that expect traditional formats</td></tr>
+                <tr><td><strong>FHIR R4</strong></td><td>Modern web-friendly JSON format — the future of health data</td><td>Modern apps, mobile, anything built in the last 5 years</td></tr>
+                <tr><td><strong>Flat JSON</strong></td><td>Simplified structured data — categories like "medications", "labs"</td><td>Quick display, dashboards, analytics — what WE use</td></tr>
+                <tr><td><strong>Parquet / Tuva</strong></td><td>Columnar data formats for big data processing</td><td>Data science teams running population analytics</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SECTION 6 -->
+    <div class="section" id="legal-stuff">
+        <h2>6. The Legal Stuff</h2>
+        <p>You can't just look up anyone's medical records for fun. There are strict rules about <strong>why</strong> you're accessing the data. This is called a "Purpose of Use" (POU).</p>
+
+        <h3>The 3 Reasons You Can Access Records WITHOUT Patient Permission</h3>
+        <p>Under HIPAA, healthcare providers can access records for these reasons without asking the patient first. These are called <strong>TPO</strong>:</p>
+
+        <div class="faq-item">
+            <h4>Treatment</h4>
+            <p><strong>The most common reason.</strong> A doctor needs to see a patient's history to provide care. "I'm treating this patient and I need their medication list so I don't prescribe something dangerous." This is what we use at MyPulseScan.</p>
+        </div>
+        <div class="faq-item">
+            <h4>Payment</h4>
+            <p>Insurance companies verifying claims, processing reimbursements, checking if a procedure was medically necessary. "We need to confirm this patient had the diagnosis that justified this surgery before we pay the claim."</p>
+        </div>
+        <div class="faq-item">
+            <h4>Operations</h4>
+            <p>Quality audits, risk adjustment, policy development. "We need to review records across our patient population to measure care quality." Not used for individual patient care.</p>
+        </div>
+
+        <h3>When You DO Need Patient Permission</h3>
+        <div class="faq-item">
+            <h4>Individual Access (Patient Request)</h4>
+            <p>When a patient wants to see their own records or share them with someone. Requires <strong>two things</strong>: (1) the patient explicitly consents, and (2) you verify their identity. This is newer — enabled by the Cures Act anti-information-blocking rules.</p>
+        </div>
+
+        <div class="warning">
+            <p><strong>Important:</strong> Your Purpose of Use must be supported by BOTH Particle AND the specific health network you're querying. Not every network supports every purpose. Treatment is the most universally supported.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 7 -->
+    <div class="section" id="networks">
+        <h2>7. The Networks Behind It</h2>
+        <p>Particle doesn't store everyone's medical records. Instead, it connects to the <strong>networks</strong> that connect to the hospitals and clinics. Think of it as a network of networks.</p>
+
+        <table class="compare-table">
+            <thead>
+                <tr><th>Network</th><th>What It Connects To</th><th>Think of It As</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Carequality</strong></td><td>Major health systems, hospitals, large provider groups nationwide</td><td>The interstate highway system — connects all the big cities</td></tr>
+                <tr><td><strong>CommonWell</strong></td><td>Smaller providers, clinics, ambulatory care nationwide</td><td>State highways — reaches the smaller towns</td></tr>
+                <tr><td><strong>TEFCA</strong></td><td>The new federal framework connecting everything (CommonWell is a QHIN)</td><td>The master plan to connect ALL roads into one system</td></tr>
+                <tr><td><strong>Surescripts</strong></td><td>Pharmacies + pharmacy benefit managers — medication data</td><td>Every CVS, Walgreens, and mail-order pharmacy in one feed</td></tr>
+                <tr><td><strong>Healthix</strong></td><td>Downstate New York (NYC, Long Island)</td><td>Regional shortcut — direct line to NYC healthcare</td></tr>
+                <tr><td><strong>Manifest MedEx</strong></td><td>California — hospital admission/discharge/transfer data</td><td>Regional shortcut — direct line to California healthcare</td></tr>
+            </tbody>
+        </table>
+
+        <div class="plain-english">
+            <p>When you make one Particle query, it simultaneously searches across ALL of these networks. You don't choose which network — Particle figures out which ones to check based on where the patient lives and has been treated.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 8 -->
+    <div class="section" id="getting-connected">
+        <h2>8. Getting Connected</h2>
+        <p>Here's what it takes to go from "I've never heard of Particle" to "I'm pulling patient records."</p>
+
+        <ol class="steps">
+            <li>
+                <strong>Sign the Contract</strong>
+                <p>Work with Particle's sales team. Agree on pricing (per-patient-per-month for Signal, per-query for Workbench, etc.) and which products you need.</p>
+            </li>
+            <li>
+                <strong>Get Your Credentials</strong>
+                <p>Particle gives you a client ID and secret. These are like a username and password for their API. You'll use OAuth 2.0 (industry standard login protocol) to authenticate.</p>
+            </li>
+            <li>
+                <strong>Complete Network Questionnaire</strong>
+                <p>The health data networks need to know who you are and WHY you're accessing records. You fill out forms about your organization, your Purpose of Use, and your compliance setup.</p>
+            </li>
+            <li>
+                <strong>Delegation of Authority (DAuth)</strong>
+                <p>If you're accessing data on behalf of a healthcare provider (like we do — clinics use OUR platform to access records), you need a delegation agreement. The provider formally authorizes you to query on their behalf.</p>
+            </li>
+            <li>
+                <strong>Build in Sandbox</strong>
+                <p>Particle has a test environment with fake patients. Build and test your integration here without touching real data. Test patients have realistic but completely fabricated records.</p>
+            </li>
+            <li>
+                <strong>Go Live</strong>
+                <p>Once your integration passes testing and your compliance paperwork is approved, you switch from sandbox to production. Now you're querying real records.</p>
+            </li>
+        </ol>
+
+        <h3>Three Ways to Connect</h3>
+        <table class="compare-table">
+            <thead>
+                <tr><th>Method</th><th>How It Works</th><th>Best For</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>API</strong></td><td>Your software calls Particle's REST API directly. Most flexible.</td><td>Custom apps, SaaS platforms (this is what WE do)</td></tr>
+                <tr><td><strong>User Interface</strong></td><td>Use Particle's built-in web UI — no coding needed</td><td>Small clinics who just want to search manually</td></tr>
+                <tr><td><strong>EHR Integration</strong></td><td>Direct VPN connection feeding data in HL7 format into your EHR</td><td>Large health systems with Epic, Cerner, etc.</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SECTION 9 -->
+    <div class="section" id="data-quality">
+        <h2>9. How They Clean Up the Data</h2>
+        <p>Raw medical records from hundreds of sources are messy. Different hospitals code things differently, use different formats, and sometimes send duplicate records. Particle runs the data through 5 cleanup steps:</p>
+
+        <ol class="steps">
+            <li>
+                <strong>Parsing</strong>
+                <p>Converts raw clinical documents (XML files) into structured data you can actually use. Turns a 50-page document into organized categories: medications, labs, problems, etc.</p>
+            </li>
+            <li>
+                <strong>Imputation</strong>
+                <p>Fills in gaps by connecting related records. If Hospital A has a diagnosis but no lab results, and Lab Corp has the results, Particle links them together. Reduces data gaps from ~50% to ~17%.</p>
+            </li>
+            <li>
+                <strong>Deduplication</strong>
+                <p>Removes duplicates. If 3 different hospitals all report the same medication, you see it once — not three times. Reduces duplicate records by up to 90%.</p>
+            </li>
+            <li>
+                <strong>Normalization</strong>
+                <p>Standardizes how things are coded. Hospital A might call it "Lisinopril 20mg" while Hospital B calls it "lisinopril hctz 20/12.5mg tablet." Particle normalizes these to standard medical codes so they're comparable.</p>
+            </li>
+            <li>
+                <strong>Deltas</strong>
+                <p>If you've queried this patient before, Particle can show you only what's NEW since your last query. Instead of re-reading 200 records, you see just the 3 new ones. Huge time saver for ongoing care.</p>
+            </li>
+        </ol>
+    </div>
+
+    <!-- SECTION 10 -->
+    <div class="section" id="our-use-case">
+        <h2>10. How WE Use It (MyPulseScan / EyeD-Lab)</h2>
+
+        <h3>What We Built</h3>
+        <p>MyPulseScan is a platform that sits between Particle Health and medical clinics. When a patient checks in at a clinic using our system, we automatically query Particle, pull their complete records, and display them in the clinic's EHR — all before the doctor walks in the room.</p>
+
+        <h3>Our Specific Setup</h3>
+        <table class="compare-table">
+            <tbody>
+                <tr><td><strong>Product We Use</strong></td><td>Workbench (for record pulls) + Signal (for real-time alerts)</td></tr>
+                <tr><td><strong>Data Format</strong></td><td>Flat JSON — structured categories for easy display</td></tr>
+                <tr><td><strong>Purpose of Use</strong></td><td>Treatment — clinics are treating patients</td></tr>
+                <tr><td><strong>Connection Method</strong></td><td>REST API integrated into our platform</td></tr>
+                <tr><td><strong>Target Client</strong></td><td>Multi-location clinic networks (Total Men's = 48 locations)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>What This Enables for Clinics</h3>
+        <table class="compare-table">
+            <thead>
+                <tr><th>Capability</th><th>How Particle Powers It</th><th>Revenue Impact</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>E/M Uplift</td><td>External record review justifies higher visit codes</td><td>+$33-39/visit</td></tr>
+                <tr><td>RPM Foundation</td><td>Complete history enables chronic patient identification for monitoring programs</td><td>$127-208/pt/month</td></tr>
+                <tr><td>BHI/CoCM</td><td>Behavioral health history + medication data supports integrated care programs</td><td>$63-162/pt/month</td></tr>
+                <tr><td>Signal Alerts</td><td>Real-time ER/discharge notifications trigger Transitional Care Management billing</td><td>$201-273/event</td></tr>
+                <tr><td>Malpractice Shield</td><td>Complete medication + allergy data prevents dangerous prescribing errors</td><td>Risk reduction (not billed)</td></tr>
+            </tbody>
+        </table>
+
+        <div class="tip">
+            <p><strong>Key distinction:</strong> Particle provides the DATA layer. MyPulseScan provides the WORKFLOW layer — we turn raw data into billing opportunities, clinical workflows, and operational efficiency. Particle alone doesn't bill insurance or manage care programs. We make the data actionable.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 11 -->
+    <div class="section" id="faq">
+        <h2>11. Common Questions</h2>
+
+        <div class="faq-item">
+            <h4>Is this legal? Can you just look up anyone's records?</h4>
+            <p>Yes, it's legal — but only for approved purposes. Healthcare providers can access records for Treatment, Payment, or Operations under HIPAA without patient consent. We use it for Treatment. You cannot look up your ex's records out of curiosity — that's a federal crime.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>Does the patient know their records are being pulled?</h4>
+            <p>For Treatment purposes, no explicit notification is required (same as when a hospital requests records via fax today). However, patients always have the right to request an accounting of disclosures.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>What if the records are wrong?</h4>
+            <p>Particle doesn't create records — it retrieves what already exists in other systems. If a hospital has wrong data, Particle will pull wrong data. The Record Validator catches some errors (like records for the wrong person), but clinical accuracy is the source system's responsibility.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>How fast is it really?</h4>
+            <p>Most queries return data in 12-30 seconds. Complex cases with records at dozens of facilities might take longer. Some data (especially from smaller clinics) might trickle in after the initial response.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>Does it work for EVERY patient?</h4>
+            <p>About 90% of US patients have records in connected systems. Some gaps exist: very small rural clinics, patients who've only seen cash-pay providers, or records in systems that haven't joined the national networks yet.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>What does it cost?</h4>
+            <p>Pricing varies by product and volume. Signal is priced per-patient-per-month (PMPM). Workbench is typically per-query. Volume discounts are significant — our rates from Particle range from $1.00/patient/month at low volume to $0.15/patient/month at 1M+ patients. Minimum contract: $50K/year.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>Can Particle data be used for RPM billing?</h4>
+            <p><strong>No — not directly.</strong> RPM (Remote Patient Monitoring) requires actual FDA-cleared devices streaming physiological data from the patient's home. Particle provides historical records, not real-time device data. However, Particle data helps IDENTIFY which patients qualify for RPM programs and provides the clinical foundation for enrolling them.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>What's the difference between Particle and an HIE?</h4>
+            <p>A Health Information Exchange (HIE) is typically regional — it connects hospitals in one state or metro area. Particle connects to multiple HIEs AND the national networks simultaneously. It's like the difference between having one local library card vs. having access to every library in the country through one card.</p>
+        </div>
+    </div>
+
+    <div style="margin-top: 3rem; padding: 2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; text-align: center;">
+        <p style="color: var(--text-3); font-size: 0.85rem; margin: 0;">MyPulseScan / EyeD-Lab — Particle Health Operations Manual v1.0<br>Source: <a href="https://docs.particlehealth.com" style="color:var(--accent-teal-bright); text-decoration:none;">docs.particlehealth.com</a> | Last updated June 2026<br>Internal document — not for distribution to Particle Health or external parties.</p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behavioral Health Integration Blueprint — MyPulseScan × Particle Health</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #050b18;
+            --bg-surface: #080f1e;
+            --bg-card: #0c1628;
+            --accent-teal: #0D6B6E;
+            --accent-teal-bright: #5de8c0;
+            --accent-purple: #7c3aed;
+            --accent-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+            --text: #f0f4ff;
+            --text-2: #8b9cc8;
+            --text-3: #445580;
+            --border: rgba(59,90,163,0.2);
+            --border-bright: rgba(93,232,192,0.25);
+        }
+        html { font-size: 16px; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+
+        header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--text-2); font-size: 1rem; }
+        h2 { font-size: 1.5rem; font-weight: 700; color: var(--accent-teal-bright); margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text); }
+        p { line-height: 1.6; margin-bottom: 1rem; color: var(--text-2); }
+
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+        .card h3 { margin-top: 0; color: var(--accent-purple); }
+
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 0.9rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        th { background: var(--bg-card); color: var(--accent-teal-bright); font-weight: 600; border-bottom: 1px solid var(--border-bright); }
+        td { color: var(--text-2); }
+        td strong { color: var(--text); }
+
+        .highlight-box { background: rgba(124,58,237,0.12); border-left: 3px solid var(--accent-purple); padding: 1.2rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; color: var(--text); font-weight: 500; }
+
+        /* Calculator */
+        .calc-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; background: var(--bg-surface); border: 1px solid var(--border-bright); border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+        .calc-inputs { display: flex; flex-direction: column; gap: 1.5rem; }
+        .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .input-group label { font-weight: 600; color: var(--text); display: flex; justify-content: space-between; font-size: 0.95rem; }
+        .input-group label span { color: var(--accent-teal-bright); font-size: 1.05rem; }
+        .input-group input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; outline: none; }
+        .input-group input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent-purple); border-radius: 50%; cursor: pointer; }
+        .calc-outputs { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; justify-content: center; }
+        .output-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.7rem; }
+        .output-row:last-child { border-bottom: none; }
+        .output-label { font-weight: 500; color: var(--text-2); font-size: 0.9rem; }
+        .output-val { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+        .output-val.profit { font-size: 1.6rem; color: var(--accent-green); }
+        .output-val.cost { color: var(--accent-red); }
+
+        .tier-badge { display: inline-block; background: rgba(93,232,192,0.15); border: 1px solid var(--accent-teal-bright); border-radius: 6px; padding: 2px 10px; font-size: 0.85rem; color: var(--accent-teal-bright); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .calc-container, .card-grid { grid-template-columns: 1fr; }
+            body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Behavioral Health Integration Blueprint</h1>
+        <p class="subtitle">MyPulseScan × Particle Health — CoCM & BHI Billing Programs with Psychiatric Consulting</p>
+    </header>
+
+    <div class="card-grid">
+        <div class="card">
+            <h3>Psychiatric Prescribing Safety</h3>
+            <p style="color:var(--text-2);">Particle pulls longitudinal medication fill histories to screen for dangerous drug-drug interactions — antidepressants mixed with cardiac therapies, controlled substance patterns across providers — before prescriptions drop.</p>
+        </div>
+        <div class="card">
+            <h3>Holistic Comorbidity Analysis</h3>
+            <p style="color:var(--text-2);">Therapists and psychiatrists cross-reference external lab results within the EHR. Mental health variances exacerbated by thyroid disease, anemia, or hormonal imbalances surface automatically.</p>
+        </div>
+    </div>
+
+    <h2>Billing Code Matrix</h2>
+    <div class="highlight-box">
+        <strong>Two programs, same patient eligible:</strong> CoCM (team-based with psychiatrist) and General BHI (care manager only) can run concurrently across your behavioral health population. CoCM pays more but requires a contracted psychiatric consultant.
+    </div>
+
+    <table>
+        <thead>
+            <tr><th>CPT Code</th><th>Description</th><th>Commercial Rate</th><th>Staff Time</th><th>Requirements</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>99492</strong></td>
+                <td>Initial CoCM (first month)</td>
+                <td style="color:var(--accent-green);">~$162/mo</td>
+                <td>70 min/mo</td>
+                <td>Psychiatrist consult + validated scale (PHQ-9/GAD-7) + registry</td>
+            </tr>
+            <tr>
+                <td><strong>99493</strong></td>
+                <td>Subsequent CoCM</td>
+                <td style="color:var(--accent-green);">~$131/mo</td>
+                <td>60 min/mo</td>
+                <td>Ongoing psychiatrist consult + registry review + care plan update</td>
+            </tr>
+            <tr>
+                <td><strong>99484</strong></td>
+                <td>General BHI</td>
+                <td style="color:var(--accent-green);">~$63/mo</td>
+                <td>20 min/mo</td>
+                <td>Care manager + validated scale — no psychiatrist required</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Revenue & Staffing Calculator</h2>
+    <p>Model the economic impact of CoCM and BHI programs. Accounts for platform costs, care manager labor, and contracted 1099 psychiatrist hours. Defaults reflect Total Men's current behavioral health footprint (3 clinics, ~1,000 patients).</p>
+
+    <div class="calc-container">
+        <div class="calc-inputs">
+            <div class="input-group">
+                <label>Behavioral Health Clinics <span id="clinics-display">3</span></label>
+                <input type="range" id="bh-clinics" min="1" max="48" step="1" value="3">
+            </div>
+            <div class="input-group">
+                <label>Enrolled BH Patient Registry <span id="vol-display">1,000</span></label>
+                <input type="range" id="patient-volume" min="50" max="5000" step="50" value="1000">
+            </div>
+            <div class="input-group">
+                <label>% in Full CoCM (vs General BHI) <span id="mix-display">40%</span></label>
+                <input type="range" id="program-mix" min="0" max="80" step="5" value="40">
+            </div>
+            <div class="input-group">
+                <label>1099 Psychiatrist Hourly Rate <span id="psych-display">$250</span></label>
+                <input type="range" id="psych-rate" min="150" max="350" step="10" value="250">
+            </div>
+        </div>
+
+        <div class="calc-outputs">
+            <div class="output-row">
+                <span class="output-label">Pricing Tier:</span>
+                <span class="output-val" id="out-tier"><span class="tier-badge">Standard</span></span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Platform Cost:</span>
+                <span class="output-val cost" id="out-platform">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Care Manager Labor (20 min/pt/mo @ $22/hr):</span>
+                <span class="output-val cost" id="out-cm-labor">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Psychiatrist Cost (4 hrs/wk per 80 CoCM pts):</span>
+                <span class="output-val cost" id="out-psych">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Total Monthly Revenue:</span>
+                <span class="output-val" id="out-gross">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Net Monthly Profit:</span>
+                <span class="output-val profit" id="out-net">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">ROI:</span>
+                <span class="output-val" id="out-roi" style="color:var(--accent-teal-bright);">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const clinicInput = document.getElementById('bh-clinics');
+        const volInput = document.getElementById('patient-volume');
+        const mixInput = document.getElementById('program-mix');
+        const psychInput = document.getElementById('psych-rate');
+
+        function calculate() {
+            const clinics = parseInt(clinicInput.value);
+            const vol = parseInt(volInput.value);
+            const cocmMix = parseInt(mixInput.value) / 100;
+            const psychRate = parseInt(psychInput.value);
+
+            document.getElementById('clinics-display').innerText = clinics;
+            document.getElementById('vol-display').innerText = vol.toLocaleString();
+            document.getElementById('mix-display').innerText = (cocmMix * 100) + '%';
+            document.getElementById('psych-display').innerText = '$' + psychRate;
+
+            // Pricing tiers
+            let base = 499, perPt = 1.50, tierName = 'Standard';
+            if (clinics >= 21) { base = 299; perPt = 1.00; tierName = 'Enterprise'; }
+            else if (clinics >= 11) { base = 399; perPt = 1.25; tierName = 'Growth'; }
+
+            const platformCost = (base * clinics) + (perPt * vol);
+
+            // Revenue — blend initial (month 1 = $162) and subsequent ($131)
+            // Assume steady state: 10% new enrollees/mo get 99492, 90% get 99493
+            const cocmPts = vol * cocmMix;
+            const bhiPts = vol - cocmPts;
+            const cocmRevenue = cocmPts * ((0.10 * 162) + (0.90 * 131)); // blended $134.10
+            const bhiRevenue = bhiPts * 63;
+            const grossRevenue = cocmRevenue + bhiRevenue;
+
+            // Care manager labor — all patients need 20 min/mo
+            const cmHours = (vol * 20) / 60;
+            const cmLabor = cmHours * 22; // $22/hr avg care coordinator
+
+            // 1099 Psychiatrist — 4 hrs/week per 80-patient registry block (CMS guideline)
+            const registries = Math.ceil(cocmPts / 80) || 0;
+            const psychWeeklyHrs = registries * 4;
+            const psychMonthlyCost = psychWeeklyHrs * 4.33 * psychRate;
+
+            const totalCost = platformCost + cmLabor + psychMonthlyCost;
+            const netProfit = grossRevenue - totalCost;
+            const roi = totalCost > 0 ? (netProfit / totalCost) * 100 : 0;
+
+            document.getElementById('out-tier').innerHTML = '<span class="tier-badge">' + tierName + ' — $' + base + '/clinic + $' + perPt.toFixed(2) + '/pt</span>';
+            document.getElementById('out-platform').innerText = '$' + platformCost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-cm-labor').innerText = '$' + cmLabor.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-psych').innerText = '$' + psychMonthlyCost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-gross').innerText = '$' + grossRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-net').innerText = '$' + netProfit.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-roi').innerText = roi.toFixed(0) + '% ROI';
+        }
+
+        [clinicInput, volInput, mixInput, psychInput].forEach(el => el.addEventListener('input', calculate));
+        calculate();
+    </script>
+
+    <div style="margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+        <p style="font-size:0.85rem; color:var(--text-3);">MyPulseScan × Particle Health — Behavioral Health Integration Model. CPT rates reflect 2026 Texas commercial payer averages. CoCM requires contracted psychiatric consultant. CMS guidelines: 4 hrs/week per 80-patient registry block. All staff time handled by Centralized Care Coordination Hub — zero burden on clinic floor staff.</p>
+    </div>
+
+</body>
+</html>

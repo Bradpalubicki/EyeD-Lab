@@ -403,7 +403,63 @@ Particle Health is our health record network provider. 320M+ patients, 160K+ org
 
 > **Visual model:** See `particle-pricing-model.html` for interactive tabs with margin analysis, RPM ROI, and contract timeline.
 
-**RPM Reimbursement Context:** Signal enables clinics to bill Medicare for Remote Patient Monitoring. CPT 99454 (~$47/mo) + CPT 99457 (~$51.77/mo) = **~$98.77/patient/month** in reimbursement. Our Particle cost is $1.00 PMPM at current tier. Signal doesn't cost clinics money — it makes them money. This is the primary selling point for Standard+ tiers.
+### Compliant Billing Code Directory (verified June 2026)
+
+**IMPORTANT:** MyPulseScan is the records + intelligence layer. RPM requires actual FDA-cleared devices at the patient's home (BP cuffs, glucometers, scales) that transmit daily. MyPulseScan identifies qualifying patients, provides clinical context for staff review, and supports audit documentation — but the device is the clinic's responsibility.
+
+#### RPM — Remote Patient Monitoring (requires device at patient's home)
+
+| CPT Code | Service                            | Frequency        | Payout | Compliance Rule                                |
+| -------- | ---------------------------------- | ---------------- | ------ | ---------------------------------------------- |
+| 99453    | Initial Setup & Education          | Once per episode | ~$20   | Staff trains patient on device use, documented |
+| 99454    | Device Supply & Data Transmission  | Monthly          | ~$47   | Device transmits on 16+ days out of 30         |
+| 99457    | RPM Management (First 20 min)      | Monthly          | ~$52   | 20 min staff time + interactive communication  |
+| 99458    | RPM Management (Additional 20 min) | Monthly          | ~$43   | Billed if staff spends 40+ total minutes       |
+
+**RPM Monthly Potential: $99–$142 per patient/month** (chronic patients with home devices)
+
+#### BHI — Behavioral Health Integration (no device required)
+
+| CPT Code | Service                     | Frequency | Payout | Compliance Rule                                                |
+| -------- | --------------------------- | --------- | ------ | -------------------------------------------------------------- |
+| 99484    | General BHI Care Management | Monthly   | ~$48   | 20 min/mo clinical staff time, validated rating scales (PHQ-9) |
+
+#### CoCM — Psychiatric Collaborative Care Model (no device required)
+
+| CPT Code | Service                    | Frequency | Payout | Compliance Rule                                              |
+| -------- | -------------------------- | --------- | ------ | ------------------------------------------------------------ |
+| 99492    | Initial CoCM Management    | Month 1   | ~$162  | 70 min first month: care tracking + psychiatric consultation |
+| 99493    | Subsequent CoCM Management | Month 2+  | ~$131  | 60 min subsequent months                                     |
+| 99494    | Additional CoCM Time       | Monthly   | ~$67   | Each additional 30 min of care manager time                  |
+
+#### E/M Uplift (directly supported by Particle record retrieval)
+
+| CPT Code | Service                | Without Records | With Records | Net Increase |
+| -------- | ---------------------- | --------------- | ------------ | ------------ |
+| 99204    | New Patient (Moderate) | 99203 = $128    | $167         | +$39         |
+| 99205    | New Patient (High)     | 99203 = $128    | $237         | +$109        |
+
+#### Other Billable Programs
+
+| Program                 | Codes       | Monthly/Patient      | Particle Fit                                      |
+| ----------------------- | ----------- | -------------------- | ------------------------------------------------- |
+| CCM (Chronic Care Mgmt) | 99490       | ~$66                 | Records identify 2+ chronic conditions            |
+| TCM (Transitional Care) | 99495/99496 | $201–$273/event      | Signal ADT alerts trigger post-discharge outreach |
+| Risk Adjustment (HCC)   | —           | Increases capitation | Complete records surface missed diagnoses         |
+
+### B2B Volume Pricing Tiers (per clinic)
+
+| Tier       | Clinics | Base Fee/Clinic | Per Patient | Target                          |
+| ---------- | ------- | --------------- | ----------- | ------------------------------- |
+| Standard   | 1–10    | $499/mo         | $1.50/pt    | Pilot — prove ROI at one region |
+| Growth     | 11–20   | $399/mo         | $1.25/pt    | Regional rollout                |
+| Enterprise | 21+     | $299/mo         | $1.00/pt    | Full network deployment         |
+
+**Cost guard:** One Particle query per unique patient per billing period — cached after first lookup. No double-billing on our side.
+
+### Reimbursement Context (corrected June 2026)
+
+Signal enables clinics to build compliant RPM programs alongside MyPulseScan record retrieval. The clinic provides the device, MyPulseScan provides the records + patient identification + clinical context. Combined with BHI, CoCM, CCM, TCM, and E/M uplift, a single chronic patient with behavioral health comorbidities can generate $190–$299+/month in legitimate recurring reimbursement. Our Particle cost is $1.00 PMPM at current tier.
 
 ### Signal — Real-Time Patient Monitoring (PMPM)
 
@@ -433,7 +489,7 @@ Particle Health is our health record network provider. 320M+ patients, 160K+ org
 
 **Decision: Option 1 (applied above)** — Basic tier provides query-only access (no Signal/RPM monitoring). Signal real-time monitoring requires Standard ($499/mo) or above. This preserves the $99 entry-level price point while keeping us margin-positive. Basic clinics use Workbench Gold per-query pricing as the COGS layer.
 
-**Standard+ ROI for clinics:** At $499/mo, a clinic with 200 Signal patients earns ~$98.77/patient/month in RPM reimbursement = ~$19,754/mo in new revenue. Our $499 fee is a 39:1 ROI for them.
+**Standard+ ROI for clinics:** At $499/mo + $1.50/patient, a clinic with 200 chronic patients generates $99–$142/patient/month in RPM reimbursement alone, plus $48/patient/month BHI for behavioral health patients, plus $39–$109 E/M uplift per visit. Total potential: $190–$299+/patient/month in new revenue vs $1.50/patient cost to us.
 
 ### Data Format Status
 
@@ -446,5 +502,5 @@ Received from Matt Davidson (Particle Health, Senior AE) on May 19, 2026. Contra
 
 ---
 
-_Last updated: June 1, 2026_
+_Last updated: June 2, 2026_
 _Project: EyeD — Your eyes. Your records. Your control._

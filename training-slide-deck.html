@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Men's — 15-Minute Quick-Start Slide Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #050b18; --bg-surface: #080f1e; --bg-card: #0c1628;
+            --accent-teal: #0D6B6E; --accent-teal-bright: #5de8c0;
+            --accent-purple: #7c3aed; --accent-blue: #3b82f6;
+            --accent-gold: #f59e0b; --accent-green: #10b981; --accent-red: #ef4444;
+            --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+            --text: #f0f4ff; --text-2: #8b9cc8; --text-3: #445580;
+            --border: rgba(59,90,163,0.2); --border-bright: rgba(93,232,192,0.25);
+        }
+        html { font-size: 16px; scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.7; }
+
+        /* Slide layout */
+        .slide { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 3rem 2rem; border-bottom: 1px solid var(--border); }
+        .slide-inner { max-width: 850px; width: 100%; }
+        .slide-num { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 1rem; }
+        .slide h2 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1.2rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .slide h3 { font-size: 1.2rem; font-weight: 600; color: var(--accent-teal-bright); margin: 1.5rem 0 0.5rem; }
+        .slide p { color: var(--text-2); margin-bottom: 1rem; font-size: 1.05rem; }
+        .slide strong { color: var(--text); }
+
+        .bullet-list { list-style: none; padding: 0; margin: 1rem 0; }
+        .bullet-list li { padding: 0.6rem 0 0.6rem 1.5rem; position: relative; color: var(--text-2); font-size: 1.02rem; }
+        .bullet-list li::before { content: ""; position: absolute; left: 0; top: 1rem; width: 8px; height: 8px; background: var(--accent-teal-bright); border-radius: 50%; }
+
+        .phase-badge { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.8rem; }
+        .phase-1 { background: rgba(59,130,246,0.2); color: var(--accent-blue); }
+        .phase-2 { background: rgba(124,58,237,0.2); color: var(--accent-purple); }
+        .phase-3 { background: rgba(16,185,129,0.2); color: var(--accent-green); }
+
+        .highlight-card { background: var(--bg-card); border: 1px solid var(--border-bright); border-radius: 10px; padding: 1.5rem; margin: 1rem 0; }
+        .highlight-card p { margin: 0; }
+
+        .money { color: var(--accent-green); font-weight: 700; font-size: 1.1rem; }
+        .macro-text { display: inline-block; background: var(--bg-card); border: 1px solid var(--accent-teal-bright); border-radius: 6px; padding: 4px 12px; font-family: 'Courier New', monospace; color: var(--accent-teal-bright); font-size: 1.1rem; font-weight: 700; }
+
+        .warning-card { background: rgba(239,68,68,0.08); border-left: 3px solid var(--accent-red); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+        .warning-card p { color: var(--text); margin: 0; }
+
+        .action-grid { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1rem; margin: 1rem 0; }
+        .action-num { background: var(--accent-teal); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; margin-top: 2px; }
+        .action-text { color: var(--text-2); padding: 0.2rem 0 0.8rem; }
+        .action-text strong { color: var(--text); }
+
+        /* Navigation */
+        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-surface); border-top: 1px solid var(--border); padding: 0.8rem 2rem; display: flex; justify-content: center; gap: 0.5rem; z-index: 100; }
+        .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--text-3); cursor: pointer; transition: all 0.2s; }
+        .nav-dot:hover { background: var(--accent-teal-bright); transform: scale(1.3); }
+
+        @media (max-width: 768px) {
+            .slide { padding: 2rem 1rem; }
+            .slide h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SLIDE 1 -->
+    <div class="slide" id="slide-1">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 1 of 9</div>
+            <h2>Total Men's Revenue & Safety Expansion</h2>
+            <p style="font-size:1.2rem; color:var(--text);">Particle Health + eClinicalWorks Integration</p>
+
+            <div class="highlight-card" style="margin-top:2rem;">
+                <h3 style="margin-top:0;">The Mission</h3>
+                <p style="color:var(--text); font-size:1.1rem;">We are stopping manual "chart-chasing." We are launching a <strong>12-second digital records search</strong> that keeps patients safer and increases our insurance payouts.</p>
+            </div>
+
+            <div class="warning-card" style="margin-top:1rem;">
+                <p><strong>The Rollout Rule:</strong> We roll this out in strict phases. No skipping steps. No shortcuts.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-2">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 2 of 9</div>
+            <h2>The 3-Phase Timeline</h2>
+
+            <div class="highlight-card">
+                <span class="phase-badge phase-1">Phase 1 — Day 1</span>
+                <h3 style="margin-top:0;">The Patient Flowmodel</h3>
+                <p>Every single clinic. All 48 locations. One-time data pulls when patients check in. <strong>Immediate ROI.</strong></p>
+            </div>
+            <div class="highlight-card">
+                <span class="phase-badge phase-2">Phase 2 — Month 2-3</span>
+                <h3 style="margin-top:0;">Behavioral Health Integration</h3>
+                <p>3 pilot clinics. ~1,000 patients. Connecting mental health care with physical care. CoCM + BHI billing.</p>
+            </div>
+            <div class="highlight-card">
+                <span class="phase-badge phase-3">Phase 3 — Month 4+</span>
+                <h3 style="margin-top:0;">Remote Patient Monitoring</h3>
+                <p>5 pilot clinics, 500 patients. Apple Watch tracking. Scale 3-5%/month to full network.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-3">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 3 of 9</div>
+            <span class="phase-badge phase-1">Phase 1</span>
+            <h2>Front Desk Actions</h2>
+
+            <ul class="bullet-list">
+                <li><strong>Your job:</strong> Patient check-in stays exactly the same. Your only addition is making sure the patient signs the data consent screen on the intake tablet.</li>
+                <li><strong>The tech:</strong> Clicking "Arrived" in eCW automatically fires a Particle Health search across 160,000+ healthcare organizations.</li>
+                <li><strong>The result:</strong> A full clinical history lands in the chart in <strong>12 seconds</strong>. No phone calls. No faxes. No waiting.</li>
+            </ul>
+
+            <div class="highlight-card">
+                <p style="color:var(--text);"><strong>If a patient asks:</strong> <em>"This safely searches medical networks for your allergies and past prescriptions so your doctor can treat you safely today — without making you fill out a massive paper packet."</em></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-4">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 4 of 9</div>
+            <span class="phase-badge phase-1">Phase 1</span>
+            <h2>Provider Actions (MDs, NPs, PAs)</h2>
+
+            <ul class="bullet-list">
+                <li><strong>The routine:</strong> Open the eCW "External Documents" tab <strong>before</strong> walking into the exam room. Review active drugs, allergies, and past labs.</li>
+                <li><strong>The compliance absolute:</strong> Before you close the chart, drop this text macro into your progress note:</li>
+            </ul>
+
+            <div style="text-align:center; margin: 1.5rem 0;">
+                <span class="macro-text">.ECW_DATA_REVIEW</span>
+            </div>
+
+            <div class="highlight-card">
+                <p style="color:var(--text);"><strong>The cash value:</strong> This macro tells our centralized billing hub to safely upgrade the visit level. Insurance pays <span class="money">+$33 to $39 more per visit</span> because we documented our external data review.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="slide-5">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 5 of 9</div>
+            <span class="phase-badge phase-1">Phase 1</span>
+            <h2>Centralized Billing Gates</h2>
+
+            <p>Our central system automatically scrubs ALL incoming claims. No human guesswork.</p>
+
+            <div class="highlight-card">
+                <h3 style="margin-top:0;">The Gatekeeper Rule</h3>
+                <p style="color:var(--text);">If a chart is coded as a Level 4 visit, the system checks for two things:</p>
+                <div class="action-grid" style="margin-top:1rem;">
+                    <div class="action-num">1</div>
+                    <div class="action-text"><strong>The provider's <span style="color:var(--accent-teal-bright);">.ECW_DATA_REVIEW</span> text stamp</strong> — proves the doctor actually reviewed outside records</div>
+                    <div class="action-num">2</div>
+                    <div class="action-text"><strong>An active Particle Health API transaction timestamp</strong> — proves the system actually pulled records for this patient today</div>
+                </div>
+            </div>
+
+            <p><strong>Both match?</strong> Claim drops cleanly to the payer. <strong>Either missing?</strong> Claim is held. Zero risk of unbacked claims reaching clearinghouse.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-6">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 6 of 9</div>
+            <span class="phase-badge phase-2">Phase 2</span>
+            <h2>Behavioral Health Safety</h2>
+
+            <div class="warning-card">
+                <p><strong>The clinical risk:</strong> TRT and hypertension medications do NOT mix well with outside stimulant prescriptions (like Adderall). Patients often forget to disclose what outside psychiatrists prescribe them.</p>
+            </div>
+
+            <ul class="bullet-list">
+                <li><strong>The tool:</strong> Providers must scan Particle's external pharmacy logs to check for hidden stimulant scripts before ordering new drugs.</li>
+                <li><strong>The revenue loop:</strong> Tracking these interactions unlocks Collaborative Care Model (CoCM) billing codes worth <span class="money">$63 to $131 per month</span> per patient.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SLIDE 7 -->
+    <div class="slide" id="slide-7">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 7 of 9</div>
+            <span class="phase-badge phase-3">Phase 3</span>
+            <h2>Remote Patient Monitoring</h2>
+
+            <ul class="bullet-list">
+                <li><strong>The Apple Watch upgrade:</strong> No shipping expensive clinical hardware. If the patient owns an Apple Watch (Series 9+), pair it directly to eCW via HealthKit.</li>
+                <li><strong>The 16-day rule:</strong> We cannot bill the <span class="money">$58/month</span> device fee unless the watch transmits vitals on <strong>at least 16 separate days</strong> per 30-day period.</li>
+                <li><strong>Staff action:</strong> The dashboard flags drop-offs. If a patient hasn't synced in 4 days — text them immediately.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SLIDE 8 -->
+    <div class="slide" id="slide-8">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 8 of 9</div>
+            <span class="phase-badge phase-3">Phase 3</span>
+            <h2>The 20-Minute Stopwatch Rule</h2>
+
+            <div class="highlight-card">
+                <p style="color:var(--text); font-size:1.1rem;"><strong>The law:</strong> To bill the <span class="money">$69/month</span> management fee, staff must spend a minimum of <strong>20 distinct, un-duplicated minutes</strong> per month reviewing that patient's device data and communicating with them.</p>
+            </div>
+
+            <div class="warning-card">
+                <p><strong>The system lock:</strong> You MUST click the native eCW stopwatch tool when reviewing files or placing calls. Manual time estimates and general office visit time do NOT count. Period.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9 -->
+    <div class="slide" id="slide-9">
+        <div class="slide-inner">
+            <div class="slide-num">Slide 9 of 9</div>
+            <h2>Your Next Steps</h2>
+
+            <div class="action-grid">
+                <div class="action-num">1</div>
+                <div class="action-text"><strong>Verify</strong> your clinic's front-desk intake tablets display the updated digital consent text.</div>
+                <div class="action-num">2</div>
+                <div class="action-text"><strong>Confirm</strong> all providers have tested and mapped the <span class="macro-text" style="font-size:0.9rem;">.ECW_DATA_REVIEW</span> text macro in their eCW shortcut settings.</div>
+                <div class="action-num">3</div>
+                <div class="action-text"><strong>Print, sign, and return</strong> the Operational Handbook Sign-Off form by Friday. Every floor employee.</div>
+            </div>
+
+            <div class="highlight-card" style="margin-top:2rem; text-align:center;">
+                <p style="color:var(--text); font-size:1.2rem; margin:0;"><strong>Questions?</strong> Contact <a href="mailto:brad@eyedlab.io" style="color:var(--accent-teal-bright);">brad@eyedlab.io</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nav dots -->
+    <nav class="nav-bar">
+        <div class="nav-dot" onclick="document.getElementById('slide-1').scrollIntoView({behavior:'smooth'})"></div>
+        <div class="nav-dot" onclick="document.getElementById('slide-2').scrollIntoView({behavior:'smooth'})"></div>
+        <div class="nav-dot" onclick="document.getElementById('slide-3').scrollIntoView({behavior:'smooth'})"></div>
+        <div class="nav-dot" onclick="document.getElementById('slide-4').scrollIntoView({behavior:'smooth'})"></div>
+        <div class="nav-dot" onclick="document.getElementById('slide-5').scrollIntoView({behavior:'smooth'})"></div>
+        <div class="nav-dot" onclick="document.getElementById('slide-6').scrollIntoView({behavior:'smooth'})"></div>
+        <div class="nav-dot" onclick="document.getElementById('slide-7').scrollIntoView({behavior:'smooth'})"></div>
+        <div class="nav-dot" onclick="document.getElementById('slide-8').scrollIntoView({behavior:'smooth'})"></div>
+        <div class="nav-dot" onclick="document.getElementById('slide-9').scrollIntoView({behavior:'smooth'})"></div>
+    </nav>
+
+</body>
+</html>

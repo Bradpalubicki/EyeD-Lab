@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Proposal — Total Men's Primary Care</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e3a8a;
+            --accent: #0ea5e9;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-dark); padding: 3rem 1.5rem; max-width: 1200px; margin: 0 auto; }
+
+        .exec-header { background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%); color: white; padding: 3.5rem; border-radius: 12px; margin-bottom: 2.5rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-left: 6px solid var(--accent); }
+        .exec-header h1 { font-size: 2.6rem; margin-bottom: 0.6rem; color: #fff; font-weight: 800; }
+        .exec-header p { font-size: 1.25rem; color: #94a3b8; line-height: 1.6; }
+        .exec-header .highlight { color: var(--accent); font-weight: 700; }
+
+        h2 { font-size: 1.8rem; color: var(--secondary); margin: 3rem 0 1.2rem 0; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); font-weight: 700; }
+        p { line-height: 1.7; margin-bottom: 1.2rem; font-size: 1.05rem; color: #334155; }
+
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        th, td { padding: 1.1rem 1.4rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 1rem; }
+        th { background-color: var(--primary); color: white; font-weight: 600; }
+        tr:last-child td { border-bottom: none; }
+
+        .phase-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 2rem 0; }
+        .phase-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 1.8rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); position: relative; border-top: 4px solid var(--text-light); }
+        .phase-card.p1 { border-top-color: var(--accent); }
+        .phase-card.p2 { border-top-color: #8b5cf6; }
+        .phase-card.p3 { border-top-color: var(--secondary); }
+        .phase-badge { position: absolute; top: -14px; left: 18px; background: var(--primary); color: white; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; }
+        .phase-card h3 { font-size: 1.25rem; margin: 0.5rem 0 0.8rem 0; color: var(--primary); font-weight: 700; }
+        .phase-card p { font-size: 0.95rem; color: var(--text-light); line-height: 1.5; margin-bottom: 0; }
+
+        .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2.5rem; }
+        .value-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .value-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+        .value-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; font-weight: 700; }
+        .value-card p { font-size: 0.95rem; color: var(--text-light); margin-bottom: 0; }
+
+        .hub-info-panel { background: #f0fdf4; border-left: 4px solid var(--success); padding: 1.5rem; border-radius: 0 8px 8px 0; margin-bottom: 3rem; font-weight: 500; line-height: 1.6; }
+
+        .sim-wrapper { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2.5rem; background: var(--bg-card); border: 2px solid var(--primary); border-radius: 12px; padding: 2.5rem; margin: 3rem 0; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .sim-inputs { display: flex; flex-direction: column; gap: 1.8rem; }
+        .slider-box { display: flex; flex-direction: column; gap: 0.6rem; }
+        .slider-box label { font-weight: 700; color: var(--primary); display: flex; justify-content: space-between; font-size: 1.05rem; }
+        .slider-box label span { color: var(--secondary); }
+        .slider-box input[type="range"] { -webkit-appearance: none; width: 100%; height: 8px; background: var(--border); border-radius: 4px; outline: none; }
+        .slider-box input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: var(--secondary); border-radius: 50%; cursor: pointer; transition: transform 0.1s; }
+        .slider-box input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        .sim-outputs { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 2rem; display: flex; flex-direction: column; gap: 1.2rem; justify-content: center; }
+        .out-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 0.8rem; }
+        .out-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .out-lbl { font-weight: 600; color: var(--text-light); font-size: 1.05rem; }
+        .out-val { font-size: 1.25rem; font-weight: 700; color: var(--primary); }
+        .out-val.profit { font-size: 2.2rem; color: var(--success); }
+
+        .footnote { font-size: 0.85rem; color: var(--text-light); text-align: center; margin-top: 1.5rem; line-height: 1.5; }
+
+        .cta-btn-box { text-align: center; margin-top: 2.5rem; }
+        .cta-btn { display: inline-flex; align-items: center; gap: 10px; background-color: var(--secondary); color: white; padding: 1.1rem 2.5rem; font-size: 1.2rem; font-weight: 700; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.2s ease; }
+        .cta-btn:hover { background-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+
+        @media (max-width: 768px) {
+            .phase-container, .value-grid { grid-template-columns: 1fr; }
+            .sim-wrapper { grid-template-columns: 1fr; }
+            .exec-header { padding: 2rem; }
+            .exec-header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="exec-header">
+        <h1>Prepared for Total Men's Primary Care</h1>
+        <p>48 locations across Texas. 100,000+ active patients. Specializing in <span class="highlight">TRT, hypertension management, and ADHD/anxiety tracking</span>.</p>
+    </div>
+
+    <p>Your clinicians treat patients with incomplete records every day. Running our 12-second complete history retrieval changes the safety, operational cost, and revenue paradigm of the practice immediately.</p>
+
+    <h2>The Stacked Revenue Opportunity</h2>
+    <p>CMS explicitly permits concurrent stacking of RPM, CCM, and BHI codes on the same patient in the same month. Each requires 20 minutes of discrete, un-duplicated care time — all handled by a Centralized Virtual Care Hub with zero additional burden on your clinic floor staff.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Program Component</th>
+                <th>CPT Code</th>
+                <th>Commercial Rate</th>
+                <th>Staff Time Required</th>
+                <th>Applies To</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>E/M Uplift</strong></td>
+                <td>99204 / 99214</td>
+                <td>+$33 - $39 / visit</td>
+                <td>0 min (Point-of-care)</td>
+                <td>Every patient, every visit</td>
+            </tr>
+            <tr>
+                <td><strong>RPM Device Fee</strong></td>
+                <td>99454</td>
+                <td>$58.00 / month</td>
+                <td>0 min (Auto-stream)</td>
+                <td>Enrolled chronic patients w/ device</td>
+            </tr>
+            <tr>
+                <td><strong>RPM Review</strong></td>
+                <td>99457</td>
+                <td>$69.00 / month</td>
+                <td>20 min / month</td>
+                <td>Enrolled chronic patients</td>
+            </tr>
+            <tr>
+                <td><strong>Chronic Care Mgmt</strong></td>
+                <td>99490</td>
+                <td>$81.00 / month</td>
+                <td>20 min / month</td>
+                <td>2+ chronic conditions (Most TRT pts)</td>
+            </tr>
+            <tr>
+                <td><strong>Behavioral Health</strong></td>
+                <td>99484</td>
+                <td>$63.00 / month</td>
+                <td>20 min / month</td>
+                <td>ADHD, anxiety, depression patients</td>
+            </tr>
+            <tr style="background:#f1f5f9; font-weight:700;">
+                <td>FULL RECURRING STACK</td>
+                <td>All Programs</td>
+                <td>$271.00 / pt / mo</td>
+                <td>60 mins total</td>
+                <td>Triple-qualifying patients</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Beyond Billing — The Full Value Stack</h2>
+    <div class="value-grid">
+        <div class="value-card">
+            <div class="value-icon">&#9889;</div>
+            <h3>12-Second Intake Fetch</h3>
+            <p>Pulls complete records from 160,000+ national systems natively before triage begins. Eliminates phone tags and fax hold-ups.</p>
+        </div>
+        <div class="value-card">
+            <div class="value-icon">&#128737;</div>
+            <h3>Malpractice Shield</h3>
+            <p>Flags outside stimulant scripts and hidden psychiatric histories. Protects clinicians prescribing TRT alongside ADHD meds.</p>
+        </div>
+        <div class="value-card">
+            <div class="value-icon">&#8986;</div>
+            <h3>Apple Watch RPM</h3>
+            <p>Patients sync personal Series 9+ watches natively via HealthKit. Zero device management or deployment capital required.</p>
+        </div>
+    </div>
+
+    <h2>Recommended Implementation Rollout Order</h2>
+
+    <div class="phase-container">
+        <div class="phase-card p1">
+            <span class="phase-badge">Phase 1</span>
+            <h3>E/M Uplift (Month 1)</h3>
+            <p><strong>Scope:</strong> All 48 clinics, all incoming visits.</p>
+            <p>Immediate ROI from automated data-review documentation. No patient device onboarding needed. Platform goes live, revenue capture begins.</p>
+        </div>
+        <div class="phase-card p2">
+            <span class="phase-badge">Phase 2</span>
+            <h3>BHI + CoCM (Months 2-3)</h3>
+            <p><strong>Scope:</strong> 3 Pilot BH Clinics (~1,000 pts).</p>
+            <p>Contract a 1099 virtual psychiatrist. Initiate CoCM registries at existing behavioral health locations. Plan expansion to 10 clinics by month 6.</p>
+        </div>
+        <div class="phase-card p3">
+            <span class="phase-badge">Phase 3</span>
+            <h3>RPM + CCM (Months 4+)</h3>
+            <p><strong>Scope:</strong> 5 Pilot Clinics (500 pts).</p>
+            <p>Apple Watch onboarding. Ramp 3-5%/mo. Full code stacking for triple-qualifying chronic TRT patients. Scale network-wide over 12 months.</p>
+        </div>
+    </div>
+
+    <div class="hub-info-panel">
+        <strong>Centralized Care Hub Operational Guardrail:</strong> All 60 minutes/patient/month of tracking time runs through our virtual care coordination hub — not your physical floor nurses or clinic MAs. The Hub scales by adding remote coordinators organically as enrollment grows. Your local clinics focus entirely on face-to-face patient workflows.
+    </div>
+
+    <h2>Interactive Network Scale Simulator</h2>
+    <p>Model your rollout from Phase 1 pilots up through full network deployment. Adjust the parameters below to update your revenue and staffing overhead matrices in real time.</p>
+
+    <div class="sim-wrapper">
+        <div class="sim-inputs">
+            <div class="slider-box">
+                <label>Active Clinics Enrolled <span id="lbl-clinics">10 Clinics</span></label>
+                <input type="range" id="input-clinics" min="1" max="48" value="10">
+            </div>
+            <div class="slider-box">
+                <label>Monthly Network Patient Volume <span id="lbl-volume">10,000</span></label>
+                <input type="range" id="input-volume" min="500" max="100000" step="500" value="10000">
+            </div>
+            <div class="slider-box">
+                <label>Program Enrollment Rate <span id="lbl-enrollment">15%</span></label>
+                <input type="range" id="input-enrollment" min="5" max="30" value="15">
+            </div>
+            <div class="slider-box">
+                <label>Hub Staff Base Salary <span id="lbl-salary">$55,000/yr</span></label>
+                <input type="range" id="input-salary" min="40000" max="80000" step="1000" value="55000">
+            </div>
+        </div>
+        <div class="sim-outputs">
+            <div class="out-row">
+                <span class="out-lbl">Determined Software Tier:</span>
+                <span class="out-val" id="val-tier">Standard Tier</span>
+            </div>
+            <div class="out-row">
+                <span class="out-lbl">Platform Software Overhead:</span>
+                <span class="out-val" id="val-software">$0</span>
+            </div>
+            <div class="out-row">
+                <span class="out-lbl">E/M Uplift Revenue (All visits):</span>
+                <span class="out-val" id="val-em-rev">$0</span>
+            </div>
+            <div class="out-row">
+                <span class="out-lbl">Care Program Revenue (Enrollees):</span>
+                <span class="out-val" id="val-prog-rev">$0</span>
+            </div>
+            <div class="out-row">
+                <span class="out-lbl">Central Hub Staffing Required:</span>
+                <span class="out-val" id="val-fte">0.0 FTEs</span>
+            </div>
+            <div class="out-row">
+                <span class="out-lbl">Central Hub Labor Cost:</span>
+                <span class="out-val" id="val-labor">$0</span>
+            </div>
+            <div class="out-row">
+                <span class="out-lbl">Net Monthly Profit:</span>
+                <span class="out-val profit" id="val-net">$0</span>
+            </div>
+            <div class="out-row">
+                <span class="out-lbl">Annual Projected Revenue:</span>
+                <span class="out-val" id="val-annual">$0/yr</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-btn-box">
+        <a href="mailto:brad@eyedlab.io?subject=Total%20Men%27s%20Enterprise%20Demo%20Request&body=I%27d%20like%20to%20schedule%20a%20demo%20call%20to%20discuss%20the%20Particle%20Health%20integration%20for%20Total%20Men%27s%20Primary%20Care." class="cta-btn">Schedule Demo Call</a>
+    </div>
+
+    <p class="footnote">MyPulseScan &times; Particle Health — Enterprise Proposal for Total Men's Primary Care. All rates: 2026 Texas commercial payer averages. E/M uplift: blended $35 at 80% capture rate. Program blend value: $140/enrolled pt/mo. Hub labor tracking allocation: 35 min/enrolled pt/mo, loaded salary +20%. OIG safe ceiling: 25-30% enrollment saturation, 3-5% ramp up limits/month.</p>
+
+    <script>
+        const clinicsInput = document.getElementById('input-clinics');
+        const volumeInput = document.getElementById('input-volume');
+        const enrollInput = document.getElementById('input-enrollment');
+        const salaryInput = document.getElementById('input-salary');
+
+        function runNetworkProForma() {
+            const clinics = parseInt(clinicsInput.value);
+            const monthlyVolume = parseInt(volumeInput.value);
+            const enrollmentRate = parseInt(enrollInput.value) / 100;
+            const salary = parseInt(salaryInput.value);
+
+            document.getElementById('lbl-clinics').innerText = clinics + " Clinics";
+            document.getElementById('lbl-volume').innerText = monthlyVolume.toLocaleString();
+            document.getElementById('lbl-enrollment').innerText = (enrollmentRate * 100) + "%";
+            document.getElementById('lbl-salary').innerText = "$" + salary.toLocaleString() + "/yr";
+
+            // Dynamic Tier Pricing
+            let baseFeePerClinic = 499.00;
+            let perPatientFee = 1.50;
+            let tierName = "Standard Tier";
+            if (clinics >= 11 && clinics <= 20) {
+                baseFeePerClinic = 399.00;
+                perPatientFee = 1.25;
+                tierName = "Growth Tier";
+            } else if (clinics >= 21) {
+                baseFeePerClinic = 299.00;
+                perPatientFee = 1.00;
+                tierName = "Enterprise Tier";
+            }
+
+            const enrolledPatients = monthlyVolume * enrollmentRate;
+            const platformCost = (baseFeePerClinic * clinics) + (perPatientFee * enrolledPatients);
+
+            // Revenues
+            const emUpliftRevenue = monthlyVolume * 35.00 * 0.80;
+            const careProgramRevenue = enrolledPatients * 140.00;
+
+            // Hub Labor (35 mins/pt/mo, loaded salary +20%)
+            const totalMinutesNeeded = enrolledPatients * 35;
+            const totalHoursNeeded = totalMinutesNeeded / 60;
+            const fteRequired = totalHoursNeeded / 160;
+            const loadedMonthlySalary = (salary * 1.20) / 12;
+            const totalLaborCost = fteRequired * loadedMonthlySalary;
+
+            const netMonthlyProfit = (emUpliftRevenue + careProgramRevenue) - (platformCost + totalLaborCost);
+            const annualProjected = netMonthlyProfit * 12;
+
+            // Render
+            document.getElementById('val-tier').innerText = tierName + " — $" + baseFeePerClinic + "/clinic + $" + perPatientFee + "/pt";
+            document.getElementById('val-software').innerText = "$" + platformCost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('val-em-rev').innerText = "$" + emUpliftRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('val-prog-rev').innerText = "$" + careProgramRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('val-fte').innerText = fteRequired.toFixed(1) + " FTEs";
+            document.getElementById('val-labor').innerText = "$" + totalLaborCost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('val-net').innerText = "$" + netMonthlyProfit.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('val-annual').innerText = "$" + annualProjected.toLocaleString('en-US', {maximumFractionDigits: 0}) + "/yr";
+        }
+
+        clinicsInput.addEventListener('input', runNetworkProForma);
+        volumeInput.addEventListener('input', runNetworkProForma);
+        enrollInput.addEventListener('input', runNetworkProForma);
+        salaryInput.addEventListener('input', runNetworkProForma);
+        runNetworkProForma();
+    </script>
+
+</body>
+</html>

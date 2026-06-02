@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urgent Care E/M Uplift Blueprint — MyPulseScan × Particle Health</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #050b18;
+            --bg-surface: #080f1e;
+            --bg-card: #0c1628;
+            --accent-teal: #0D6B6E;
+            --accent-teal-bright: #5de8c0;
+            --accent-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+            --text: #f0f4ff;
+            --text-2: #8b9cc8;
+            --text-3: #445580;
+            --border: rgba(59,90,163,0.2);
+            --border-bright: rgba(93,232,192,0.25);
+        }
+        html { font-size: 16px; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+
+        header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--text-2); font-size: 1rem; }
+        h2 { font-size: 1.5rem; font-weight: 700; color: var(--accent-teal-bright); margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text); }
+        p { line-height: 1.6; margin-bottom: 1rem; color: var(--text-2); }
+        ol, ul { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-2); }
+        li { margin-bottom: 0.5rem; line-height: 1.6; }
+        code { background: var(--bg-card); padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; color: var(--accent-teal-bright); }
+
+        .highlight-box { background: rgba(13,107,110,0.15); border-left: 3px solid var(--accent-teal); padding: 1.2rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; color: var(--text); font-weight: 500; }
+        .diagram { background: var(--bg-card); border: 1px solid var(--border); color: var(--accent-teal-bright); padding: 1.5rem; border-radius: 8px; font-family: 'Courier New', monospace; white-space: pre; overflow-x: auto; line-height: 1.5; margin: 1.5rem 0; font-size: 0.9rem; }
+        pre { background: var(--bg-card); border: 1px solid var(--border); color: #e2e8f0; padding: 1.2rem; border-radius: 8px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9rem; margin: 1rem 0; }
+
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+        .card h3 { margin-top: 0; }
+
+        /* Calculator */
+        .calc-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; background: var(--bg-surface); border: 1px solid var(--border-bright); border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+        .calc-inputs { display: flex; flex-direction: column; gap: 1.5rem; }
+        .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .input-group label { font-weight: 600; color: var(--text); display: flex; justify-content: space-between; font-size: 0.95rem; }
+        .input-group label span { color: var(--accent-teal-bright); font-size: 1.05rem; }
+        .input-group input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; outline: none; }
+        .input-group input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent-teal-bright); border-radius: 50%; cursor: pointer; }
+        .calc-outputs { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; justify-content: center; }
+        .output-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.7rem; }
+        .output-row:last-child { border-bottom: none; }
+        .output-label { font-weight: 500; color: var(--text-2); font-size: 0.9rem; }
+        .output-val { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+        .output-val.profit { font-size: 1.6rem; color: var(--accent-green); }
+        .output-val.cost { color: var(--accent-red); }
+
+        .tier-badge { display: inline-block; background: rgba(93,232,192,0.15); border: 1px solid var(--accent-teal-bright); border-radius: 6px; padding: 2px 10px; font-size: 0.85rem; color: var(--accent-teal-bright); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .calc-container, .card-grid { grid-template-columns: 1fr; }
+            body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Urgent Care E/M Uplift Blueprint</h1>
+        <p class="subtitle">MyPulseScan × Particle Health — Single-Encounter Data Fetch & Revenue Optimization</p>
+    </header>
+
+    <div class="highlight-box">
+        <strong>Model Focus:</strong> Immediate data exchange at check-in to support clinical safety and E/M data-review upcoding. This model targets per-encounter revenue — no long-term biometric tracking or device monitoring required.
+    </div>
+
+    <h2>Architecture & Data Flow</h2>
+    <p>The transaction loop triggers automatically upon patient arrival, ensuring external data is parsed into the chart before triage begins.</p>
+
+    <div class="diagram">[1. Front-Desk Check-In / Kiosk Arrival]
+        │
+        ▼
+[2. EHR Trigger: Patient Status → 'Arrived']
+        │
+        ▼
+[3. Particle Health API Call (OAuth 2.0 / Mutual TLS)]
+        │
+        ▼ Queries Carequality, CommonWell, Surescripts
+[4. Record Aggregation — C-CDA XML / FHIR JSON]
+        │
+        ▼
+[5. EHR Clinical Summary Panel Auto-Populated]
+        │
+        ▼
+[6. Provider Reviews External Data → Documents in Note]
+        │
+        ▼
+[7. E/M Code Justified: 99203→99204 (new) or 99213→99214 (established)]</div>
+
+    <h2>E/M Uplift Economics</h2>
+    <div class="card-grid">
+        <div class="card">
+            <h3>New Patient Uplift</h3>
+            <p style="color:var(--text);">99203 → 99204 = <strong style="color:var(--accent-green);">+$39.00/visit</strong></p>
+            <p>Requires documented review of externally sourced records. Particle fetch + provider text macro = audit-proof justification.</p>
+        </div>
+        <div class="card">
+            <h3>Established Patient Uplift</h3>
+            <p style="color:var(--text);">99213 → 99214 = <strong style="color:var(--accent-green);">+$33.00/visit</strong></p>
+            <p>Same documentation pattern. Higher volume — most urgent care visits are established patients returning for new complaints.</p>
+        </div>
+    </div>
+
+    <h2>Billing Scrubber Logic</h2>
+    <pre><code>AUTOMATED E/M UPLIFT AUDIT — PRE-CLEARINGHOUSE GATE
+═══════════════════════════════════════════════════
+CHECK 1: PROGRESS NOTE STRING SCAN
+  Scan encounter note for ".DATA_REVIEW_EXTERNAL" macro
+  ├── NOT FOUND → Demote to 99203/99213; Log: "Missing data review text"
+  └── FOUND     → Proceed to CHECK 2
+
+CHECK 2: API TIMESTAMP RECONCILIATION
+  Query integration log: API_status = '200_OK' matching encounter date
+  ├── ROW COUNT = 0 → HOLD claim; Log: "No Particle payload for this DOS"
+  └── ROW COUNT ≥ 1 → APPROVE; Release 99204/99214 to clearinghouse
+═══════════════════════════════════════════════════</code></pre>
+
+    <h2>Interactive ROI Calculator</h2>
+    <p>Adjust sliders to model your urgent care's single-visit revenue optimization. Uses blended new/established uplift rates and accounts for real platform + labor costs.</p>
+
+    <div class="calc-container">
+        <div class="calc-inputs">
+            <div class="input-group">
+                <label>Monthly Patient Volume <span id="vol-display">300</span></label>
+                <input type="range" id="patient-volume" min="50" max="2000" step="50" value="300">
+            </div>
+            <div class="input-group">
+                <label>New vs Established Mix (% New) <span id="mix-display">25%</span></label>
+                <input type="range" id="new-mix" min="5" max="60" step="5" value="25">
+            </div>
+            <div class="input-group">
+                <label>E/M Upcode Success Rate <span id="rate-display">80%</span></label>
+                <input type="range" id="upcode-rate" min="30" max="100" step="5" value="80">
+            </div>
+            <div class="input-group">
+                <label>Number of Clinic Locations <span id="clinics-display">1</span></label>
+                <input type="range" id="clinic-count" min="1" max="48" step="1" value="1">
+            </div>
+        </div>
+
+        <div class="calc-outputs">
+            <div class="output-row">
+                <span class="output-label">Pricing Tier:</span>
+                <span class="output-val" id="out-tier"><span class="tier-badge">Standard</span></span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Platform Cost (base + per-patient):</span>
+                <span class="output-val cost" id="out-cost">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Gross E/M Uplift Revenue:</span>
+                <span class="output-val" id="out-gross">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Staff Time Savings (6 min/pt × wage):</span>
+                <span class="output-val" id="out-savings">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Net Monthly Gain:</span>
+                <span class="output-val profit" id="out-net">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">ROI:</span>
+                <span class="output-val" id="out-roi" style="color:var(--accent-teal-bright);">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const volInput = document.getElementById('patient-volume');
+        const mixInput = document.getElementById('new-mix');
+        const rateInput = document.getElementById('upcode-rate');
+        const clinicInput = document.getElementById('clinic-count');
+
+        function calculate() {
+            const vol = parseInt(volInput.value);
+            const newMix = parseInt(mixInput.value) / 100;
+            const rate = parseInt(rateInput.value) / 100;
+            const clinics = parseInt(clinicInput.value);
+
+            document.getElementById('vol-display').innerText = vol;
+            document.getElementById('mix-display').innerText = (newMix * 100) + '%';
+            document.getElementById('rate-display').innerText = (rate * 100) + '%';
+            document.getElementById('clinics-display').innerText = clinics;
+
+            // Pricing tiers
+            let base = 499, perPt = 1.50, tierName = 'Standard';
+            if (clinics >= 21) { base = 299; perPt = 1.00; tierName = 'Enterprise'; }
+            else if (clinics >= 11) { base = 399; perPt = 1.25; tierName = 'Growth'; }
+
+            const totalPts = vol * clinics;
+            const platformCost = (base * clinics) + (perPt * totalPts);
+
+            // E/M uplift — blended rate
+            const newPts = totalPts * newMix;
+            const estPts = totalPts - newPts;
+            const newUplift = 39.00;  // 99203→99204
+            const estUplift = 33.00;  // 99213→99214
+            const grossRevenue = ((newPts * newUplift) + (estPts * estUplift)) * rate;
+
+            // Staff time savings (6 min saved per patient at $22/hr avg)
+            const laborSavings = (6 * totalPts / 60) * 22;
+
+            const netGain = grossRevenue + laborSavings - platformCost;
+            const roi = platformCost > 0 ? (netGain / platformCost) * 100 : 0;
+
+            document.getElementById('out-tier').innerHTML = '<span class="tier-badge">' + tierName + ' — $' + base + '/clinic + $' + perPt.toFixed(2) + '/pt</span>';
+            document.getElementById('out-cost').innerText = '$' + platformCost.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            document.getElementById('out-gross').innerText = '$' + grossRevenue.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            document.getElementById('out-savings').innerText = '$' + laborSavings.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            document.getElementById('out-net').innerText = '$' + netGain.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+            document.getElementById('out-roi').innerText = roi.toFixed(0) + '% ROI';
+        }
+
+        [volInput, mixInput, rateInput, clinicInput].forEach(el => el.addEventListener('input', calculate));
+        calculate();
+    </script>
+
+    <div style="margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+        <p style="font-size:0.85rem; color:var(--text-3);">MyPulseScan × Particle Health — Urgent Care E/M Uplift Model. All CPT rates reflect 2026 Texas commercial payer averages. This model covers single-encounter revenue only — see behavioral-health.html, rpm.html, and flowmodel.html for additional billing programs.</p>
+    </div>
+
+</body>
+</html>

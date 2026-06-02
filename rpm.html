@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Patient Monitoring Blueprint — MyPulseScan × Particle Health</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #050b18;
+            --bg-surface: #080f1e;
+            --bg-card: #0c1628;
+            --accent-teal: #0D6B6E;
+            --accent-teal-bright: #5de8c0;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-gold: #f59e0b;
+            --grad: linear-gradient(135deg, #10b981 0%, #0D6B6E 50%, #5de8c0 100%);
+            --text: #f0f4ff;
+            --text-2: #8b9cc8;
+            --text-3: #445580;
+            --border: rgba(59,90,163,0.2);
+            --border-bright: rgba(93,232,192,0.25);
+        }
+        html { font-size: 16px; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+
+        header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--text-2); font-size: 1rem; }
+        h2 { font-size: 1.5rem; font-weight: 700; color: var(--accent-teal-bright); margin: 2.5rem 0 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+        h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text); }
+        p { line-height: 1.6; margin-bottom: 1rem; color: var(--text-2); }
+
+        .warning-box { background: rgba(239,68,68,0.1); border-left: 3px solid var(--accent-red); padding: 1.2rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; color: var(--text); font-weight: 500; }
+        .success-box { background: rgba(16,185,129,0.1); border-left: 3px solid var(--accent-green); padding: 1.2rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; color: var(--text); font-weight: 500; }
+
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+        .card h3 { margin-top: 0; color: var(--accent-green); }
+
+        table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 0.9rem 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        th { background: var(--bg-card); color: var(--accent-teal-bright); font-weight: 600; border-bottom: 1px solid var(--border-bright); }
+        td { color: var(--text-2); }
+        td strong { color: var(--text); }
+
+        pre { background: var(--bg-card); border: 1px solid var(--border); color: #e2e8f0; padding: 1.2rem; border-radius: 8px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.9rem; margin: 1rem 0; }
+
+        /* Calculator */
+        .calc-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; background: var(--bg-surface); border: 1px solid var(--border-bright); border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+        .calc-inputs { display: flex; flex-direction: column; gap: 1.5rem; }
+        .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .input-group label { font-weight: 600; color: var(--text); display: flex; justify-content: space-between; font-size: 0.95rem; }
+        .input-group label span { color: var(--accent-teal-bright); font-size: 1.05rem; }
+        .input-group input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; outline: none; }
+        .input-group input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent-green); border-radius: 50%; cursor: pointer; }
+        .calc-outputs { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; justify-content: center; }
+        .output-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.7rem; }
+        .output-row:last-child { border-bottom: none; }
+        .output-label { font-weight: 500; color: var(--text-2); font-size: 0.9rem; }
+        .output-val { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+        .output-val.profit { font-size: 1.6rem; color: var(--accent-green); }
+        .output-val.cost { color: var(--accent-red); }
+
+        .tier-badge { display: inline-block; background: rgba(93,232,192,0.15); border: 1px solid var(--accent-teal-bright); border-radius: 6px; padding: 2px 10px; font-size: 0.85rem; color: var(--accent-teal-bright); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .calc-container, .card-grid { grid-template-columns: 1fr; }
+            body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Remote Patient Monitoring Infrastructure</h1>
+        <p class="subtitle">MyPulseScan × Particle Health — Compliant RPM + CCM Stacking with Device Compliance Tracking</p>
+    </header>
+
+    <div class="warning-box">
+        <strong>Compliance Guardrail:</strong> RPM requires true physiological streaming data from FDA-cleared hardware or Apple Watch (Series 9+) syncing via HealthKit. Particle Health record retrieval alone does NOT satisfy RPM device requirements. This is a Phase 3 program — roll out after E/M uplift and BHI programs are operational.
+    </div>
+
+    <h2>RPM + CCM Code Stack</h2>
+    <p>Most Total Men's patients on TRT qualify for both RPM (chronic condition monitoring) and CCM (chronic care management). These stack on the same patient in the same month with discrete 20-minute time blocks.</p>
+
+    <table>
+        <thead>
+            <tr><th>CPT Code</th><th>Description</th><th>Commercial Rate</th><th>Staff Time</th><th>Compliance Gate</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>99453</strong></td>
+                <td>RPM Device Setup (one-time)</td>
+                <td style="color:var(--accent-green);">~$19</td>
+                <td>One-time</td>
+                <td>Device provisioned + patient trained + documented</td>
+            </tr>
+            <tr>
+                <td><strong>99454</strong></td>
+                <td>RPM Device Supply (monthly)</td>
+                <td style="color:var(--accent-green);">~$58/mo</td>
+                <td>0 min (auto)</td>
+                <td>Data transmitted on 16+ days in 30-day window</td>
+            </tr>
+            <tr>
+                <td><strong>99457</strong></td>
+                <td>RPM Clinical Review (first 20 min)</td>
+                <td style="color:var(--accent-green);">~$69/mo</td>
+                <td>20 min/mo</td>
+                <td>Documented vitals review + patient contact</td>
+            </tr>
+            <tr>
+                <td><strong>99490</strong></td>
+                <td>CCM (chronic care management)</td>
+                <td style="color:var(--accent-green);">~$81/mo</td>
+                <td>20 min/mo</td>
+                <td>2+ chronic conditions + care plan + patient consent</td>
+            </tr>
+            <tr style="border-top: 1px solid var(--border-bright);">
+                <td><strong>STACK</strong></td>
+                <td>RPM + CCM Combined</td>
+                <td style="color:var(--accent-green); font-weight:700;">~$208/mo</td>
+                <td><strong>40 min/mo</strong></td>
+                <td>Discrete time per program — no double-counting</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Compliance Validation Logic</h2>
+    <div class="card-grid">
+        <div class="card">
+            <h3>99454: 16-Day Transmission Rule</h3>
+            <p style="color:var(--text-2);">Patient's device must stream physiologic data (BP, glucose, SpO2, HR) on <strong style="color:var(--text);">at least 16 separate days</strong> per 30-day billing period. Below 16 days = claim held automatically. Apple Watch qualifies with specific model documentation (Series 9/10/11/Ultra).</p>
+        </div>
+        <div class="card">
+            <h3>99457: 20-Minute Time Gate</h3>
+            <p style="color:var(--text-2);">20 cumulative minutes of care team review + patient interaction per month. Requires <strong style="color:var(--text);">real-time stopwatch tracking</strong> in EHR, isolated from standard E/M visit time. All handled by Centralized Care Hub — zero burden on clinic floor staff.</p>
+        </div>
+    </div>
+
+    <div class="success-box">
+        <strong>Apple Watch Eligibility:</strong> Series 9+ with FDA 510(k) clearances for ECG, AFib detection, SpO2, and heart rate. Staff must document the specific watch model during enrollment. Zero hardware cost to the clinic.
+    </div>
+
+    <h2>RPM + CCM Revenue & Staffing Calculator</h2>
+    <p>Model a phased RPM enrollment ramp. Defaults are conservative — you won't enroll 10,000 patients on day one. Start with a pilot cohort and scale. Includes honest labor costs via Centralized Care Hub staffing.</p>
+
+    <div class="calc-container">
+        <div class="calc-inputs">
+            <div class="input-group">
+                <label>Enrolled RPM Patients <span id="vol-display">500</span></label>
+                <input type="range" id="patient-volume" min="50" max="10000" step="50" value="500">
+            </div>
+            <div class="input-group">
+                <label>16-Day Adherence Rate <span id="adh-display">85%</span></label>
+                <input type="range" id="adherence" min="50" max="100" step="5" value="85">
+            </div>
+            <div class="input-group">
+                <label>% Also Qualifying for CCM <span id="ccm-display">70%</span></label>
+                <input type="range" id="ccm-rate" min="0" max="100" step="5" value="70">
+            </div>
+            <div class="input-group">
+                <label>Number of Clinics <span id="clinics-display">5</span></label>
+                <input type="range" id="clinic-count" min="1" max="48" step="1" value="5">
+            </div>
+        </div>
+
+        <div class="calc-outputs">
+            <div class="output-row">
+                <span class="output-label">Pricing Tier:</span>
+                <span class="output-val" id="out-tier"><span class="tier-badge">Standard</span></span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Platform Cost:</span>
+                <span class="output-val cost" id="out-platform">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Care Hub Staff Required:</span>
+                <span class="output-val" id="out-fte">0 FTE</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Staff Labor Cost ($55K/yr loaded):</span>
+                <span class="output-val cost" id="out-labor">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">RPM Revenue (99454 + 99457):</span>
+                <span class="output-val" id="out-rpm">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">CCM Revenue (99490):</span>
+                <span class="output-val" id="out-ccm">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">Net Monthly Profit:</span>
+                <span class="output-val profit" id="out-net">$0</span>
+            </div>
+            <div class="output-row">
+                <span class="output-label">ROI:</span>
+                <span class="output-val" id="out-roi" style="color:var(--accent-teal-bright);">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const volInput = document.getElementById('patient-volume');
+        const adhInput = document.getElementById('adherence');
+        const ccmInput = document.getElementById('ccm-rate');
+        const clinicInput = document.getElementById('clinic-count');
+
+        function calculate() {
+            const vol = parseInt(volInput.value);
+            const adherence = parseInt(adhInput.value) / 100;
+            const ccmRate = parseInt(ccmInput.value) / 100;
+            const clinics = parseInt(clinicInput.value);
+
+            document.getElementById('vol-display').innerText = vol.toLocaleString();
+            document.getElementById('adh-display').innerText = (adherence * 100) + '%';
+            document.getElementById('ccm-display').innerText = (ccmRate * 100) + '%';
+            document.getElementById('clinics-display').innerText = clinics;
+
+            // Pricing tiers
+            let base = 499, perPt = 1.50, tierName = 'Standard';
+            if (clinics >= 21) { base = 299; perPt = 1.00; tierName = 'Enterprise'; }
+            else if (clinics >= 11) { base = 399; perPt = 1.25; tierName = 'Growth'; }
+
+            const platformCost = (base * clinics) + (perPt * vol);
+
+            // RPM Revenue
+            // 99454 only billable if 16+ day adherence met
+            const compliantPts = vol * adherence;
+            const deviceRevenue = compliantPts * 58;   // 99454
+            const reviewRevenue = vol * 69;             // 99457 — billable if staff logs 20 min
+            const rpmRevenue = deviceRevenue + reviewRevenue;
+
+            // CCM Revenue — stacks on patients with 2+ chronic conditions
+            const ccmPts = vol * ccmRate;
+            const ccmRevenue = ccmPts * 81; // 99490
+
+            const grossRevenue = rpmRevenue + ccmRevenue;
+
+            // Labor — RPM needs 20 min/pt/mo, CCM needs additional 20 min/pt/mo
+            const rpmMinutes = vol * 20;
+            const ccmMinutes = ccmPts * 20;
+            const totalHours = (rpmMinutes + ccmMinutes) / 60;
+            const fteNeeded = totalHours / 160; // 160 billable hrs/mo per FTE
+            const annualLoadedSalary = 55000 * 1.20; // 20% benefits burden
+            const monthlyLaborCost = fteNeeded * (annualLoadedSalary / 12);
+
+            const totalCost = platformCost + monthlyLaborCost;
+            const netProfit = grossRevenue - totalCost;
+            const roi = totalCost > 0 ? (netProfit / totalCost) * 100 : 0;
+
+            document.getElementById('out-tier').innerHTML = '<span class="tier-badge">' + tierName + ' — $' + base + '/clinic + $' + perPt.toFixed(2) + '/pt</span>';
+            document.getElementById('out-platform').innerText = '$' + platformCost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-fte').innerText = fteNeeded.toFixed(1) + ' FTE (' + Math.ceil(fteNeeded) + ' staff)';
+            document.getElementById('out-labor').innerText = '$' + monthlyLaborCost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-rpm').innerText = '$' + rpmRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-ccm').innerText = '$' + ccmRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-net').innerText = '$' + netProfit.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('out-roi').innerText = roi.toFixed(0) + '% ROI';
+        }
+
+        [volInput, adhInput, ccmInput, clinicInput].forEach(el => el.addEventListener('input', calculate));
+        calculate();
+    </script>
+
+    <div style="margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+        <p style="font-size:0.85rem; color:var(--text-3);">MyPulseScan × Particle Health — RPM + CCM Stacking Model. CPT rates reflect 2026 Texas commercial payer averages. RPM requires FDA-cleared devices at patient's home transmitting 16+ days/month. CCM requires 2+ chronic conditions and patient consent. All care coordination handled by Centralized Hub — zero burden on clinic floor staff. OIG safe enrollment ceiling: 25-30% of patient base, 3-5% ramp/month.</p>
+    </div>
+
+</body>
+</html>

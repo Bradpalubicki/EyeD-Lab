@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Men's — Employee Sign-Off Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #050b18; --bg-surface: #080f1e; --bg-card: #0c1628;
+            --accent-teal: #0D6B6E; --accent-teal-bright: #5de8c0;
+            --accent-purple: #7c3aed; --accent-blue: #3b82f6;
+            --accent-gold: #f59e0b; --accent-green: #10b981; --accent-red: #ef4444;
+            --grad: linear-gradient(135deg, #7c3aed 0%, #0D6B6E 50%, #5de8c0 100%);
+            --text: #f0f4ff; --text-2: #8b9cc8; --text-3: #445580;
+            --border: rgba(59,90,163,0.2); --border-bright: rgba(93,232,192,0.25);
+        }
+        html { font-size: 16px; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.7; padding: 2rem; max-width: 850px; margin: 0 auto; }
+
+        .header { text-align: center; padding: 2.5rem 2rem; margin-bottom: 2rem; border-bottom: 2px solid var(--border-bright); }
+        .header h1 { font-size: 1.8rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+        .header h2 { font-size: 1.1rem; color: var(--text-2); font-weight: 400; }
+
+        .form-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 2rem; margin-bottom: 1.5rem; }
+        .form-section h3 { font-size: 1.1rem; color: var(--accent-teal-bright); margin-bottom: 1rem; font-weight: 700; }
+
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem; }
+        .field { display: flex; flex-direction: column; gap: 0.3rem; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+        .field-line { border-bottom: 1px solid var(--border-bright); padding-bottom: 4px; min-height: 28px; color: var(--text-2); font-size: 0.95rem; }
+
+        .role-block { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        .role-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .role-badge { display: inline-block; background: rgba(93,232,192,0.12); border: 1px solid var(--accent-teal-bright); border-radius: 6px; padding: 3px 10px; font-size: 0.8rem; font-weight: 700; color: var(--accent-teal-bright); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.8rem; }
+
+        .check-item { display: flex; gap: 0.8rem; align-items: flex-start; margin: 0.6rem 0; padding: 0.5rem 0; }
+        .check-box { width: 20px; height: 20px; min-width: 20px; border: 2px solid var(--border-bright); border-radius: 4px; margin-top: 2px; }
+        .check-text { color: var(--text-2); font-size: 0.95rem; line-height: 1.5; }
+        .check-text strong { color: var(--text); }
+        .check-text code { color: var(--accent-teal-bright); background: rgba(93,232,192,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+
+        .acknowledgment { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); border-radius: 10px; padding: 1.5rem; margin: 2rem 0; }
+        .acknowledgment p { color: var(--text); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0; }
+
+        .sig-grid { display: grid; grid-template-columns: 1fr auto; gap: 2rem; margin-top: 2rem; }
+        .sig-block { margin-bottom: 2rem; }
+        .sig-label { font-size: 0.85rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .sig-line { border-bottom: 1px solid var(--border-bright); min-height: 40px; margin-bottom: 0.5rem; }
+
+        .print-note { text-align: center; color: var(--text-3); font-size: 0.85rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+        @media print {
+            body { background: white; color: #1a1a1a; padding: 1rem; }
+            .header h1 { background: none; -webkit-text-fill-color: #1a1a1a; }
+            .form-section { border-color: #ccc; }
+            .field-line, .sig-line { border-color: #999; }
+            .check-box { border-color: #999; }
+            .check-text, .check-text strong, .acknowledgment p { color: #1a1a1a; }
+            .role-badge { border-color: #666; color: #333; background: #f0f0f0; }
+            .print-note { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .field-row { grid-template-columns: 1fr; }
+            .sig-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Total Men's Primary Care</h1>
+        <h2>Connected Care Operations — Employee Acknowledgment &amp; Sign-Off Form</h2>
+    </div>
+
+    <!-- Employee Info -->
+    <div class="form-section">
+        <h3>Employee Information</h3>
+        <div class="field-row">
+            <div class="field">
+                <label>Employee Name</label>
+                <div class="field-line"></div>
+            </div>
+            <div class="field">
+                <label>Job Title</label>
+                <div class="field-line"></div>
+            </div>
+        </div>
+        <div class="field-row">
+            <div class="field">
+                <label>Clinic Location</label>
+                <div class="field-line"></div>
+            </div>
+            <div class="field">
+                <label>Manager Name</label>
+                <div class="field-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role-Specific Commitments -->
+    <div class="form-section">
+        <h3>Role-Specific Compliance Commitments</h3>
+        <p style="color:var(--text-2); font-size:0.9rem; margin-bottom:1.5rem;">Check all items that apply to your role. Initial each section you are responsible for.</p>
+
+        <div class="role-block">
+            <span class="role-badge">Front Desk / Intake Personnel</span>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I will ensure that every check-in patient successfully signs the <strong>health information exchange (HIE) consent screen</strong> prior to updating their status to "Arrived."</div>
+            </div>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I will <strong>not bypass</strong> the consent tracking modules under any circumstances.</div>
+            </div>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">If a patient asks about the consent, I will explain: <em>"This safely searches medical networks for your allergies and past prescriptions so your doctor can treat you safely today."</em></div>
+            </div>
+        </div>
+
+        <div class="role-block">
+            <span class="role-badge">Clinical Providers (MD, DO, NP, PA)</span>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I understand that E/M code upgrades (99204/99214) require <strong>true, active medical decision-making data analysis</strong> — not boilerplate documentation.</div>
+            </div>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I will review the Particle Health <strong>"External Documents" portal</strong> at point-of-care before every patient encounter.</div>
+            </div>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I will append the <code>.ECW_DATA_REVIEW</code> macro <strong>strictly to qualifying clinical charts</strong> where I have genuinely reviewed external records and used them in my clinical decision-making.</div>
+            </div>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I understand that <strong>misuse of the macro</strong> (applying it without genuine record review) constitutes billing fraud and will result in immediate disciplinary action.</div>
+            </div>
+        </div>
+
+        <div class="role-block">
+            <span class="role-badge">Care Hub Tracking Personnel (RPM / BHI)</span>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I understand that <strong>RPM device codes (CPT 99454)</strong> require the system ledger to display data transmission on <strong>16 or more individual days</strong> within the calendar month.</div>
+            </div>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I will utilize the embedded <strong>eCW stopwatch tool</strong> to document the required 20 minutes of discrete care tracking for CPT 99457 and CPT 99484.</div>
+            </div>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">I will <strong>not estimate time manually</strong> or count general office visit time toward the 20-minute discrete threshold.</div>
+            </div>
+            <div class="check-item">
+                <div class="check-box"></div>
+                <div class="check-text">If a patient has not synced their device in 4+ days, I will contact them immediately to prompt a manual sync.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acknowledgment -->
+    <div class="acknowledgment">
+        <p>By signing below, I acknowledge that I have received, reviewed, and fully understand the Total Men's Primary Care Operational Manual regarding the eClinicalWorks (eCW) and Particle Health integration. I understand that adhering to these workflows is vital to maintaining our <strong>clinical safety standards</strong>, protecting our clinical footprint from <strong>insurance audits</strong>, and guaranteeing <strong>compliant reimbursement loops</strong>.</p>
+    </div>
+
+    <!-- Signatures -->
+    <div class="form-section">
+        <h3>Signatures</h3>
+
+        <div class="sig-block">
+            <div class="sig-grid">
+                <div>
+                    <div class="sig-label">Employee Signature</div>
+                    <div class="sig-line"></div>
+                </div>
+                <div>
+                    <div class="sig-label">Date</div>
+                    <div class="sig-line" style="min-width:160px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sig-block" style="margin-bottom:0;">
+            <div class="sig-grid">
+                <div>
+                    <div class="sig-label">Manager Signature</div>
+                    <div class="sig-line"></div>
+                </div>
+                <div>
+                    <div class="sig-label">Date</div>
+                    <div class="sig-line" style="min-width:160px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="print-note">File a completed copy under each employee's personnel record for internal compliance audits. Print this page using Ctrl+P / Cmd+P.</p>
+
+</body>
+</html>
