@@ -210,8 +210,8 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
     }
     .patient-avatar {
@@ -224,55 +224,130 @@
     .patient-name { font-size: 1.25rem; font-weight: 700; }
     .patient-meta { font-size: 0.85rem; color: var(--text-2); }
 
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
+    /* ── SNAPSHOT TABS (Particle-style) ── */
+    .snapshot-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
-    .category-card {
+    .snapshot-tabs::-webkit-scrollbar { display: none; }
+    .snapshot-tab {
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-3);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+      background: none;
+      border-top: none; border-left: none; border-right: none;
+      font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+      position: relative;
+    }
+    .snapshot-tab:hover { color: var(--text-2); }
+    .snapshot-tab.active { color: var(--accent-teal-bright); border-bottom-color: var(--accent-teal-bright); }
+    .snapshot-tab .tab-count {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      background: rgba(93,232,192,0.12);
+      color: var(--accent-teal-bright);
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+    .snapshot-panel { display: none; }
+    .snapshot-panel.active { display: block; animation: fadeUp 0.3s ease-out; }
+
+    /* ── DATA TABLE ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+    .data-table thead th {
+      text-align: left;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      padding: 0.75rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-surface);
+      position: sticky;
+      top: 0;
+    }
+    .data-table tbody td {
+      font-size: 0.82rem;
+      color: var(--text-2);
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid rgba(59,90,163,0.08);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .data-table tbody tr:hover { background: rgba(93,232,192,0.03); }
+    .data-table .val { color: var(--text); font-weight: 600; }
+    .data-table .critical-val { color: var(--accent-red); font-weight: 700; }
+    .data-table .active-badge {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      background: rgba(245,158,11,0.12);
+      color: var(--accent-gold);
+    }
+    .data-table .resolved-badge {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      background: rgba(16,185,129,0.12);
+      color: var(--accent-green);
+    }
+    .data-table .source-col {
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+    .data-table .ref-range {
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+    .data-table .flag-high {
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+    .data-table .flag-critical {
+      color: var(--accent-red);
+      font-weight: 700;
+    }
+    .table-wrapper {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem;
-      transition: border-color 0.2s;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      overflow-x: auto;
+      max-height: 420px;
+      overflow-y: auto;
     }
-    .category-card:hover { border-color: var(--border-bright); }
-    .cat-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.75rem;
-    }
-    .cat-name {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent-teal-bright);
-    }
-    .cat-count {
-      font-size: 0.68rem;
-      font-weight: 700;
+    .table-wrapper::-webkit-scrollbar { width: 4px; }
+    .table-wrapper::-webkit-scrollbar-track { background: var(--bg-card); }
+    .table-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .table-footer {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-3);
-      background: rgba(93,232,192,0.08);
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-    }
-    .cat-items {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-    .cat-items li {
-      font-size: 0.8rem;
-      color: var(--text-2);
-      line-height: 1.4;
-    }
-    .cat-items .critical {
-      color: var(--accent-red);
-      font-weight: 600;
+      text-align: right;
+      border-top: 1px solid var(--border);
+      background: var(--bg-surface);
     }
 
     /* ── AI SUMMARY ── */
@@ -539,13 +614,6 @@
     .tier-rev-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.25rem; }
     .tier-rev-value { font-size: 0.95rem; font-weight: 700; color: var(--accent-teal-bright); }
 
-    /* ── SOURCE TAG ── */
-    .source-tag {
-      font-size: 0.65rem;
-      color: var(--text-3);
-      font-style: italic;
-    }
-
     /* ── TABS for billing ── */
     .billing-tabs {
       display: flex; gap: 0; margin-bottom: 2rem;
@@ -672,7 +740,6 @@
     @media (max-width: 768px) {
       .screen { padding: 1.5rem; }
       .demo-form { grid-template-columns: 1fr; }
-      .category-grid { grid-template-columns: 1fr 1fr; }
       .roi-strip { grid-template-columns: 1fr; }
       .value-grid { grid-template-columns: 1fr; }
       .tier-grid { grid-template-columns: 1fr; }
@@ -681,9 +748,12 @@
       .calc-slider { width: 100%; }
       .patient-header { flex-direction: column; align-items: flex-start; }
       .billing-tabs { overflow-x: auto; }
+      .snapshot-tabs { padding-bottom: 2px; }
+      .data-table { font-size: 0.75rem; }
+      .data-table thead th { font-size: 0.6rem; padding: 0.5rem; }
+      .data-table tbody td { padding: 0.45rem 0.5rem; font-size: 0.75rem; }
     }
     @media (max-width: 480px) {
-      .category-grid { grid-template-columns: 1fr; }
       .cta-buttons { flex-direction: column; align-items: center; }
       .em-compare { grid-template-columns: 1fr 1fr; }
     }
@@ -766,171 +836,229 @@
           <div class="ai-summary-text">48-year-old female presenting with multi-system chronic disease management. Primary diagnoses: Type 2 Diabetes Mellitus (E11.65, controlled, HbA1c 6.8% as of 03/2026), Essential Hypertension (I10, managed on dual therapy — lisinopril 20mg + amlodipine 5mg, last BP 138/82), and Hypothyroidism (E03.9, stable on levothyroxine 88mcg, TSH 2.4). <strong>CRITICAL: Documented penicillin allergy with anaphylaxis history — DO NOT prescribe beta-lactam antibiotics.</strong> Additional considerations: active osteoarthritis bilateral knees (M17.0), former tobacco use (quit 2019, 15-pack-year history), BMI 31.2 (Class I obesity). Cardiovascular risk factors present: family history of MI (father, age 62), hypertension, diabetes, former smoker. Currently on aspirin 81mg for primary prevention. Renal function mildly reduced (eGFR 78). Patient seen by 6 providers across CommonWell, Carequality, and Surescripts networks in past 24 months. 14 documented encounters including 1 ER visit (11/2025, acute knee pain).</div>
         </div>
 
-        <!-- Category grid — detailed -->
-        <div class="category-grid">
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Allergies</div>
-              <div class="cat-count">4 records</div>
-            </div>
-            <ul class="cat-items">
-              <li class="critical">Penicillin — Anaphylaxis (Severe) <span class="source-tag">· Banner Health 2019</span></li>
-              <li>Sulfa Drugs — Maculopapular Rash (Moderate) <span class="source-tag">· HonorHealth 2021</span></li>
-              <li>Latex — Contact Dermatitis (Mild) <span class="source-tag">· Mayo Clinic AZ 2020</span></li>
-              <li>Iodine Contrast — Hives/Urticaria (Moderate) <span class="source-tag">· Banner Health 2023</span></li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Active Medications</div>
-              <div class="cat-count">11 active</div>
-            </div>
-            <ul class="cat-items">
-              <li>Lisinopril 20mg PO daily <span class="source-tag">· Dr. Patel, PCP · filled 04/01/26</span></li>
-              <li>Metformin 1000mg PO BID <span class="source-tag">· Dr. Patel · filled 04/01/26</span></li>
-              <li>Atorvastatin 40mg PO qHS <span class="source-tag">· Dr. Patel · filled 03/15/26</span></li>
-              <li>Amlodipine 5mg PO daily <span class="source-tag">· Dr. Patel · filled 04/01/26</span></li>
-              <li>Levothyroxine 88mcg PO qAM <span class="source-tag">· Dr. Kim, Endo · filled 03/28/26</span></li>
-              <li>Omeprazole 20mg PO daily <span class="source-tag">· Dr. Patel · filled 03/15/26</span></li>
-              <li>Aspirin 81mg PO daily <span class="source-tag">· OTC · Surescripts verified</span></li>
-              <li>Vitamin D3 2000 IU PO daily <span class="source-tag">· OTC · Surescripts verified</span></li>
-              <li>Fish Oil 1200mg PO daily <span class="source-tag">· OTC</span></li>
-              <li>Metoprolol Succinate 25mg PO daily <span class="source-tag">· Dr. Patel · filled 02/18/26</span></li>
-              <li>Gabapentin 300mg PO TID <span class="source-tag">· Dr. Ortiz, Ortho · filled 01/22/26</span></li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Lab Results</div>
-              <div class="cat-count">23 results</div>
-            </div>
-            <ul class="cat-items">
-              <li>HbA1c — <strong>6.8%</strong> (ref: &lt;7.0%) <span class="source-tag">· 03/15/26 · LOINC 4548-4</span></li>
-              <li>LDL Cholesterol — <strong>112 mg/dL</strong> (ref: &lt;100) <span class="source-tag">· 03/15/26</span></li>
-              <li>Total Cholesterol — <strong>198 mg/dL</strong> (ref: &lt;200) <span class="source-tag">· 03/15/26</span></li>
-              <li>HDL — <strong>52 mg/dL</strong> (ref: &gt;40) <span class="source-tag">· 03/15/26</span></li>
-              <li>Triglycerides — <strong>168 mg/dL</strong> (ref: &lt;150) <span class="source-tag">· 03/15/26</span></li>
-              <li>eGFR — <strong>78 mL/min</strong> (ref: &gt;90) <span class="source-tag">· 03/15/26 · mildly decreased</span></li>
-              <li>Creatinine — <strong>1.02 mg/dL</strong> (ref: 0.6-1.2) <span class="source-tag">· 03/15/26</span></li>
-              <li>BUN — <strong>18 mg/dL</strong> (ref: 7-20) <span class="source-tag">· 03/15/26</span></li>
-              <li>TSH — <strong>2.4 mIU/L</strong> (ref: 0.4-4.0) <span class="source-tag">· 02/28/26 · Dr. Kim</span></li>
-              <li>Free T4 — <strong>1.1 ng/dL</strong> (ref: 0.8-1.8) <span class="source-tag">· 02/28/26</span></li>
-              <li>Fasting Glucose — <strong>118 mg/dL</strong> (ref: 70-100) <span class="source-tag">· 03/15/26</span></li>
-              <li>ALT — <strong>28 U/L</strong> (ref: 7-56) <span class="source-tag">· 03/15/26</span></li>
-              <li>AST — <strong>24 U/L</strong> (ref: 10-40) <span class="source-tag">· 03/15/26</span></li>
-              <li style="color:var(--text-3); font-style:italic;">+10 more results (CBC, UA, Vitamin D, Magnesium...)</li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Problems / Diagnoses</div>
-              <div class="cat-count">8 conditions</div>
-            </div>
-            <ul class="cat-items">
-              <li>Type 2 Diabetes Mellitus — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· E11.65 · onset 2018</span></li>
-              <li>Essential Hypertension — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· I10 · onset 2016</span></li>
-              <li>Hypothyroidism — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· E03.9 · onset 2020</span></li>
-              <li>Bilateral Knee Osteoarthritis — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· M17.0 · onset 2021</span></li>
-              <li>Class I Obesity — <strong style="color:var(--accent-gold);">Active</strong> <span class="source-tag">· E66.01 · BMI 31.2</span></li>
-              <li>GERD — <strong style="color:var(--accent-green);">Resolved</strong> <span class="source-tag">· K21.0 · resolved 2024</span></li>
-              <li>Generalized Anxiety — <strong style="color:var(--accent-green);">Managed</strong> <span class="source-tag">· F41.1 · onset 2019</span></li>
-              <li>Vitamin D Deficiency — <strong style="color:var(--accent-green);">Resolved</strong> <span class="source-tag">· E55.9 · resolved 2025</span></li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Encounters</div>
-              <div class="cat-count">14 visits</div>
-            </div>
-            <ul class="cat-items">
-              <li>Office Visit — Dr. Patel (PCP) <span class="source-tag">· HonorHealth · 04/12/26 · Annual wellness + diabetes mgmt</span></li>
-              <li>Specialist Visit — Dr. Kim (Endocrinology) <span class="source-tag">· Banner Health · 02/28/26 · Thyroid follow-up</span></li>
-              <li>Specialist Visit — Dr. Ortiz (Orthopedics) <span class="source-tag">· Mayo Clinic AZ · 01/15/26 · Knee pain evaluation</span></li>
-              <li class="critical">ER Visit — Banner Estrella MC <span class="source-tag">· 11/03/25 · Acute L knee pain, r/o meniscal tear · Discharged same day</span></li>
-              <li>Office Visit — Dr. Patel (PCP) <span class="source-tag">· HonorHealth · 10/08/25 · Medication review</span></li>
-              <li>Lab Visit — Quest Diagnostics <span class="source-tag">· 09/20/25 · Routine labs</span></li>
-              <li style="color:var(--text-3); font-style:italic;">+8 more encounters (2024-2025)</li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Immunizations</div>
-              <div class="cat-count">6 vaccines</div>
-            </div>
-            <ul class="cat-items">
-              <li>Influenza (Quadrivalent) <span class="source-tag">· 10/15/25 · CVS Pharmacy · Lot #FL2025-8842</span></li>
-              <li>COVID-19 Booster (Updated 2025) <span class="source-tag">· 09/22/25 · Walgreens · Lot #MOD-2025-441</span></li>
-              <li>Tdap (Boostrix) <span class="source-tag">· 03/10/23 · Dr. Patel · Lot #AC52B168AA</span></li>
-              <li>Shingrix Dose 1 <span class="source-tag">· 06/14/24 · Dr. Patel</span></li>
-              <li>Shingrix Dose 2 <span class="source-tag">· 08/20/24 · Dr. Patel</span></li>
-              <li>Pneumovax 23 <span class="source-tag">· 01/08/24 · Dr. Patel</span></li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Procedures</div>
-              <div class="cat-count">3 procedures</div>
-            </div>
-            <ul class="cat-items">
-              <li>Screening Colonoscopy <span class="source-tag">· 06/12/24 · Dr. Harris, GI · Banner Health · CPT 45378 · Findings: 2 benign polyps removed</span></li>
-              <li>Right Knee Arthroscopy <span class="source-tag">· 03/08/22 · Dr. Ortiz · Mayo Clinic AZ · CPT 29881 · Partial meniscectomy</span></li>
-              <li>Thyroid Ultrasound <span class="source-tag">· 01/22/25 · Banner Radiology · CPT 76536 · Findings: 4mm benign nodule, stable</span></li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Vital Signs (Most Recent)</div>
-              <div class="cat-count">18 readings</div>
-            </div>
-            <ul class="cat-items">
-              <li>Blood Pressure — <strong>138/82 mmHg</strong> <span class="source-tag">· 04/12/26 · slightly elevated</span></li>
-              <li>Heart Rate — <strong>72 bpm</strong> <span class="source-tag">· 04/12/26 · regular rhythm</span></li>
-              <li>Weight — <strong>186 lbs</strong> <span class="source-tag">· 04/12/26 · ↓2 lbs from 10/25</span></li>
-              <li>BMI — <strong>31.2</strong> <span class="source-tag">· Class I Obesity</span></li>
-              <li>Temperature — <strong>98.4°F</strong> <span class="source-tag">· 04/12/26</span></li>
-              <li>O2 Sat — <strong>97%</strong> <span class="source-tag">· 04/12/26 · room air</span></li>
-              <li>Respiratory Rate — <strong>16 breaths/min</strong> <span class="source-tag">· 04/12/26</span></li>
-              <li style="color:var(--text-3); font-style:italic;">+11 historical readings (BP trend, weight trend...)</li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Social History</div>
-              <div class="cat-count">4 entries</div>
-            </div>
-            <ul class="cat-items">
-              <li>Tobacco — <strong style="color:var(--accent-gold);">Former smoker</strong> <span class="source-tag">· quit 2019 · 15-pack-year history</span></li>
-              <li>Alcohol — Social, 1-2 drinks/week <span class="source-tag">· last screened 04/12/26</span></li>
-              <li>Occupation — High school teacher <span class="source-tag">· Phoenix Union HSD</span></li>
-              <li>Exercise — Walks 3x/week, 30 min <span class="source-tag">· per patient report</span></li>
-            </ul>
-          </div>
-
-          <div class="category-card">
-            <div class="cat-header">
-              <div class="cat-name">Family History</div>
-              <div class="cat-count">4 entries</div>
-            </div>
-            <ul class="cat-items">
-              <li>Father — <strong class="critical">Myocardial Infarction</strong> <span class="source-tag">· age 62 · survived</span></li>
-              <li>Mother — Type 2 Diabetes <span class="source-tag">· diagnosed age 55</span></li>
-              <li>Sister — Breast Cancer <span class="source-tag">· diagnosed age 51 · in remission</span></li>
-              <li>Brother — Hypertension <span class="source-tag">· diagnosed age 45</span></li>
-            </ul>
-          </div>
-
+        <!-- ══ TABBED SNAPSHOT (Particle-style) ══ -->
+        <div class="snapshot-tabs" id="snapshotTabs">
+          <button class="snapshot-tab active" onclick="showSnapshotTab('allergies')">Allergies <span class="tab-count">4</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('medications')">Medications <span class="tab-count">11</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('labs')">Labs <span class="tab-count">23</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('problems')">Problems <span class="tab-count">8</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('encounters')">Encounters <span class="tab-count">14</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('immunizations')">Immunizations <span class="tab-count">6</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('procedures')">Procedures <span class="tab-count">3</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('vitals')">Vitals <span class="tab-count">18</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('social')">Social History <span class="tab-count">4</span></button>
+          <button class="snapshot-tab" onclick="showSnapshotTab('family')">Family History <span class="tab-count">4</span></button>
         </div>
 
-        <div class="trust-badge">Powered by Particle Health — 320M+ patients · 160,000+ healthcare organizations · CommonWell · Carequality · Surescripts</div>
+        <!-- TAB: Allergies -->
+        <div class="snapshot-panel active" id="panel-allergies">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Allergen</th><th>Reaction</th><th>Severity</th><th>Source</th><th>Reported</th></tr></thead>
+              <tbody>
+                <tr><td class="critical-val">Penicillin (RxNorm 7980)</td><td class="critical-val">Anaphylaxis — laryngeal edema, hypotension</td><td class="critical-val">SEVERE — LIFE THREATENING</td><td class="source-col">Banner Health</td><td class="source-col">06/14/2019</td></tr>
+                <tr><td class="val">Sulfonamides (RxNorm 10180)</td><td>Maculopapular rash, generalized pruritus</td><td><span class="active-badge">Moderate</span></td><td class="source-col">HonorHealth</td><td class="source-col">03/22/2021</td></tr>
+                <tr><td class="val">Latex</td><td>Contact dermatitis, localized erythema</td><td><span class="resolved-badge">Mild</span></td><td class="source-col">Mayo Clinic AZ</td><td class="source-col">11/05/2020</td></tr>
+                <tr><td class="val">Iodinated Contrast Media</td><td>Urticaria (hives), facial flushing</td><td><span class="active-badge">Moderate</span></td><td class="source-col">Banner Health</td><td class="source-col">08/17/2023</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Medications -->
+        <div class="snapshot-panel" id="panel-medications">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Medication</th><th>Dose / Route / Frequency</th><th>Status</th><th>Prescriber</th><th>Last Filled</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Lisinopril</td><td>20mg PO once daily</td><td><span class="active-badge">Active</span></td><td>Dr. Patel (PCP)</td><td class="source-col">04/01/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Metformin HCl ER</td><td>1000mg PO twice daily</td><td><span class="active-badge">Active</span></td><td>Dr. Patel (PCP)</td><td class="source-col">04/01/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Atorvastatin Calcium</td><td>40mg PO at bedtime</td><td><span class="active-badge">Active</span></td><td>Dr. Patel (PCP)</td><td class="source-col">03/15/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Amlodipine Besylate</td><td>5mg PO once daily</td><td><span class="active-badge">Active</span></td><td>Dr. Patel (PCP)</td><td class="source-col">04/01/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Levothyroxine Sodium</td><td>88mcg PO every morning (empty stomach)</td><td><span class="active-badge">Active</span></td><td>Dr. Kim (Endocrine)</td><td class="source-col">03/28/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Omeprazole</td><td>20mg PO once daily (before breakfast)</td><td><span class="active-badge">Active</span></td><td>Dr. Patel (PCP)</td><td class="source-col">03/15/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Metoprolol Succinate ER</td><td>25mg PO once daily</td><td><span class="active-badge">Active</span></td><td>Dr. Patel (PCP)</td><td class="source-col">02/18/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td class="val">Gabapentin</td><td>300mg PO three times daily</td><td><span class="active-badge">Active</span></td><td>Dr. Ortiz (Ortho)</td><td class="source-col">01/22/2026</td><td class="source-col">Surescripts</td></tr>
+                <tr><td>Aspirin (OTC)</td><td>81mg PO once daily</td><td><span class="active-badge">Active</span></td><td>Self / OTC</td><td class="source-col">—</td><td class="source-col">Surescripts (verified)</td></tr>
+                <tr><td>Vitamin D3 (OTC)</td><td>2000 IU PO once daily</td><td><span class="active-badge">Active</span></td><td>Self / OTC</td><td class="source-col">—</td><td class="source-col">Surescripts (verified)</td></tr>
+                <tr><td>Fish Oil (OTC)</td><td>1200mg PO once daily</td><td><span class="active-badge">Active</span></td><td>Self / OTC</td><td class="source-col">—</td><td class="source-col">Patient reported</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Labs -->
+        <div class="snapshot-panel" id="panel-labs">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Test</th><th>Result</th><th>Ref Range</th><th>Flag</th><th>LOINC</th><th>Date</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Hemoglobin A1c</td><td class="val">6.8%</td><td class="ref-range">&lt;7.0% (diabetic goal)</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">4548-4</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Glucose, Fasting</td><td class="flag-high">118 mg/dL</td><td class="ref-range">70–100 mg/dL</td><td><span class="active-badge">High</span></td><td class="source-col">1558-6</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">LDL Cholesterol (calc)</td><td class="flag-high">112 mg/dL</td><td class="ref-range">&lt;100 mg/dL</td><td><span class="active-badge">High</span></td><td class="source-col">13457-7</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">HDL Cholesterol</td><td class="val">52 mg/dL</td><td class="ref-range">&gt;40 mg/dL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">2085-9</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Total Cholesterol</td><td class="val">198 mg/dL</td><td class="ref-range">&lt;200 mg/dL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">2093-3</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Triglycerides</td><td class="flag-high">168 mg/dL</td><td class="ref-range">&lt;150 mg/dL</td><td><span class="active-badge">High</span></td><td class="source-col">2571-8</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">eGFR (CKD-EPI)</td><td class="flag-high">78 mL/min/1.73m²</td><td class="ref-range">&gt;90 mL/min</td><td><span class="active-badge">Low</span></td><td class="source-col">48642-3</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Creatinine, Serum</td><td class="val">1.02 mg/dL</td><td class="ref-range">0.6–1.2 mg/dL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">2160-0</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">BUN</td><td class="val">18 mg/dL</td><td class="ref-range">7–20 mg/dL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">3094-0</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">TSH</td><td class="val">2.4 mIU/L</td><td class="ref-range">0.4–4.0 mIU/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">11580-8</td><td class="source-col">02/28/2026</td><td class="source-col">Banner / Carequality</td></tr>
+                <tr><td class="val">Free T4</td><td class="val">1.1 ng/dL</td><td class="ref-range">0.8–1.8 ng/dL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">3024-7</td><td class="source-col">02/28/2026</td><td class="source-col">Banner / Carequality</td></tr>
+                <tr><td class="val">ALT (SGPT)</td><td class="val">28 U/L</td><td class="ref-range">7–56 U/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">1742-6</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">AST (SGOT)</td><td class="val">24 U/L</td><td class="ref-range">10–40 U/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">1920-8</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">WBC</td><td class="val">6.8 x10³/µL</td><td class="ref-range">4.5–11.0</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">6690-2</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Hemoglobin</td><td class="val">13.4 g/dL</td><td class="ref-range">12.0–16.0 g/dL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">718-7</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Hematocrit</td><td class="val">40.1%</td><td class="ref-range">36.0–46.0%</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">4544-3</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Platelets</td><td class="val">248 x10³/µL</td><td class="ref-range">150–400</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">777-3</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Vitamin D, 25-Hydroxy</td><td class="val">38 ng/mL</td><td class="ref-range">30–100 ng/mL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">1989-3</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Magnesium</td><td class="val">2.0 mg/dL</td><td class="ref-range">1.6–2.6 mg/dL</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">19123-9</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Potassium</td><td class="val">4.2 mEq/L</td><td class="ref-range">3.5–5.0 mEq/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">2823-3</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Sodium</td><td class="val">140 mEq/L</td><td class="ref-range">136–145 mEq/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">2951-2</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Urine Albumin/Creat Ratio</td><td class="val">22 mg/g</td><td class="ref-range">&lt;30 mg/g</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">9318-7</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+                <tr><td class="val">Urine Microalbumin</td><td class="val">8.4 mg/L</td><td class="ref-range">&lt;30 mg/L</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">14957-5</td><td class="source-col">03/15/2026</td><td class="source-col">Quest / CommonWell</td></tr>
+              </tbody>
+            </table>
+            <div class="table-footer">23 of 23 lab results displayed · Ordered by date descending</div>
+          </div>
+        </div>
+
+        <!-- TAB: Problems -->
+        <div class="snapshot-panel" id="panel-problems">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Diagnosis</th><th>ICD-10</th><th>Status</th><th>Onset</th><th>Resolved</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Type 2 Diabetes Mellitus with hyperglycemia</td><td>E11.65</td><td><span class="active-badge">Active</span></td><td class="source-col">2018</td><td class="source-col">—</td><td class="source-col">HonorHealth / CommonWell</td></tr>
+                <tr><td class="val">Essential (Primary) Hypertension</td><td>I10</td><td><span class="active-badge">Active</span></td><td class="source-col">2016</td><td class="source-col">—</td><td class="source-col">HonorHealth / CommonWell</td></tr>
+                <tr><td class="val">Hypothyroidism, unspecified</td><td>E03.9</td><td><span class="active-badge">Active</span></td><td class="source-col">2020</td><td class="source-col">—</td><td class="source-col">Banner Health / Carequality</td></tr>
+                <tr><td class="val">Bilateral primary osteoarthritis of knee</td><td>M17.0</td><td><span class="active-badge">Active</span></td><td class="source-col">2021</td><td class="source-col">—</td><td class="source-col">Mayo Clinic AZ / Carequality</td></tr>
+                <tr><td class="val">Morbid obesity due to excess calories, BMI 30-34.9</td><td>E66.01</td><td><span class="active-badge">Active</span></td><td class="source-col">2022</td><td class="source-col">—</td><td class="source-col">HonorHealth / CommonWell</td></tr>
+                <tr><td>Gastro-esophageal reflux disease without esophagitis</td><td>K21.0</td><td><span class="resolved-badge">Resolved</span></td><td class="source-col">2020</td><td class="source-col">2024</td><td class="source-col">HonorHealth / CommonWell</td></tr>
+                <tr><td>Generalized anxiety disorder</td><td>F41.1</td><td><span class="resolved-badge">Managed</span></td><td class="source-col">2019</td><td class="source-col">—</td><td class="source-col">HonorHealth / CommonWell</td></tr>
+                <tr><td>Vitamin D deficiency, unspecified</td><td>E55.9</td><td><span class="resolved-badge">Resolved</span></td><td class="source-col">2023</td><td class="source-col">2025</td><td class="source-col">Quest / CommonWell</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Encounters -->
+        <div class="snapshot-panel" id="panel-encounters">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Date</th><th>Type</th><th>Provider</th><th>Facility</th><th>Reason / Notes</th><th>Network</th></tr></thead>
+              <tbody>
+                <tr><td class="val">04/12/2026</td><td>Office Visit</td><td>Dr. Raj Patel (PCP)</td><td>HonorHealth Scottsdale Shea</td><td>Annual wellness exam + diabetes management review</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">03/15/2026</td><td>Lab Visit</td><td>Quest Diagnostics</td><td>Quest — Scottsdale Rd</td><td>Comprehensive metabolic panel, lipid panel, HbA1c, CBC, UA</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">02/28/2026</td><td>Specialist Visit</td><td>Dr. Susan Kim (Endocrinology)</td><td>Banner Health Endocrine Center</td><td>Thyroid follow-up — TSH/Free T4 review, levothyroxine dose stable</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">01/15/2026</td><td>Specialist Visit</td><td>Dr. Marco Ortiz (Orthopedics)</td><td>Mayo Clinic Arizona</td><td>Bilateral knee pain evaluation — imaging ordered, PT referral</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="critical-val">11/03/2025</td><td class="critical-val">ER Visit</td><td>Emergency Medicine</td><td class="critical-val">Banner Estrella Medical Center</td><td>Acute left knee pain, swelling — r/o meniscal tear. X-ray negative for fracture. MRI ordered outpatient. Discharged same day with NSAID Rx.</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">10/08/2025</td><td>Office Visit</td><td>Dr. Raj Patel (PCP)</td><td>HonorHealth Scottsdale Shea</td><td>Medication review — metoprolol added for resting tachycardia</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">09/20/2025</td><td>Lab Visit</td><td>Quest Diagnostics</td><td>Quest — Scottsdale Rd</td><td>Routine labs — CMP, lipid, HbA1c</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">07/15/2025</td><td>Office Visit</td><td>Dr. Raj Patel (PCP)</td><td>HonorHealth Scottsdale Shea</td><td>Diabetes follow-up — A1c improved to 7.0%, continue metformin</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">06/12/2024</td><td>Procedure</td><td>Dr. Lisa Harris (GI)</td><td>Banner Health Endoscopy Center</td><td>Screening colonoscopy — 2 tubular adenomas removed, follow-up 3 yrs</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">04/22/2025</td><td>Specialist Visit</td><td>Dr. Susan Kim (Endocrinology)</td><td>Banner Health Endocrine Center</td><td>Annual thyroid review — stable on levothyroxine 88mcg</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">03/15/2025</td><td>Lab Visit</td><td>Quest Diagnostics</td><td>Quest — Scottsdale Rd</td><td>Annual labs — CMP, HbA1c 7.2%, lipid panel</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">01/22/2025</td><td>Imaging</td><td>Banner Radiology</td><td>Banner Health Imaging</td><td>Thyroid ultrasound — 4mm nodule R lobe, stable from 2024, benign</td><td class="source-col">Carequality</td></tr>
+                <tr><td class="val">08/20/2024</td><td>Office Visit</td><td>Dr. Raj Patel (PCP)</td><td>HonorHealth Scottsdale Shea</td><td>Shingrix dose 2 administered, vaccine series complete</td><td class="source-col">CommonWell</td></tr>
+                <tr><td class="val">03/08/2022</td><td>Surgery</td><td>Dr. Marco Ortiz (Orthopedics)</td><td>Mayo Clinic Arizona — Surgical</td><td>Right knee arthroscopy — partial medial meniscectomy. Uneventful recovery.</td><td class="source-col">Carequality</td></tr>
+              </tbody>
+            </table>
+            <div class="table-footer">14 of 14 encounters displayed · 2022–2026</div>
+          </div>
+        </div>
+
+        <!-- TAB: Immunizations -->
+        <div class="snapshot-panel" id="panel-immunizations">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Vaccine</th><th>Manufacturer</th><th>Lot Number</th><th>Date</th><th>Site / Route</th><th>Administered By</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Influenza, Quadrivalent (IIV4)</td><td>Sanofi Pasteur</td><td>FL2025-8842</td><td class="source-col">10/15/2025</td><td>L Deltoid / IM</td><td class="source-col">CVS Pharmacy #4821</td></tr>
+                <tr><td class="val">COVID-19 mRNA, Bivalent (2025 Updated)</td><td>Moderna</td><td>MOD-2025-441</td><td class="source-col">09/22/2025</td><td>R Deltoid / IM</td><td class="source-col">Walgreens #9102</td></tr>
+                <tr><td class="val">Tdap (Boostrix)</td><td>GSK</td><td>AC52B168AA</td><td class="source-col">03/10/2023</td><td>L Deltoid / IM</td><td class="source-col">Dr. Patel / HonorHealth</td></tr>
+                <tr><td class="val">Zoster Recombinant (Shingrix) — Dose 2</td><td>GSK</td><td>3LR8C</td><td class="source-col">08/20/2024</td><td>L Deltoid / IM</td><td class="source-col">Dr. Patel / HonorHealth</td></tr>
+                <tr><td class="val">Zoster Recombinant (Shingrix) — Dose 1</td><td>GSK</td><td>7LR4A</td><td class="source-col">06/14/2024</td><td>L Deltoid / IM</td><td class="source-col">Dr. Patel / HonorHealth</td></tr>
+                <tr><td class="val">Pneumococcal Polysaccharide (PPSV23)</td><td>Merck</td><td>U049811</td><td class="source-col">01/08/2024</td><td>R Deltoid / IM</td><td class="source-col">Dr. Patel / HonorHealth</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Procedures -->
+        <div class="snapshot-panel" id="panel-procedures">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Procedure</th><th>CPT</th><th>Date</th><th>Performing Provider</th><th>Facility</th><th>Findings / Notes</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Screening Colonoscopy with polypectomy</td><td>45385</td><td class="source-col">06/12/2024</td><td>Dr. Lisa Harris (GI)</td><td>Banner Health Endoscopy Center</td><td>2 tubular adenomas removed (3mm, 5mm). No high-grade dysplasia. Follow-up colonoscopy in 3 years.</td></tr>
+                <tr><td class="val">Right Knee Arthroscopy — Partial Meniscectomy</td><td>29881</td><td class="source-col">03/08/2022</td><td>Dr. Marco Ortiz (Ortho)</td><td>Mayo Clinic AZ — Surgical Center</td><td>Medial meniscus posterior horn tear. Partial resection performed. Articular cartilage Grade II changes noted. 4 weeks PT ordered.</td></tr>
+                <tr><td class="val">Thyroid Ultrasound</td><td>76536</td><td class="source-col">01/22/2025</td><td>Banner Radiology</td><td>Banner Health Imaging Center</td><td>4mm hypoechoic nodule right lobe, TI-RADS 2 (benign). Stable compared to 2024. No follow-up imaging needed unless symptomatic.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Vitals -->
+        <div class="snapshot-panel" id="panel-vitals">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Vital Sign</th><th>Value</th><th>Ref Range</th><th>Flag</th><th>Date</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Blood Pressure (Systolic/Diastolic)</td><td class="flag-high">138/82 mmHg</td><td class="ref-range">&lt;130/80 mmHg</td><td><span class="active-badge">Elevated</span></td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Heart Rate</td><td class="val">72 bpm</td><td class="ref-range">60–100 bpm</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Weight</td><td class="val">186 lbs (84.4 kg)</td><td class="ref-range">—</td><td>↓2 lbs from 10/25</td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Height</td><td class="val">5'6" (167.6 cm)</td><td class="ref-range">—</td><td>—</td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">BMI</td><td class="flag-high">31.2 kg/m²</td><td class="ref-range">18.5–24.9</td><td><span class="active-badge">Obese I</span></td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Temperature</td><td class="val">98.4°F (36.9°C)</td><td class="ref-range">97.8–99.1°F</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Respiratory Rate</td><td class="val">16 breaths/min</td><td class="ref-range">12–20 breaths/min</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">SpO2 (Pulse Oximetry)</td><td class="val">97%</td><td class="ref-range">95–100%</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Blood Pressure</td><td class="flag-high">142/86 mmHg</td><td class="ref-range">&lt;130/80 mmHg</td><td><span class="active-badge">Elevated</span></td><td class="source-col">10/08/2025</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Heart Rate</td><td class="flag-high">88 bpm</td><td class="ref-range">60–100 bpm</td><td>Upper normal</td><td class="source-col">10/08/2025</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Weight</td><td class="val">188 lbs (85.3 kg)</td><td class="ref-range">—</td><td>—</td><td class="source-col">10/08/2025</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Blood Pressure</td><td class="val">128/78 mmHg</td><td class="ref-range">&lt;130/80 mmHg</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">07/15/2025</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Heart Rate</td><td class="val">74 bpm</td><td class="ref-range">60–100 bpm</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">07/15/2025</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Weight</td><td class="val">190 lbs (86.2 kg)</td><td class="ref-range">—</td><td>—</td><td class="source-col">07/15/2025</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Blood Pressure</td><td class="flag-high">145/88 mmHg</td><td class="ref-range">&lt;130/80 mmHg</td><td><span class="active-badge">Elevated</span></td><td class="source-col">11/03/2025</td><td class="source-col">Banner Estrella MC (ER)</td></tr>
+                <tr><td class="val">Heart Rate</td><td class="flag-high">96 bpm</td><td class="ref-range">60–100 bpm</td><td>Upper normal (ER presentation)</td><td class="source-col">11/03/2025</td><td class="source-col">Banner Estrella MC (ER)</td></tr>
+                <tr><td class="val">SpO2 (Pulse Oximetry)</td><td class="val">98%</td><td class="ref-range">95–100%</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">11/03/2025</td><td class="source-col">Banner Estrella MC (ER)</td></tr>
+                <tr><td class="val">Temperature</td><td class="val">98.6°F (37.0°C)</td><td class="ref-range">97.8–99.1°F</td><td><span class="resolved-badge">Normal</span></td><td class="source-col">11/03/2025</td><td class="source-col">Banner Estrella MC (ER)</td></tr>
+              </tbody>
+            </table>
+            <div class="table-footer">18 of 18 vital sign readings displayed · 4 encounters · 2025–2026</div>
+          </div>
+        </div>
+
+        <!-- TAB: Social History -->
+        <div class="snapshot-panel" id="panel-social">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Category</th><th>Detail</th><th>Additional Info</th><th>Last Screened</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Tobacco Use</td><td class="flag-high">Former smoker</td><td>Quit 2019. 15-pack-year history (1 pack/day × 15 years, 2004–2019). Nicotine patch used for cessation.</td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Alcohol Use</td><td>Social drinker</td><td>1–2 drinks/week, wine. AUDIT-C score: 2 (low risk). No history of alcohol use disorder.</td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Occupation</td><td>High school teacher</td><td>Phoenix Union High School District. Full-time. Standing/walking 6+ hrs/day. Employer health plan: Blue Cross Blue Shield AZ.</td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Exercise / Physical Activity</td><td>Moderate</td><td>Walks 3x/week, 30 min per session. Occasional swimming. Limited by bilateral knee pain. PT exercises prescribed 01/2026.</td><td class="source-col">04/12/2026</td><td class="source-col">HonorHealth</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: Family History -->
+        <div class="snapshot-panel" id="panel-family">
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Relation</th><th>Condition</th><th>ICD-10</th><th>Age at Dx</th><th>Outcome</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td class="val">Father</td><td class="critical-val">Myocardial Infarction (STEMI)</td><td>I21.0</td><td>62</td><td>Survived — CABG performed, alive at 78</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Mother</td><td>Type 2 Diabetes Mellitus</td><td>E11.9</td><td>55</td><td>Living — managed on insulin + metformin, age 74</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Sister (older)</td><td>Breast Cancer (invasive ductal carcinoma)</td><td>C50.9</td><td>51</td><td>In remission — lumpectomy + radiation, 3 years NED</td><td class="source-col">HonorHealth</td></tr>
+                <tr><td class="val">Brother (younger)</td><td>Essential Hypertension</td><td>I10</td><td>45</td><td>Living — managed on lisinopril 10mg</td><td class="source-col">HonorHealth</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="trust-badge" style="margin-top:1.5rem;">Powered by Particle Health — 320M+ patients · 160,000+ healthcare organizations · CommonWell · Carequality · Surescripts</div>
 
         <div style="text-align:center; margin-top:2rem;">
           <button class="btn-next" onclick="goNext(4)">Now see what this is worth →</button>
@@ -1285,6 +1413,14 @@ function triggerRevealInternal() {
     loading.style.display = 'none';
     panel.classList.add('visible');
   }, 2800);
+}
+
+// Snapshot tabs (Particle-style)
+function showSnapshotTab(id) {
+  document.querySelectorAll('.snapshot-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.snapshot-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.closest('.snapshot-tab').classList.add('active');
 }
 
 // Billing tabs
