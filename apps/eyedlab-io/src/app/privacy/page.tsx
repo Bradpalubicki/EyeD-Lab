@@ -297,7 +297,7 @@ export default function PrivacyPage() {
                 PHI is accessed and used only as necessary to perform services
                 under the applicable BAA. EyeD ID Lab does not use PHI for
                 marketing or sell PHI to any third party. Our infrastructure is
-                HITRUST Certified and SOC 2 Type II audited.
+                built on Particle Health's HITRUST-certified, SOC 2 Type II audited platform.
               </p>
               <p style={{ marginTop: "0.75rem" }}>
                 If you are a patient whose records may be accessed through our

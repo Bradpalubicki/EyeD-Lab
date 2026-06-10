@@ -89,7 +89,7 @@ export default function HomePage() {
         <div className="network-inner">
           <div className="network-label">Compliance &amp; Security</div>
           <div className="network-logos">
-            {["HITRUST Certified", "SOC 2 Type II", "HIPAA BAA", "FHIR R4", "TEFCA"].map(
+            {["Particle HITRUST Certified", "Particle SOC 2 Type II", "HIPAA Ready", "FHIR R4", "TEFCA"].map(
               (name) => (
                 <div
                   key={name}

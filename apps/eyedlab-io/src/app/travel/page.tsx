@@ -947,7 +947,7 @@ export default function TravelPage() {
               <a href="/" className="btn-t-outline">← Back to EyeD ID Lab</a>
             </div>
             <div className="t-trust-strip">
-              {["320M+ patient records", "Powered by Particle Health", "HIPAA BAA", "HITRUST Certified", "FHIR R4"].map((t) => (
+              {["320M+ patient records", "Powered by Particle Health", "HIPAA Ready", "Particle HITRUST Certified", "FHIR R4"].map((t) => (
                 <div key={t} className="t-trust-item"><span className="t-trust-dot" />{t}</div>
               ))}
             </div>

@@ -11,17 +11,17 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://eyedlab.io"),
   title: "EyeD ID Lab — Clinical Data Infrastructure",
   description:
-    "Build on 320M+ patient records via one FHIR R4 API. Powered by Particle Health. HITRUST, SOC2, HIPAA compliant.",
+    "Build on 320M+ patient records via one FHIR R4 API. Powered by Particle Health's HITRUST-certified, SOC 2 Type II audited infrastructure.",
   keywords: [
     "clinical data infrastructure",
     "FHIR R4 API",
     "patient health records",
     "Particle Health",
     "health information exchange",
-    "HIPAA compliant API",
+    "HIPAA ready API",
     "EHR integration",
     "healthcare data API",
-    "HITRUST certified",
+    "Particle Health HITRUST certified",
     "CommonWell Carequality",
     "MyPulseScan",
     "clinical decision support",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "EyeD ID Lab — Clinical Data Infrastructure",
     description:
-      "Build on 320M+ patient records via one FHIR R4 API. Powered by Particle Health. HITRUST, SOC2, HIPAA compliant.",
+      "Build on 320M+ patient records via one FHIR R4 API. Powered by Particle Health's HITRUST-certified, SOC 2 Type II audited infrastructure.",
     url: "https://eyedlab.io",
     siteName: "EyeD ID Lab",
     type: "website",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "EyeD ID Lab — Clinical Data Infrastructure",
     description:
-      "Build on 320M+ patient records via one FHIR R4 API. Powered by Particle Health. HITRUST, SOC2, HIPAA compliant.",
+      "Build on 320M+ patient records via one FHIR R4 API. Powered by Particle Health's HITRUST-certified, SOC 2 Type II audited infrastructure.",
   },
 };
 
@@ -96,7 +96,7 @@ const faqSchema = {
       name: "Is EyeD ID Lab HIPAA compliant?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes. EyeD ID Lab operates as a HIPAA Business Associate and executes Business Associate Agreements (BAAs) with all covered entity and business associate partners. The platform is HITRUST Certified and SOC 2 Type II audited.",
+        text: "EyeD ID Lab is built on Particle Health's HITRUST-certified, SOC 2 Type II audited infrastructure. EyeD ID Lab will execute Business Associate Agreements (BAAs) with covered entity and business associate partners as required. BAA and compliance onboarding are completed as part of each customer implementation.",
       },
     },
     {

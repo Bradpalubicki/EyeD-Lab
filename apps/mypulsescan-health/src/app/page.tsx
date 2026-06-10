@@ -94,7 +94,7 @@ export default function HomePage() {
               ))}
             </div>
             <p className="stats-panel-footer">
-              FHIR R4 · CommonWell · Carequality · TEFCA · BAA Available
+              FHIR R4 · CommonWell · Carequality · TEFCA · Particle HITRUST Certified
             </p>
           </div>
         </div>
@@ -537,4 +537,4 @@ const TESTIMONIALS = [
   },
 ]
 
-const FOOTER_BADGES = ['HIPAA Compliant', 'FHIR R4', 'TEFCA', 'BAA Available']
+const FOOTER_BADGES = ['HIPAA Ready', 'FHIR R4', 'TEFCA', 'Particle HITRUST Certified']

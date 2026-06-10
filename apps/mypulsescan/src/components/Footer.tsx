@@ -44,10 +44,10 @@ export default function Footer() {
             Powered by NuStack Digital Ventures.
           </div>
           <div className="footer-compliance">
-            <span className="compliance-badge">HIPAA Compliant</span>
+            <span className="compliance-badge">HIPAA Ready</span>
             <span className="compliance-badge">FHIR R4</span>
             <span className="compliance-badge">TEFCA</span>
-            <span className="compliance-badge">BAA Available</span>
+            <span className="compliance-badge">Particle HITRUST Certified</span>
           </div>
         </div>
       </div>
