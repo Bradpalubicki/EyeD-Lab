@@ -17,3 +17,9 @@ artifacts/
 typechain-types/
 .wrangler/
 package-lock.json
+
+# Secrets — never commit
+CREDENTIALS.md
+.vercel/
+.env
+.env.local
