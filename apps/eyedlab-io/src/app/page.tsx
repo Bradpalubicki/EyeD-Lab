@@ -49,7 +49,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-eyebrow">
           <span className="hero-eyebrow-dot" />
-          Powered by Particle Health
+          Beta &middot; Powered by Particle Health
         </div>
         <h1 className="hero-wordmark">
           EyeD <span className="accent">ID</span> Lab
